@@ -1,3 +1,5 @@
+import { supabase } from './supabaseClient.js'
+
 // Função para login do usuário
 window.login = async function () {
   const email = document.getElementById('email').value
@@ -36,4 +38,3 @@ document.addEventListener('keydown', function (event) {
     }
   }
 })
-    
