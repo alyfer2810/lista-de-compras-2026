@@ -1,3 +1,4 @@
+import { supabase } from './supabaseClient.js'
 
 // Função para login do usuário
 window.login = async function () {
@@ -37,4 +38,3 @@ document.addEventListener('keydown', function (event) {
     }
   }
 })
-    
