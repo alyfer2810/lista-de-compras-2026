@@ -24,12 +24,12 @@
 body{
     font-family: var(--fonte);
     background: #E7E6F7;
-background: linear-gradient(270deg, rgba(231, 230, 247, 1) 0%, rgba(227, 208, 216, 1) 50%, rgba(198, 210, 237, 1) 100%);
-display: flex;
-justify-content: center;
-align-items: center;
-min-height: 100vh;
-padding: 20px;
+    background: linear-gradient(270deg, rgba(231, 230, 247, 1) 0%, rgba(227, 208, 216, 1) 50%, rgba(198, 210, 237, 1) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
 }
 
 .container {
