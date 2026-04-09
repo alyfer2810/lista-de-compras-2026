@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-     <link rel="shortcut icon" href="src/icons/favicon.ico" type="image/x-icon">
+    <title>Lista 2026 3º SIS</title>
+    <link rel="shortcut icon" href="src/img/favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="src/css/login.css">
 </head>
 <body>
     <div class="container">
+        <img src="src/icons/icon-512x512.png" alt="logo" id="logo">
         <h2 class="titulo">Login</h2>
-        <img id="logo" src="src/icons/favicon.ico" alt="logo">
-
-        <div class="entrada">
-            <input type="email" id="email" placeholder="E-mail">
-            <input type="password" id="senha" placeholder="Senha">
-        </div>
-            
+        <input type="email" id="email" placeholder="E-mail">
+        <input type="password" id="senha" placeholder="Senha">
+        
         <div class="botoes">
             <button onclick="login()">Entrar</button>
             <button onclick="cadastro()">Cadastrar</button>
@@ -25,7 +23,7 @@
 
     <script type="module" src="auth.js"></script>
 
-     <script>
+    <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js')
@@ -38,6 +36,5 @@
             });
         }
     </script>
-    
 </body>
 </html>
