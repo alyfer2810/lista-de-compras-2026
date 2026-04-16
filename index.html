@@ -11,6 +11,7 @@
 </head>
 <body>
     <div class="app-container">
+        <!-- Header -->
         <header class="header">
             <div class="header-content">
                 <div class="logo-area">
@@ -34,45 +35,148 @@
                 <span class="user-email" id="user-email">carregando...</span>
             </div>
         </header>
-        
+
+        <!-- Stats Dashboard -->
+        <div class="stats-dashboard">
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-info">
+                    <span class="stat-label">Total Itens</span>
+                    <span class="stat-value" id="total-items">0</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <span class="stat-label">Comprados</span>
+                    <span class="stat-value" id="completed-items">0</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <span class="stat-label">Total Estimado</span>
+                    <span class="stat-value" id="total-price">R$ 0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters-bar">
+            <button class="filter-btn active" data-filter="all">Todos</button>
+            <button class="filter-btn" data-filter="pending">Pendentes</button>
+            <button class="filter-btn" data-filter="completed">Comprados</button>
+            <button class="filter-btn" data-filter="high">Prioridade Alta</button>
+        </div>
+
+        <!-- Categorias Rápidas -->
+        <div class="categories-scroll">
+            <button class="category-chip active" data-categoria="todos">🏠 Todos</button>
+            <button class="category-chip" data-categoria="mercearia">🥫 Mercearia</button>
+            <button class="category-chip" data-categoria="hortifruti">🥬 Hortifrúti</button>
+            <button class="category-chip" data-categoria="carnes">🥩 Carnes</button>
+            <button class="category-chip" data-categoria="laticinios">🥛 Laticínios</button>
+            <button class="category-chip" data-categoria="bebidas">🥤 Bebidas</button>
+            <button class="category-chip" data-categoria="limpeza">🧹 Limpeza</button>
+            <button class="category-chip" data-categoria="outros">📦 Outros</button>
+        </div>
+
+        <!-- Lista de Itens -->
         <main class="main-content">
-            <div class="stats-bar">
-                <div class="stat-item">
-                    <span class="stat-label">Itens</span>
-                    <span class="stat-value" id="total-count">0</span>
-                </div>
-                <button class="btn-clear" onclick="limparComprados()" title="Limpar comprados">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 6h18"/>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                    </svg>
-                    Limpar comprados
-                </button>
-            </div>
-            
             <ul id="lista" class="shopping-list"></ul>
-            
-            <div class="add-item-section">
-                <div class="input-wrapper">
-                    <input type="text" id="item" placeholder="Digite um item..." autocomplete="off"/>
-                    <button onclick="adicionarItem()" class="btn-add">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="5" x2="12" y2="19"/>
-                            <line x1="5" y1="12" x2="19" y2="12"/>
-                        </svg>
-                        Adicionar
-                    </button>
-                </div>
-            </div>
         </main>
-        
-        <footer class="footer">
-            <p>Compras compartilhadas em tempo real ✨</p>
-        </footer>
+
+        <!-- Botão Flutuante para Adicionar -->
+        <button class="fab" id="fab" onclick="openModal()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+        </button>
+
+        <!-- Modal de Adicionar/Editar -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modal-title">Adicionar Item</h2>
+                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                </div>
+                <form id="item-form">
+                    <input type="hidden" id="item-id">
+                    
+                    <div class="form-group">
+                        <label>Nome do item *</label>
+                        <input type="text" id="item-nome" required placeholder="Ex: Arroz, Feijão, Leite...">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Quantidade</label>
+                            <input type="number" id="item-quantidade" value="1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Unidade</label>
+                            <select id="item-unidade">
+                                <option value="un">Unidade(s)</option>
+                                <option value="kg">Quilograma (kg)</option>
+                                <option value="g">Grama (g)</option>
+                                <option value="l">Litro (l)</option>
+                                <option value="ml">Mililitro (ml)</option>
+                                <option value="pac">Pacote</option>
+                                <option value="lata">Lata</option>
+                                <option value="cx">Caixa</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Preço unitário (R$)</label>
+                            <input type="number" id="item-preco" step="0.01" placeholder="0,00">
+                        </div>
+                        <div class="form-group">
+                            <label>Categoria</label>
+                            <select id="item-categoria">
+                                <option value="mercearia">🥫 Mercearia</option>
+                                <option value="hortifruti">🥬 Hortifrúti</option>
+                                <option value="carnes">🥩 Carnes</option>
+                                <option value="laticinios">🥛 Laticínios</option>
+                                <option value="bebidas">🥤 Bebidas</option>
+                                <option value="limpeza">🧹 Limpeza</option>
+                                <option value="higiene">🧴 Higiene</option>
+                                <option value="outros">📦 Outros</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Prioridade</label>
+                        <div class="priority-buttons">
+                            <button type="button" class="priority-btn" data-prioridade="1">🔴 Alta</button>
+                            <button type="button" class="priority-btn" data-prioridade="2">🟡 Média</button>
+                            <button type="button" class="priority-btn" data-prioridade="3">🟢 Baixa</button>
+                        </div>
+                        <input type="hidden" id="item-prioridade" value="2">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Observação</label>
+                        <textarea id="item-observacao" rows="2" placeholder="Marca, local, etc..."></textarea>
+                    </div>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                        <button type="submit" class="btn-save">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script type="module">
-        // SUAS CREDENCIAIS DO SUPABASE
+        // ============================================
+        // CONFIGURAÇÃO DO SUPABASE
+        // ============================================
         const SUPABASE_URL = 'https://pquobavzpooyygfoczpn.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxdW9iYXZ6cG9veXlnZm9jenBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMTE5NDQsImV4cCI6MjA4NzY4Nzk0NH0.-6WeJxqq_bzYD0chC1SF2iZzpK96FzWtl3xmcjeuRi4';
         
@@ -80,15 +184,37 @@
         
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
-        // Elementos
-        const listaElement = document.getElementById('lista');
-        const itemInput = document.getElementById('item');
-        const userEmailSpan = document.getElementById('user-email');
-        const themeToggle = document.getElementById('theme-toggle');
+        // ============================================
+        // VARIÁVEIS GLOBAIS
+        // ============================================
         let currentUser = null;
+        let allItems = [];
+        let currentFilter = 'all';
+        let currentCategoria = 'todos';
         let subscription = null;
         
-        // Tema
+        // Elementos
+        const listaElement = document.getElementById('lista');
+        const userEmailSpan = document.getElementById('user-email');
+        const themeToggle = document.getElementById('theme-toggle');
+        const modal = document.getElementById('modal');
+        const itemForm = document.getElementById('item-form');
+        
+        // Mapeamento de ícones por categoria
+        const categoriaIcones = {
+            mercearia: '🥫',
+            hortifruti: '🥬',
+            carnes: '🥩',
+            laticinios: '🥛',
+            bebidas: '🥤',
+            limpeza: '🧹',
+            higiene: '🧴',
+            outros: '📦'
+        };
+        
+        // ============================================
+        // FUNÇÕES DE UI
+        // ============================================
         function initTheme() {
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
@@ -96,17 +222,13 @@
             if(icon) icon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
         }
         
-        function updateThemeIcon(theme) {
-            const icon = themeToggle?.querySelector('.theme-icon');
-            if(icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
-        }
-        
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
+            const icon = themeToggle?.querySelector('.theme-icon');
+            if(icon) icon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
         }
         
         function showToast(message, type = 'info') {
@@ -115,7 +237,7 @@
             
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
-            toast.textContent = message;
+            toast.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span> ${message}`;
             document.body.appendChild(toast);
             setTimeout(() => toast.classList.add('show'), 10);
             setTimeout(() => {
@@ -125,48 +247,122 @@
         }
         
         function escapeHtml(text) {
+            if(!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
         
-        // Adicionar item
-        window.adicionarItem = async function() {
-            const nome = itemInput.value.trim();
-            if(!nome) {
-                showToast('Digite um item para adicionar', 'error');
-                return;
-            }
-            
-            if(!currentUser) {
-                showToast('Usuário não autenticado', 'error');
-                return;
-            }
-            
-            try {
-                const { error } = await supabase
-                    .from('items')
-                    .insert({
-                        nome: nome,
-                        comprado: false,
-                        user_id: currentUser.id
+        // ============================================
+        // CRUD OPERATIONS
+        // ============================================
+        window.openModal = function(itemId = null) {
+            if(itemId) {
+                document.getElementById('modal-title').textContent = 'Editar Item';
+                const item = allItems.find(i => i.id === itemId);
+                if(item) {
+                    document.getElementById('item-id').value = item.id;
+                    document.getElementById('item-nome').value = item.nome;
+                    document.getElementById('item-quantidade').value = item.quantidade || 1;
+                    document.getElementById('item-unidade').value = item.unidade || 'un';
+                    document.getElementById('item-preco').value = item.preco || '';
+                    document.getElementById('item-categoria').value = item.categoria || 'outros';
+                    document.getElementById('item-prioridade').value = item.prioridade || 2;
+                    document.getElementById('item-observacao').value = item.observacao || '';
+                    
+                    // Destacar botão de prioridade
+                    document.querySelectorAll('.priority-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                        if(btn.dataset.prioridade == item.prioridade) {
+                            btn.classList.add('active');
+                        }
                     });
-                
-                if(error) throw error;
-                
-                itemInput.value = '';
-                itemInput.focus();
-                showToast('Item adicionado!', 'success');
-            } catch (error) {
-                console.error(error);
-                showToast('Erro ao adicionar item', 'error');
+                }
+            } else {
+                document.getElementById('modal-title').textContent = 'Adicionar Item';
+                itemForm.reset();
+                document.getElementById('item-id').value = '';
+                document.getElementById('item-quantidade').value = 1;
+                document.getElementById('item-prioridade').value = 2;
+                document.querySelectorAll('.priority-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if(btn.dataset.prioridade == 2) btn.classList.add('active');
+                });
             }
+            modal.classList.add('show');
         };
         
-        // Alternar status
-        window.toggleComprado = async function(itemId, compradoAtual) {
-            if(!currentUser) return;
+        window.closeModal = function() {
+            modal.classList.remove('show');
+        };
+        
+        // Configurar botões de prioridade
+        document.querySelectorAll('.priority-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('item-prioridade').value = btn.dataset.prioridade;
+            });
+        });
+        
+        // Salvar item
+        itemForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
             
+            const id = document.getElementById('item-id').value;
+            const nome = document.getElementById('item-nome').value.trim();
+            const quantidade = parseInt(document.getElementById('item-quantidade').value);
+            const unidade = document.getElementById('item-unidade').value;
+            const preco = parseFloat(document.getElementById('item-preco').value) || null;
+            const categoria = document.getElementById('item-categoria').value;
+            const prioridade = parseInt(document.getElementById('item-prioridade').value);
+            const observacao = document.getElementById('item-observacao').value;
+            
+            if(!nome) {
+                showToast('Digite o nome do item', 'error');
+                return;
+            }
+            
+            const itemData = {
+                nome,
+                quantidade,
+                unidade,
+                preco,
+                categoria,
+                prioridade,
+                observacao,
+                user_id: currentUser.id
+            };
+            
+            try {
+                if(id) {
+                    // Atualizar
+                    const { error } = await supabase
+                        .from('items')
+                        .update(itemData)
+                        .eq('id', id)
+                        .eq('user_id', currentUser.id);
+                    
+                    if(error) throw error;
+                    showToast('Item atualizado!', 'success');
+                } else {
+                    // Inserir
+                    const { error } = await supabase
+                        .from('items')
+                        .insert([itemData]);
+                    
+                    if(error) throw error;
+                    showToast('Item adicionado!', 'success');
+                }
+                closeModal();
+            } catch (error) {
+                console.error(error);
+                showToast('Erro ao salvar item: ' + error.message, 'error');
+            }
+        });
+        
+        // Alternar status comprado
+        window.toggleComprado = async function(itemId, compradoAtual) {
             try {
                 const { error } = await supabase
                     .from('items')
@@ -183,7 +379,6 @@
         // Remover item
         window.removerItem = async function(itemId) {
             if(!confirm('Tem certeza que deseja remover este item?')) return;
-            if(!currentUser) return;
             
             try {
                 const { error } = await supabase
@@ -199,29 +394,8 @@
             }
         };
         
-        // Editar item
-        window.editarItem = async function(itemId, nomeAtual) {
-            const novoNome = prompt('Editar item:', nomeAtual);
-            if(!novoNome || novoNome.trim() === '') return;
-            if(!currentUser) return;
-            
-            try {
-                const { error } = await supabase
-                    .from('items')
-                    .update({ nome: novoNome.trim() })
-                    .eq('id', itemId)
-                    .eq('user_id', currentUser.id);
-                
-                if(error) throw error;
-                showToast('Item atualizado!', 'success');
-            } catch (error) {
-                showToast('Erro ao editar', 'error');
-            }
-        };
-        
         // Limpar comprados
         window.limparComprados = async function() {
-            if(!currentUser) return;
             if(!confirm('Remover todos os itens já comprados?')) return;
             
             try {
@@ -251,16 +425,134 @@
             }
         };
         
-        // Carregar lista
+        // ============================================
+        // RENDERIZAÇÃO DA LISTA
+        // ============================================
+        function getPrioridadeIcon(prioridade) {
+            switch(prioridade) {
+                case 1: return '🔴';
+                case 2: return '🟡';
+                case 3: return '🟢';
+                default: return '⚪';
+            }
+        }
+        
+        function formatPreco(preco) {
+            if(!preco) return '';
+            return `R$ ${preco.toFixed(2)}`;
+        }
+        
+        function formatQuantidade(quantidade, unidade) {
+            const unidadeMap = {
+                'un': 'un',
+                'kg': 'kg',
+                'g': 'g',
+                'l': 'L',
+                'ml': 'ml',
+                'pac': 'pac',
+                'lata': 'lata',
+                'cx': 'cx'
+            };
+            return `${quantidade} ${unidadeMap[unidade] || unidade}`;
+        }
+        
+        function renderizarLista() {
+            let filteredItems = [...allItems];
+            
+            // Filtrar por status
+            if(currentFilter === 'pending') {
+                filteredItems = filteredItems.filter(i => !i.comprado);
+            } else if(currentFilter === 'completed') {
+                filteredItems = filteredItems.filter(i => i.comprado);
+            } else if(currentFilter === 'high') {
+                filteredItems = filteredItems.filter(i => i.prioridade === 1 && !i.comprado);
+            }
+            
+            // Filtrar por categoria
+            if(currentCategoria !== 'todos') {
+                filteredItems = filteredItems.filter(i => i.categoria === currentCategoria);
+            }
+            
+            // Ordenar: não comprados primeiro, depois por prioridade, depois por data
+            filteredItems.sort((a, b) => {
+                if(a.comprado !== b.comprado) return a.comprado ? 1 : -1;
+                if(a.prioridade !== b.prioridade) return a.prioridade - b.prioridade;
+                return new Date(b.created_at) - new Date(a.created_at);
+            });
+            
+            if(filteredItems.length === 0) {
+                listaElement.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🛒</div>
+                        <p>Nenhum item encontrado</p>
+                        <small>Clique no botão + para adicionar</small>
+                    </div>
+                `;
+                return;
+            }
+            
+            listaElement.innerHTML = filteredItems.map(item => `
+                <li class="list-item ${item.comprado ? 'comprado' : ''}" data-prioridade="${item.prioridade}">
+                    <div class="item-checkbox-wrapper">
+                        <input 
+                            type="checkbox" 
+                            ${item.comprado ? 'checked' : ''} 
+                            onchange="toggleComprado('${item.id}', ${item.comprado})"
+                            class="item-checkbox"
+                        />
+                    </div>
+                    <div class="item-details">
+                        <div class="item-header">
+                            <span class="item-categoria">${categoriaIcones[item.categoria] || '📦'} ${item.categoria}</span>
+                            <span class="item-prioridade ${item.prioridade === 1 ? 'alta' : item.prioridade === 2 ? 'media' : 'baixa'}">
+                                ${getPrioridadeIcon(item.prioridade)}
+                            </span>
+                        </div>
+                        <div class="item-nome">${escapeHtml(item.nome)}</div>
+                        <div class="item-meta">
+                            <span class="item-quantidade">📦 ${formatQuantidade(item.quantidade || 1, item.unidade || 'un')}</span>
+                            ${item.preco ? `<span class="item-preco">💰 ${formatPreco(item.preco)}</span>` : ''}
+                            ${item.preco && item.quantidade ? `<span class="item-total">📊 Total: ${formatPreco(item.preco * (item.quantidade || 1))}</span>` : ''}
+                        </div>
+                        ${item.observacao ? `<div class="item-obs">📝 ${escapeHtml(item.observacao)}</div>` : ''}
+                    </div>
+                    <div class="item-actions">
+                        <button onclick="openModal('${item.id}')" class="btn-edit" title="Editar">✏️</button>
+                        <button onclick="removerItem('${item.id}')" class="btn-delete" title="Remover">🗑️</button>
+                    </div>
+                </li>
+            `).join('');
+        }
+        
+        // ============================================
+        // ATUALIZAR ESTATÍSTICAS
+        // ============================================
+        function atualizarStats() {
+            const total = allItems.length;
+            const completed = allItems.filter(i => i.comprado).length;
+            const totalPreco = allItems.reduce((sum, item) => {
+                if(item.preco && !item.comprado) {
+                    return sum + (item.preco * (item.quantidade || 1));
+                }
+                return sum;
+            }, 0);
+            
+            document.getElementById('total-items').textContent = total;
+            document.getElementById('completed-items').textContent = completed;
+            document.getElementById('total-price').textContent = `R$ ${totalPreco.toFixed(2)}`;
+        }
+        
+        // ============================================
+        // CARREGAR DADOS DO SUPABASE
+        // ============================================
         async function carregarLista() {
             if(!currentUser) return;
             
-            // Se já existe subscription, remove
             if(subscription) {
                 await subscription.unsubscribe();
             }
             
-            // Subscribe para mudanças em tempo real
+            // Subscribe em tempo real
             subscription = supabase
                 .channel('items-changes')
                 .on(
@@ -272,77 +564,60 @@
                         filter: `user_id=eq.${currentUser.id}`
                     },
                     () => {
-                        carregarDados();
+                        fetchItems();
                     }
                 )
                 .subscribe();
             
-            async function carregarDados() {
-                const { data, error } = await supabase
-                    .from('items')
-                    .select('*')
-                    .eq('user_id', currentUser.id)
-                    .order('created_at', { ascending: false });
-                
-                if(error) {
-                    console.error(error);
-                    return;
-                }
-                
-                listaElement.innerHTML = '';
-                
-                if(!data || data.length === 0) {
-                    listaElement.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-icon">🛒</div>
-                            <p>Sua lista está vazia</p>
-                            <small>Adicione itens para começar</small>
-                        </div>
-                    `;
-                    const totalCount = document.getElementById('total-count');
-                    if(totalCount) totalCount.textContent = '0';
-                    return;
-                }
-                
-                data.forEach((item) => {
-                    const li = document.createElement('li');
-                    li.className = item.comprado ? 'comprado' : '';
-                    
-                    li.innerHTML = `
-                        <div class="item-content">
-                            <input 
-                                type="checkbox" 
-                                ${item.comprado ? 'checked' : ''} 
-                                onchange="toggleComprado('${item.id}', ${item.comprado})"
-                                class="item-checkbox"
-                            />
-                            <span class="item-nome">${escapeHtml(item.nome)}</span>
-                        </div>
-                        <div class="item-actions">
-                            <button onclick="editarItem('${item.id}', '${escapeHtml(item.nome)}')" class="btn-edit" title="Editar">✏️</button>
-                            <button onclick="removerItem('${item.id}')" class="btn-delete" title="Remover">🗑️</button>
-                        </div>
-                    `;
-                    
-                    listaElement.appendChild(li);
-                });
-                
-                const totalCount = document.getElementById('total-count');
-                if(totalCount) totalCount.textContent = data.length;
-            }
-            
-            carregarDados();
+            await fetchItems();
         }
         
-        // Tecla Enter
-        itemInput?.addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') window.adicionarItem();
-        });
+        async function fetchItems() {
+            const { data, error } = await supabase
+                .from('items')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .order('created_at', { ascending: false });
+            
+            if(error) {
+                console.error(error);
+                showToast('Erro ao carregar itens', 'error');
+                return;
+            }
+            
+            allItems = data || [];
+            atualizarStats();
+            renderizarLista();
+        }
         
-        // Tema
+        // ============================================
+        // FILTROS E CATEGORIAS
+        // ============================================
+        function initFilters() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    renderizarLista();
+                });
+            });
+            
+            document.querySelectorAll('.category-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    currentCategoria = chip.dataset.categoria;
+                    renderizarLista();
+                });
+            });
+        }
+        
+        // ============================================
+        // AUTENTICAÇÃO
+        // ============================================
         themeToggle?.addEventListener('click', toggleTheme);
         
-        // Monitorar autenticação
         supabase.auth.onAuthStateChange(async (event, session) => {
             if(session) {
                 currentUser = session.user;
@@ -353,7 +628,6 @@
             }
         });
         
-        // Verificar sessão existente
         const { data: { session } } = await supabase.auth.getSession();
         if(session) {
             currentUser = session.user;
@@ -363,8 +637,15 @@
             window.location.href = 'login.html';
         }
         
+        // Fechar modal ao clicar fora
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) closeModal();
+        });
+        
         initTheme();
-        console.log('✅ Index page carregada com sucesso!');
+        initFilters();
+        
+        console.log('✅ Lista 2026 carregada com sucesso!');
     </script>
 </body>
 </html>
