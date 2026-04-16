@@ -3,29 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#6366f1">
+    <meta name="theme-color" content="#6366f1" id="theme-color">
     <link rel="shortcut icon" href="src/img/favicon.ico" type="image/x-icon">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="src/css/login.css">
     <title>Lista 2026 · Login</title>
 </head>
 <body>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema">
+        <span class="theme-icon">🌙</span>
+    </button>
+    
     <div class="login-container">
         <div class="login-card">
-            <!-- Logo e branding -->
             <div class="brand">
                 <div class="logo-icon">🛒</div>
                 <h1 class="brand-title">Lista<span>2026</span></h1>
                 <p class="brand-subtitle">Compras compartilhadas em tempo real</p>
             </div>
 
-            <!-- Toggle entre login e cadastro -->
             <div class="auth-toggle">
                 <button class="toggle-btn active" data-auth="login">Entrar</button>
                 <button class="toggle-btn" data-auth="signup">Criar conta</button>
             </div>
 
-            <!-- Formulário de Login -->
+            <!-- Login Form -->
             <form id="login-form" class="auth-form active">
                 <div class="input-group">
                     <div class="input-icon">
@@ -36,7 +38,6 @@
                         <input type="email" id="login-email" placeholder=" " autocomplete="email">
                         <label>E-mail</label>
                     </div>
-                    <div class="error-message" id="login-email-error"></div>
                 </div>
 
                 <div class="input-group">
@@ -54,24 +55,19 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="error-message" id="login-password-error"></div>
-                </div>
-
-                <div class="form-options">
-                    <label class="checkbox">
-                        <input type="checkbox" id="remember-me">
-                        <span>Lembrar-me</span>
-                    </label>
-                    <a href="#" class="forgot-password">Esqueci a senha?</a>
                 </div>
 
                 <button type="submit" class="btn-primary">
                     <span class="btn-text">Entrar</span>
-                    <div class="btn-spinner hidden"></div>
+                    <div class="btn-spinner"></div>
                 </button>
+                
+                <div class="form-options" style="margin-top: 1rem; justify-content: center;">
+                    <a href="#" class="forgot-password">Esqueci a senha</a>
+                </div>
             </form>
 
-            <!-- Formulário de Cadastro -->
+            <!-- Signup Form -->
             <form id="signup-form" class="auth-form">
                 <div class="input-group">
                     <div class="input-icon">
@@ -82,7 +78,6 @@
                         <input type="text" id="signup-name" placeholder=" " autocomplete="name">
                         <label>Nome completo</label>
                     </div>
-                    <div class="error-message" id="signup-name-error"></div>
                 </div>
 
                 <div class="input-group">
@@ -94,7 +89,6 @@
                         <input type="email" id="signup-email" placeholder=" " autocomplete="email">
                         <label>E-mail</label>
                     </div>
-                    <div class="error-message" id="signup-email-error"></div>
                 </div>
 
                 <div class="input-group">
@@ -112,38 +106,27 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="error-message" id="signup-password-error"></div>
                 </div>
 
                 <button type="submit" class="btn-primary">
                     <span class="btn-text">Criar conta</span>
-                    <div class="btn-spinner hidden"></div>
+                    <div class="btn-spinner"></div>
                 </button>
             </form>
 
-            <!-- Divisor social -->
             <div class="social-divider">
-                <span>ou continue com</span>
+                <span>ou</span>
             </div>
 
-            <div class="social-buttons">
-                <button class="btn-social google">
-                    <svg width="20" height="20" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                        <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                        <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                        <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                    </svg>
-                    Google
-                </button>
-                <button class="btn-social apple">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01z"/>
-                        <path d="M14.07 4.26c.64-.86 1.08-2.01.87-3.26-1.03.06-2.22.66-2.96 1.48-.66.72-1.24 1.84-1.07 2.94 1.16.08 2.34-.53 3.16-1.16z"/>
-                    </svg>
-                    Apple
-                </button>
-            </div>
+            <button class="btn-social google" id="google-login" style="width: 100%;">
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Continuar com Google
+            </button>
 
             <p class="terms">
                 Ao continuar, você concorda com nossos <a href="#">Termos</a> e <a href="#">Política de Privacidade</a>.
@@ -152,57 +135,284 @@
     </div>
 
     <script type="module">
-        // Aqui vai sua lógica de autenticação (Firebase ou mock)
-        // Exemplo de toggle entre login/cadastro
+        // SUAS CREDENCIAIS DO SUPABASE
+        const SUPABASE_URL = 'https://pquobavzpooyygfoczpn.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxdW9iYXZ6cG9veXlnZm9jenBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMTE5NDQsImV4cCI6MjA4NzY4Nzk0NH0.-6WeJxqq_bzYD0chC1SF2iZzpK96FzWtl3xmcjeuRi4';
+        
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+        
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Elementos
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
         const toggleBtns = document.querySelectorAll('.toggle-btn');
-        const forms = {
-            login: document.getElementById('login-form'),
-            signup: document.getElementById('signup-form')
-        };
-
+        const themeToggle = document.getElementById('theme-toggle');
+        const googleBtn = document.getElementById('google-login');
+        
+        // Tema
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const icon = themeToggle?.querySelector('.theme-icon');
+            if(icon) icon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+        
+        function updateThemeIcon(theme) {
+            const icon = themeToggle?.querySelector('.theme-icon');
+            if(icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+        
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            
+            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            if(metaThemeColor) {
+                metaThemeColor.setAttribute('content', newTheme === 'dark' ? '#0f172a' : '#6366f1');
+            }
+        }
+        
+        function showToast(message, type = 'error') {
+            // Remove toast existente
+            const existingToast = document.querySelector('.toast');
+            if(existingToast) existingToast.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        function setButtonLoading(button, isLoading) {
+            if(isLoading) {
+                button.classList.add('loading');
+                button.disabled = true;
+            } else {
+                button.classList.remove('loading');
+                button.disabled = false;
+            }
+        }
+        
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+        
+        function isValidPassword(password) {
+            return password.length >= 6;
+        }
+        
+        // Login
+        async function handleLogin(email, password) {
+            const loginBtn = loginForm.querySelector('.btn-primary');
+            setButtonLoading(loginBtn, true);
+            
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+                
+                if(error) throw error;
+                
+                showToast('Login realizado com sucesso!', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 500);
+            } catch (error) {
+                console.error('Erro no login:', error);
+                let message = 'Erro ao fazer login. ';
+                if(error.message.includes('Invalid login credentials')) {
+                    message = 'Email ou senha incorretos.';
+                } else if(error.message.includes('Email not confirmed')) {
+                    message = 'Confirme seu email antes de fazer login.';
+                } else {
+                    message += error.message;
+                }
+                showToast(message, 'error');
+            } finally {
+                setButtonLoading(loginBtn, false);
+            }
+        }
+        
+        // Cadastro
+        async function handleSignup(email, password, fullName) {
+            const signupBtn = signupForm.querySelector('.btn-primary');
+            setButtonLoading(signupBtn, true);
+            
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            full_name: fullName,
+                        }
+                    }
+                });
+                
+                if(error) throw error;
+                
+                if(data.user?.identities?.length === 0) {
+                    showToast('Este email já está cadastrado. Faça login.', 'error');
+                } else {
+                    showToast('Conta criada! Verifique seu email para confirmar o cadastro.', 'success');
+                    // Limpar formulário
+                    document.getElementById('signup-name').value = '';
+                    document.getElementById('signup-email').value = '';
+                    document.getElementById('signup-password').value = '';
+                    // Mudar para login
+                    document.querySelector('.toggle-btn[data-auth="login"]').click();
+                }
+            } catch (error) {
+                console.error('Erro no cadastro:', error);
+                showToast(error.message, 'error');
+            } finally {
+                setButtonLoading(signupBtn, false);
+            }
+        }
+        
+        // Login com Google
+        async function handleGoogleLogin() {
+            try {
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + '/index.html'
+                    }
+                });
+                if(error) throw error;
+                // O redirect é automático
+            } catch (error) {
+                console.error('Erro Google:', error);
+                showToast('Erro ao fazer login com Google.', 'error');
+            }
+        }
+        
+        // Esqueci a senha
+        async function handleForgotPassword(email) {
+            if(!email || !isValidEmail(email)) {
+                showToast('Digite um email válido no campo de login.', 'error');
+                return;
+            }
+            
+            try {
+                const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin + '/reset-password.html',
+                });
+                
+                if(error) throw error;
+                showToast('Email de recuperação enviado! Verifique sua caixa de entrada.', 'success');
+            } catch (error) {
+                console.error('Erro reset:', error);
+                showToast('Erro ao enviar email de recuperação.', 'error');
+            }
+        }
+        
+        // Event Listeners
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            if(!isValidEmail(email)) {
+                showToast('Digite um email válido.', 'error');
+                return;
+            }
+            if(!isValidPassword(password)) {
+                showToast('A senha deve ter pelo menos 6 caracteres.', 'error');
+                return;
+            }
+            
+            await handleLogin(email, password);
+        });
+        
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+            
+            if(!name) {
+                showToast('Digite seu nome completo.', 'error');
+                return;
+            }
+            if(!isValidEmail(email)) {
+                showToast('Digite um email válido.', 'error');
+                return;
+            }
+            if(!isValidPassword(password)) {
+                showToast('A senha deve ter pelo menos 6 caracteres.', 'error');
+                return;
+            }
+            
+            await handleSignup(email, password, name);
+        });
+        
+        // Toggle entre login/cadastro
         toggleBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const authType = btn.dataset.auth;
                 toggleBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 
-                Object.keys(forms).forEach(key => {
-                    forms[key].classList.remove('active');
-                });
-                forms[authType].classList.add('active');
+                if(authType === 'login') {
+                    loginForm.classList.add('active');
+                    signupForm.classList.remove('active');
+                } else {
+                    signupForm.classList.add('active');
+                    loginForm.classList.remove('active');
+                }
             });
         });
-
+        
         // Mostrar/ocultar senha
         document.querySelectorAll('.toggle-password').forEach(btn => {
             btn.addEventListener('click', function() {
                 const input = this.parentElement.querySelector('input');
                 const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
                 input.setAttribute('type', type);
-                this.querySelector('.eye-icon').style.opacity = type === 'password' ? '1' : '0.5';
+                const eyeIcon = this.querySelector('.eye-icon');
+                if(eyeIcon) eyeIcon.style.opacity = type === 'password' ? '1' : '0.5';
             });
         });
-
-        // Validação simples (mock)
-        const loginForm = document.getElementById('login-form');
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            // Simular loading
-            const btn = loginForm.querySelector('.btn-primary');
-            btn.classList.add('loading');
-            
-            setTimeout(() => {
-                btn.classList.remove('loading');
-                if(email && password) {
-                    window.location.href = 'index.html';
-                } else {
-                    alert('Preencha e-mail e senha');
-                }
-            }, 800);
-        });
+        
+        // Esqueci a senha
+        const forgotLink = document.querySelector('.forgot-password');
+        if(forgotLink) {
+            forgotLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                const emailInput = document.getElementById('login-email');
+                const email = emailInput?.value.trim() || '';
+                handleForgotPassword(email);
+            });
+        }
+        
+        // Google login
+        googleBtn?.addEventListener('click', handleGoogleLogin);
+        
+        // Tema
+        themeToggle?.addEventListener('click', toggleTheme);
+        
+        // Verificar se já está logado
+        const { data: { session } } = await supabase.auth.getSession();
+        if(session && window.location.pathname.includes('login.html')) {
+            window.location.href = 'index.html';
+        }
+        
+        // Inicializar tema
+        initTheme();
+        
+        console.log('✅ Login page carregada com sucesso!');
     </script>
 </body>
 </html>
