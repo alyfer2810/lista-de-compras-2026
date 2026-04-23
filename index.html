@@ -3,26 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#6366f1" id="theme-color">
+    <meta name="theme-color" content="#10b981" id="theme-color">
     <link rel="shortcut icon" href="src/img/favicon.ico" type="image/x-icon">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="src/css/index.css">
-    <title>Lista 2026 · Minhas Compras</title>
+    <title>Lista 2026 · Meu Mercado</title>
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
+        <!-- Header Estilo Mercado -->
+        <header class="market-header">
+            <div class="header-top">
                 <div class="logo-area">
                     <div class="logo-icon">🛒</div>
-                    <h1 class="logo-text">Lista<span>2026</span></h1>
+                    <h1 class="logo-text">Meu<span>Mercado</span></h1>
                 </div>
                 <div class="header-actions">
-                    <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema">
+                    <button class="theme-toggle" id="theme-toggle">
                         <span class="theme-icon">🌙</span>
                     </button>
-                    <button class="btn-logout" onclick="logout()" title="Sair">
+                    <button class="btn-cart" onclick="openCart()">
+                        🛒
+                        <span class="cart-badge" id="cart-badge">0</span>
+                    </button>
+                    <button class="btn-logout" onclick="logout()">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
                             <polyline points="16 17 21 12 16 7"/>
@@ -31,135 +35,185 @@
                     </button>
                 </div>
             </div>
-            <div class="user-info">
-                <span class="user-email" id="user-email">carregando...</span>
+            
+            <!-- Barra de Busca -->
+            <div class="search-bar">
+                <div class="search-icon">🔍</div>
+                <input type="text" id="search-input" placeholder="Buscar produtos..." autocomplete="off">
+                <button class="filter-icon" id="open-filters">⚡</button>
+            </div>
+            
+            <!-- Info do Cliente -->
+            <div class="customer-info">
+                <div class="customer-avatar">👤</div>
+                <div class="customer-details">
+                    <span class="customer-label">Entregar para</span>
+                    <span class="customer-name" id="user-email">carregando...</span>
+                </div>
             </div>
         </header>
 
-        <!-- Dashboard de Valores -->
-        <div class="dashboard">
-            <div class="dashboard-card total">
-                <div class="dashboard-icon">💰</div>
-                <div class="dashboard-info">
-                    <span class="dashboard-label">Total da Lista</span>
-                    <span class="dashboard-value" id="total-geral">R$ 0,00</span>
+        <!-- Banner Ofertas -->
+        <div class="promo-banner">
+            <div class="banner-content">
+                <div class="banner-text">
+                    <span class="banner-tag">🔥 OFERTA DO DIA</span>
+                    <h3>Até 30% OFF</h3>
+                    <p>em produtos selecionados</p>
                 </div>
+                <div class="banner-icon">🎯</div>
             </div>
-            <div class="dashboard-card pendente">
-                <div class="dashboard-icon">⏳</div>
-                <div class="dashboard-info">
-                    <span class="dashboard-label">A Gastar</span>
-                    <span class="dashboard-value" id="total-pendente">R$ 0,00</span>
+        </div>
+
+        <!-- Categorias Rápidas (Carrossel) -->
+        <div class="categories-section">
+            <h3>Categorias</h3>
+            <div class="categories-carousel">
+                <button class="cat-card active" data-categoria="todos">
+                    <div class="cat-icon">🏠</div>
+                    <span>Todos</span>
+                </button>
+                <button class="cat-card" data-categoria="mercearia">
+                    <div class="cat-icon">🥫</div>
+                    <span>Mercearia</span>
+                </button>
+                <button class="cat-card" data-categoria="hortifruti">
+                    <div class="cat-icon">🥬</div>
+                    <span>Hortifrúti</span>
+                </button>
+                <button class="cat-card" data-categoria="carnes">
+                    <div class="cat-icon">🥩</div>
+                    <span>Carnes</span>
+                </button>
+                <button class="cat-card" data-categoria="laticinios">
+                    <div class="cat-icon">🥛</div>
+                    <span>Laticínios</span>
+                </button>
+                <button class="cat-card" data-categoria="bebidas">
+                    <div class="cat-icon">🥤</div>
+                    <span>Bebidas</span>
+                </button>
+                <button class="cat-card" data-categoria="limpeza">
+                    <div class="cat-icon">🧹</div>
+                    <span>Limpeza</span>
+                </button>
+                <button class="cat-card" data-categoria="higiene">
+                    <div class="cat-icon">🧴</div>
+                    <span>Higiene</span>
+                </button>
+                <button class="cat-card" data-categoria="padaria">
+                    <div class="cat-icon">🍞</div>
+                    <span>Padaria</span>
+                </button>
+                <button class="cat-card" data-categoria="congelados">
+                    <div class="cat-icon">❄️</div>
+                    <span>Congelados</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters-row" id="filters-panel" style="display: none;">
+            <button class="filter-chip active" data-filter="all">Todos</button>
+            <button class="filter-chip" data-filter="pending">Pendentes</button>
+            <button class="filter-chip" data-filter="completed">Comprados</button>
+            <button class="filter-chip" data-filter="high">Prioridade Alta</button>
+            <button class="filter-chip" data-filter="low-price">Menor Preço</button>
+            <button class="filter-chip" data-filter="high-price">Maior Preço</button>
+        </div>
+
+        <!-- Resumo do Carrinho Flutuante -->
+        <div class="cart-summary" id="cart-summary" onclick="openCart()">
+            <div class="cart-summary-content">
+                <span class="cart-icon">🛒</span>
+                <div class="cart-info">
+                    <span class="cart-items" id="cart-items-count">0 itens</span>
+                    <span class="cart-total" id="cart-total-value">R$ 0,00</span>
                 </div>
-            </div>
-            <div class="dashboard-card comprado">
-                <div class="dashboard-icon">✅</div>
-                <div class="dashboard-info">
-                    <span class="dashboard-label">Já Gastou</span>
-                    <span class="dashboard-value" id="total-comprado">R$ 0,00</span>
-                </div>
+                <button class="cart-view-btn">Ver carrinho →</button>
             </div>
         </div>
 
-        <!-- Barra de Progresso -->
-        <div class="progress-section">
-            <div class="progress-header">
-                <span>Progresso da Lista</span>
-                <span id="progress-percent">0%</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress-fill"></div>
-            </div>
-        </div>
-
-        <!-- Filtros Rápidos -->
-        <div class="filters-bar">
-            <button class="filter-btn active" data-filter="all">📋 Todos</button>
-            <button class="filter-btn" data-filter="pending">⏳ Pendentes</button>
-            <button class="filter-btn" data-filter="completed">✅ Comprados</button>
-            <button class="filter-btn" data-filter="high">🔴 Alta Prioridade</button>
-        </div>
-
-        <!-- Categorias -->
-        <div class="categories-scroll">
-            <button class="category-chip active" data-categoria="todos">🏠 Todos</button>
-            <button class="category-chip" data-categoria="mercearia">🥫 Mercearia</button>
-            <button class="category-chip" data-categoria="hortifruti">🥬 Hortifrúti</button>
-            <button class="category-chip" data-categoria="carnes">🥩 Carnes</button>
-            <button class="category-chip" data-categoria="laticinios">🥛 Laticínios</button>
-            <button class="category-chip" data-categoria="bebidas">🥤 Bebidas</button>
-            <button class="category-chip" data-categoria="limpeza">🧹 Limpeza</button>
-            <button class="category-chip" data-categoria="higiene">🧴 Higiene</button>
-            <button class="category-chip" data-categoria="eletronicos">📱 Eletrônicos</button>
-            <button class="category-chip" data-categoria="outros">📦 Outros</button>
-        </div>
-
-        <!-- Lista de Itens -->
-        <main class="main-content">
-            <ul id="lista" class="shopping-list"></ul>
+        <!-- Lista de Produtos (Estilo Mercado) -->
+        <main class="products-grid" id="products-grid">
+            <!-- Produtos serão inseridos aqui -->
         </main>
 
-        <!-- Botão Flutuante -->
-        <button class="fab" id="fab" onclick="openModal()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="12" y1="5" x2="12" y2="19"/>
-                <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-        </button>
+        <!-- Modal do Carrinho -->
+        <div id="cart-modal" class="modal">
+            <div class="modal-content cart-modal-content">
+                <div class="modal-header">
+                    <h2>🛒 Meu Carrinho</h2>
+                    <button class="modal-close" onclick="closeCart()">&times;</button>
+                </div>
+                <div id="cart-items-list" class="cart-items-list"></div>
+                <div class="cart-footer">
+                    <div class="cart-total-section">
+                        <span>Total:</span>
+                        <span class="cart-grand-total" id="cart-grand-total">R$ 0,00</span>
+                    </div>
+                    <div class="cart-actions">
+                        <button class="btn-clear-cart" onclick="clearCart()">Limpar carrinho</button>
+                        <button class="btn-checkout" onclick="checkout()">Finalizar compra ✅</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <!-- Modal de Adicionar/Editar -->
-        <div id="modal" class="modal">
+        <!-- Modal de Detalhes do Produto -->
+        <div id="product-modal" class="modal">
+            <div class="modal-content product-modal-content">
+                <button class="modal-close" onclick="closeProductModal()">&times;</button>
+                <div id="product-detail" class="product-detail"></div>
+            </div>
+        </div>
+
+        <!-- Modal de Adicionar Produto -->
+        <div id="add-modal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 id="modal-title">Adicionar Item</h2>
-                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                    <h2>Adicionar Produto</h2>
+                    <button class="modal-close" onclick="closeAddModal()">&times;</button>
                 </div>
-                <form id="item-form">
-                    <input type="hidden" id="item-id">
+                <form id="product-form">
+                    <input type="hidden" id="product-id">
                     
-                    <!-- Nome do Item -->
                     <div class="form-group">
                         <label>Nome do produto *</label>
-                        <input type="text" id="item-nome" required placeholder="Ex: Arroz, Feijão, Leite...">
+                        <input type="text" id="product-nome" required placeholder="Ex: Arroz, Feijão...">
                     </div>
 
-                    <!-- Marca -->
                     <div class="form-group">
-                        <label>🏷️ Marca</label>
-                        <input type="text" id="item-marca" placeholder="Ex: Tio João, Nestlé, Omo...">
+                        <label>Marca</label>
+                        <input type="text" id="product-marca" placeholder="Ex: Tio João, Nestlé">
                     </div>
 
-                    <!-- Quantidade e Unidade -->
                     <div class="form-row">
                         <div class="form-group">
-                            <label>📦 Quantidade</label>
-                            <input type="number" id="item-quantidade" value="1" min="0.01" step="0.01">
+                            <label>Quantidade</label>
+                            <input type="number" id="product-quantidade" value="1" min="0.01" step="0.01">
                         </div>
                         <div class="form-group">
                             <label>Unidade</label>
-                            <select id="item-unidade">
-                                <option value="un">Unidade(s)</option>
-                                <option value="kg">Quilograma (kg)</option>
-                                <option value="g">Grama (g)</option>
-                                <option value="l">Litro (l)</option>
-                                <option value="ml">Mililitro (ml)</option>
+                            <select id="product-unidade">
+                                <option value="un">Unidade</option>
+                                <option value="kg">Quilograma</option>
+                                <option value="g">Grama</option>
+                                <option value="l">Litro</option>
+                                <option value="ml">Mililitro</option>
                                 <option value="pac">Pacote</option>
-                                <option value="lata">Lata</option>
-                                <option value="cx">Caixa</option>
-                                <option value="fd">Fardo</option>
                             </select>
                         </div>
                     </div>
 
-                    <!-- Preço e Categoria -->
                     <div class="form-row">
                         <div class="form-group">
-                            <label>💰 Preço unitário (R$)</label>
-                            <input type="number" id="item-preco" step="0.01" placeholder="0,00">
+                            <label>Preço (R$)</label>
+                            <input type="number" id="product-preco" step="0.01" placeholder="0,00">
                         </div>
                         <div class="form-group">
-                            <label>📂 Categoria</label>
-                            <select id="item-categoria">
+                            <label>Categoria</label>
+                            <select id="product-categoria">
                                 <option value="mercearia">🥫 Mercearia</option>
                                 <option value="hortifruti">🥬 Hortifrúti</option>
                                 <option value="carnes">🥩 Carnes</option>
@@ -167,58 +221,58 @@
                                 <option value="bebidas">🥤 Bebidas</option>
                                 <option value="limpeza">🧹 Limpeza</option>
                                 <option value="higiene">🧴 Higiene</option>
-                                <option value="eletronicos">📱 Eletrônicos</option>
+                                <option value="padaria">🍞 Padaria</option>
+                                <option value="congelados">❄️ Congelados</option>
                                 <option value="outros">📦 Outros</option>
                             </select>
                         </div>
                     </div>
 
-                    <!-- Prioridade -->
                     <div class="form-group">
-                        <label>⚡ Prioridade</label>
-                        <div class="priority-buttons">
-                            <button type="button" class="priority-btn alta" data-prioridade="1">🔴 Alta</button>
-                            <button type="button" class="priority-btn media" data-prioridade="2">🟡 Média</button>
-                            <button type="button" class="priority-btn baixa" data-prioridade="3">🟢 Baixa</button>
+                        <label>Prioridade</label>
+                        <div class="priority-select">
+                            <label class="priority-option">
+                                <input type="radio" name="prioridade" value="1"> 🔴 Alta
+                            </label>
+                            <label class="priority-option">
+                                <input type="radio" name="prioridade" value="2" checked> 🟡 Média
+                            </label>
+                            <label class="priority-option">
+                                <input type="radio" name="prioridade" value="3"> 🟢 Baixa
+                            </label>
                         </div>
-                        <input type="hidden" id="item-prioridade" value="2">
                     </div>
 
-                    <!-- Descrição/Observação -->
                     <div class="form-group">
-                        <label>📝 Descrição / Observação</label>
-                        <textarea id="item-observacao" rows="3" placeholder="Marca específica, local de compra, validade, etc..."></textarea>
+                        <label>Descrição</label>
+                        <textarea id="product-desc" rows="2" placeholder="Informações adicionais..."></textarea>
                     </div>
 
-                    <!-- Link da imagem (opcional) -->
                     <div class="form-group">
-                        <label>🖼️ URL da imagem (opcional)</label>
-                        <input type="url" id="item-imagem" placeholder="https://exemplo.com/imagem.jpg">
+                        <label>URL da imagem (opcional)</label>
+                        <input type="url" id="product-imagem" placeholder="https://exemplo.com/produto.jpg">
                     </div>
 
                     <div class="modal-buttons">
-                        <button type="button" class="btn-cancel" onclick="closeModal()">Cancelar</button>
-                        <button type="submit" class="btn-save">Salvar</button>
+                        <button type="button" class="btn-cancel" onclick="closeAddModal()">Cancelar</button>
+                        <button type="submit" class="btn-save">Salvar produto</button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Modal de Detalhes do Item -->
-        <div id="detail-modal" class="modal">
-            <div class="modal-content detail-modal">
-                <div class="modal-header">
-                    <h2>Detalhes do Produto</h2>
-                    <button class="modal-close" onclick="closeDetailModal()">&times;</button>
-                </div>
-                <div id="detail-content" class="detail-content"></div>
-            </div>
-        </div>
+        <!-- Botão Flutuante para Adicionar -->
+        <button class="fab" onclick="openAddModal()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+        </button>
     </div>
 
     <script type="module">
         // ============================================
-        // CONFIGURAÇÃO DO SUPABASE
+        // CONFIGURAÇÃO SUPABASE
         // ============================================
         const SUPABASE_URL = 'https://pquobavzpooyygfoczpn.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxdW9iYXZ6cG9veXlnZm9jenBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMTE5NDQsImV4cCI6MjA4NzY4Nzk0NH0.-6WeJxqq_bzYD0chC1SF2iZzpK96FzWtl3xmcjeuRi4';
@@ -228,40 +282,23 @@
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         // ============================================
-        // VARIÁVEIS GLOBAIS
+        // VARIÁVEIS
         // ============================================
         let currentUser = null;
-        let allItems = [];
+        let allProducts = [];
+        let cart = JSON.parse(localStorage.getItem('market_cart') || '[]');
+        let currentCategory = 'todos';
         let currentFilter = 'all';
-        let currentCategoria = 'todos';
+        let searchTerm = '';
         let subscription = null;
         
         // Elementos
-        const listaElement = document.getElementById('lista');
+        const productsGrid = document.getElementById('products-grid');
         const userEmailSpan = document.getElementById('user-email');
         const themeToggle = document.getElementById('theme-toggle');
-        const modal = document.getElementById('modal');
-        const detailModal = document.getElementById('detail-modal');
-        const itemForm = document.getElementById('item-form');
-        
-        // Mapeamento
-        const categoriaIcones = {
-            mercearia: '🥫',
-            hortifruti: '🥬',
-            carnes: '🥩',
-            laticinios: '🥛',
-            bebidas: '🥤',
-            limpeza: '🧹',
-            higiene: '🧴',
-            eletronicos: '📱',
-            outros: '📦'
-        };
-        
-        const prioridadeCores = {
-            1: { cor: '#ef4444', texto: 'Alta', icon: '🔴' },
-            2: { cor: '#f59e0b', texto: 'Média', icon: '🟡' },
-            3: { cor: '#10b981', texto: 'Baixa', icon: '🟢' }
-        };
+        const searchInput = document.getElementById('search-input');
+        const filtersPanel = document.getElementById('filters-panel');
+        const openFiltersBtn = document.getElementById('open-filters');
         
         // ============================================
         // FUNÇÕES DE UI
@@ -283,9 +320,6 @@
         }
         
         function showToast(message, type = 'info') {
-            const existingToast = document.querySelector('.toast');
-            if(existingToast) existingToast.remove();
-            
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
             toast.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span> ${message}`;
@@ -297,13 +331,6 @@
             }, 3000);
         }
         
-        function escapeHtml(text) {
-            if(!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
         function formatMoney(value) {
             if(!value || isNaN(value)) return 'R$ 0,00';
             return new Intl.NumberFormat('pt-BR', {
@@ -313,128 +340,246 @@
         }
         
         // ============================================
-        // CRUD OPERATIONS
+        // CARRINHO
         // ============================================
-        window.openModal = function(itemId = null) {
-            if(itemId) {
-                document.getElementById('modal-title').textContent = 'Editar Item';
-                const item = allItems.find(i => i.id === itemId);
-                if(item) {
-                    document.getElementById('item-id').value = item.id;
-                    document.getElementById('item-nome').value = item.nome;
-                    document.getElementById('item-marca').value = item.marca || '';
-                    document.getElementById('item-quantidade').value = item.quantidade || 1;
-                    document.getElementById('item-unidade').value = item.unidade || 'un';
-                    document.getElementById('item-preco').value = item.preco || '';
-                    document.getElementById('item-categoria').value = item.categoria || 'outros';
-                    document.getElementById('item-prioridade').value = item.prioridade || 2;
-                    document.getElementById('item-observacao').value = item.observacao || '';
-                    document.getElementById('item-imagem').value = item.imagem || '';
+        function saveCart() {
+            localStorage.setItem('market_cart', JSON.stringify(cart));
+            updateCartUI();
+        }
+        
+        function updateCartUI() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantidade, 0);
+            const totalValue = cart.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+            
+            document.getElementById('cart-badge').textContent = totalItems;
+            document.getElementById('cart-items-count').textContent = `${totalItems} ${totalItems === 1 ? 'item' : 'itens'}`;
+            document.getElementById('cart-total-value').textContent = formatMoney(totalValue);
+            
+            const cartSummary = document.getElementById('cart-summary');
+            if(totalItems > 0) {
+                cartSummary.classList.add('visible');
+            } else {
+                cartSummary.classList.remove('visible');
+            }
+        }
+        
+        function addToCart(product, quantidade = 1) {
+            const existing = cart.find(item => item.id === product.id);
+            if(existing) {
+                existing.quantidade += quantidade;
+            } else {
+                cart.push({
+                    id: product.id,
+                    nome: product.nome,
+                    marca: product.marca,
+                    preco: product.preco || 0,
+                    unidade: product.unidade,
+                    imagem: product.imagem,
+                    quantidade: quantidade
+                });
+            }
+            saveCart();
+            showToast(`${product.nome} adicionado ao carrinho!`, 'success');
+        }
+        
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            saveCart();
+            renderCartModal();
+        }
+        
+        function updateCartItemQuantity(productId, quantidade) {
+            const item = cart.find(item => item.id === productId);
+            if(item) {
+                if(quantidade <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    item.quantidade = quantidade;
+                    saveCart();
+                }
+            }
+            renderCartModal();
+        }
+        
+        window.openCart = function() {
+            renderCartModal();
+            document.getElementById('cart-modal').classList.add('show');
+        };
+        
+        window.closeCart = function() {
+            document.getElementById('cart-modal').classList.remove('show');
+        };
+        
+        window.clearCart = function() {
+            if(confirm('Limpar todo o carrinho?')) {
+                cart = [];
+                saveCart();
+                renderCartModal();
+                showToast('Carrinho limpo!', 'success');
+            }
+        };
+        
+        window.checkout = function() {
+            if(cart.length === 0) {
+                showToast('Seu carrinho está vazio!', 'error');
+                return;
+            }
+            
+            const total = cart.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+            alert(`🛒 Compra finalizada!\n\nTotal: ${formatMoney(total)}\n\nItens comprados:\n${cart.map(item => `- ${item.nome} x${item.quantidade} = ${formatMoney(item.preco * item.quantidade)}`).join('\n')}\n\nObrigado por comprar conosco!`);
+            
+            // Marcar produtos como comprados no banco
+            cart.forEach(async (item) => {
+                await supabase
+                    .from('items')
+                    .update({ comprado: true })
+                    .eq('id', item.id)
+                    .eq('user_id', currentUser.id);
+            });
+            
+            cart = [];
+            saveCart();
+            closeCart();
+            showToast('Compra finalizada com sucesso!', 'success');
+        };
+        
+        function renderCartModal() {
+            const cartList = document.getElementById('cart-items-list');
+            const grandTotal = cart.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+            
+            if(cart.length === 0) {
+                cartList.innerHTML = '<div class="empty-cart">🛒 Seu carrinho está vazio</div>';
+            } else {
+                cartList.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${escapeHtml(item.nome)}</div>
+                            <div class="cart-item-marca">${item.marca ? escapeHtml(item.marca) : ''}</div>
+                            <div class="cart-item-price">${formatMoney(item.preco)}/un</div>
+                        </div>
+                        <div class="cart-item-controls">
+                            <button onclick="updateCartItemQuantity('${item.id}', ${item.quantidade - 1})">-</button>
+                            <span>${item.quantidade}</span>
+                            <button onclick="updateCartItemQuantity('${item.id}', ${item.quantidade + 1})">+</button>
+                            <button class="remove-btn" onclick="removeFromCart('${item.id}')">🗑️</button>
+                        </div>
+                        <div class="cart-item-total">${formatMoney(item.preco * item.quantidade)}</div>
+                    </div>
+                `).join('');
+            }
+            
+            document.getElementById('cart-grand-total').textContent = formatMoney(grandTotal);
+        }
+        
+        // ============================================
+        // CRUD PRODUTOS
+        // ============================================
+        window.openAddModal = function(productId = null) {
+            if(productId) {
+                const product = allProducts.find(p => p.id === productId);
+                if(product) {
+                    document.getElementById('product-id').value = product.id;
+                    document.getElementById('product-nome').value = product.nome;
+                    document.getElementById('product-marca').value = product.marca || '';
+                    document.getElementById('product-quantidade').value = product.quantidade || 1;
+                    document.getElementById('product-unidade').value = product.unidade || 'un';
+                    document.getElementById('product-preco').value = product.preco || '';
+                    document.getElementById('product-categoria').value = product.categoria || 'outros';
+                    document.getElementById('product-desc').value = product.observacao || '';
+                    document.getElementById('product-imagem').value = product.imagem || '';
                     
-                    document.querySelectorAll('.priority-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                        if(btn.dataset.prioridade == item.prioridade) {
-                            btn.classList.add('active');
-                        }
+                    document.querySelectorAll('input[name="prioridade"]').forEach(radio => {
+                        radio.checked = radio.value == product.prioridade;
                     });
                 }
             } else {
-                document.getElementById('modal-title').textContent = 'Adicionar Item';
-                itemForm.reset();
-                document.getElementById('item-id').value = '';
-                document.getElementById('item-quantidade').value = 1;
-                document.getElementById('item-prioridade').value = 2;
-                document.querySelectorAll('.priority-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                    if(btn.dataset.prioridade == 2) btn.classList.add('active');
-                });
+                document.getElementById('product-form').reset();
+                document.getElementById('product-id').value = '';
+                document.getElementById('product-quantidade').value = 1;
             }
-            modal.classList.add('show');
+            document.getElementById('add-modal').classList.add('show');
         };
         
-        window.closeModal = function() {
-            modal.classList.remove('show');
+        window.closeAddModal = function() {
+            document.getElementById('add-modal').classList.remove('show');
         };
         
-        window.openDetailModal = function(itemId) {
-            const item = allItems.find(i => i.id === itemId);
-            if(!item) return;
+        window.openProductDetail = function(productId) {
+            const product = allProducts.find(p => p.id === productId);
+            if(!product) return;
             
-            const total = (item.preco || 0) * (item.quantidade || 1);
-            
-            const detailContent = document.getElementById('detail-content');
-            detailContent.innerHTML = `
-                <div class="detail-image">
-                    ${item.imagem ? `<img src="${escapeHtml(item.imagem)}" alt="${escapeHtml(item.nome)}">` : '<div class="no-image">🛒</div>'}
+            const detailDiv = document.getElementById('product-detail');
+            detailDiv.innerHTML = `
+                <div class="product-detail-image">
+                    ${product.imagem ? `<img src="${escapeHtml(product.imagem)}" alt="${escapeHtml(product.nome)}">` : '<div class="no-image">🛒</div>'}
                 </div>
-                <div class="detail-info">
-                    <h3>${escapeHtml(item.nome)}</h3>
-                    ${item.marca ? `<p class="detail-marca">🏷️ ${escapeHtml(item.marca)}</p>` : ''}
-                    <p class="detail-categoria">${categoriaIcones[item.categoria] || '📦'} ${item.categoria}</p>
-                    <p class="detail-prioridade" style="color: ${prioridadeCores[item.prioridade]?.cor}">
-                        ${prioridadeCores[item.prioridade]?.icon} Prioridade: ${prioridadeCores[item.prioridade]?.texto}
-                    </p>
-                    <div class="detail-preco">
-                        <div class="detail-preco-item">
-                            <span>Quantidade:</span>
-                            <strong>${item.quantidade || 1} ${item.unidade || 'un'}</strong>
-                        </div>
-                        <div class="detail-preco-item">
-                            <span>Preço unitário:</span>
-                            <strong>${formatMoney(item.preco)}</strong>
-                        </div>
-                        <div class="detail-preco-item total">
-                            <span>Total:</span>
-                            <strong>${formatMoney(total)}</strong>
-                        </div>
+                <div class="product-detail-info">
+                    <h2>${escapeHtml(product.nome)}</h2>
+                    ${product.marca ? `<p class="product-detail-marca">🏷️ ${escapeHtml(product.marca)}</p>` : ''}
+                    <p class="product-detail-categoria">${getCategoryIcon(product.categoria)} ${product.categoria}</p>
+                    <div class="product-detail-price">
+                        <span class="price-label">Preço</span>
+                        <span class="price-value">${formatMoney(product.preco)}</span>
+                        <span class="price-unit">/ ${product.unidade || 'un'}</span>
                     </div>
-                    ${item.observacao ? `<div class="detail-obs">📝 ${escapeHtml(item.observacao)}</div>` : ''}
-                    <div class="detail-status">
-                        <span>Status:</span>
-                        <span class="status-badge ${item.comprado ? 'comprado' : 'pendente'}">
-                            ${item.comprado ? '✅ Comprado' : '⏳ Pendente'}
-                        </span>
+                    ${product.observacao ? `<div class="product-detail-desc">📝 ${escapeHtml(product.observacao)}</div>` : ''}
+                    <div class="product-detail-actions">
+                        <div class="quantity-selector">
+                            <button onclick="changeQuantity(${product.id}, -1)">-</button>
+                            <span id="qty-${product.id}">1</span>
+                            <button onclick="changeQuantity(${product.id}, 1)">+</button>
+                        </div>
+                        <button class="btn-add-cart" onclick="addToCartFromDetail('${product.id}')">
+                            🛒 Adicionar ao carrinho
+                        </button>
                     </div>
                 </div>
             `;
             
-            detailModal.classList.add('show');
+            window.currentDetailProduct = product;
+            document.getElementById('product-modal').classList.add('show');
         };
         
-        window.closeDetailModal = function() {
-            detailModal.classList.remove('show');
+        window.changeQuantity = function(productId, delta) {
+            const span = document.getElementById(`qty-${productId}`);
+            let current = parseInt(span.textContent);
+            current = Math.max(1, current + delta);
+            span.textContent = current;
         };
         
-        // Configurar botões de prioridade
-        document.querySelectorAll('.priority-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById('item-prioridade').value = btn.dataset.prioridade;
-            });
-        });
+        window.addToCartFromDetail = function(productId) {
+            const qty = parseInt(document.getElementById(`qty-${productId}`).textContent);
+            const product = allProducts.find(p => p.id === productId);
+            if(product) {
+                addToCart(product, qty);
+                closeProductModal();
+            }
+        };
         
-        // Salvar item
-        itemForm.addEventListener('submit', async (e) => {
+        window.closeProductModal = function() {
+            document.getElementById('product-modal').classList.remove('show');
+        };
+        
+        document.getElementById('product-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const id = document.getElementById('item-id').value;
-            const nome = document.getElementById('item-nome').value.trim();
-            const marca = document.getElementById('item-marca').value.trim();
-            const quantidade = parseFloat(document.getElementById('item-quantidade').value) || 1;
-            const unidade = document.getElementById('item-unidade').value;
-            const preco = parseFloat(document.getElementById('item-preco').value) || null;
-            const categoria = document.getElementById('item-categoria').value;
-            const prioridade = parseInt(document.getElementById('item-prioridade').value);
-            const observacao = document.getElementById('item-observacao').value;
-            const imagem = document.getElementById('item-imagem').value;
+            const id = document.getElementById('product-id').value;
+            const nome = document.getElementById('product-nome').value.trim();
+            const marca = document.getElementById('product-marca').value.trim();
+            const quantidade = parseFloat(document.getElementById('product-quantidade').value) || 1;
+            const unidade = document.getElementById('product-unidade').value;
+            const preco = parseFloat(document.getElementById('product-preco').value) || null;
+            const categoria = document.getElementById('product-categoria').value;
+            const prioridade = parseInt(document.querySelector('input[name="prioridade"]:checked')?.value || 2);
+            const observacao = document.getElementById('product-desc').value;
+            const imagem = document.getElementById('product-imagem').value;
             
             if(!nome) {
-                showToast('Digite o nome do item', 'error');
+                showToast('Digite o nome do produto', 'error');
                 return;
             }
             
-            const itemData = {
+            const productData = {
                 nome,
                 marca,
                 quantidade,
@@ -449,199 +594,135 @@
             
             try {
                 if(id) {
-                    const { error } = await supabase
-                        .from('items')
-                        .update(itemData)
-                        .eq('id', id)
-                        .eq('user_id', currentUser.id);
-                    
-                    if(error) throw error;
-                    showToast('Item atualizado!', 'success');
+                    await supabase.from('items').update(productData).eq('id', id).eq('user_id', currentUser.id);
+                    showToast('Produto atualizado!', 'success');
                 } else {
-                    const { error } = await supabase
-                        .from('items')
-                        .insert([itemData]);
-                    
-                    if(error) throw error;
-                    showToast('Item adicionado!', 'success');
+                    await supabase.from('items').insert([productData]);
+                    showToast('Produto adicionado!', 'success');
                 }
-                closeModal();
+                closeAddModal();
             } catch (error) {
-                console.error(error);
-                showToast('Erro ao salvar item: ' + error.message, 'error');
+                showToast('Erro ao salvar', 'error');
             }
         });
         
-        window.toggleComprado = async function(itemId, compradoAtual) {
+        window.removerProduto = async function(productId) {
+            if(!confirm('Remover este produto?')) return;
             try {
-                const { error } = await supabase
-                    .from('items')
-                    .update({ comprado: !compradoAtual })
-                    .eq('id', itemId)
-                    .eq('user_id', currentUser.id);
-                
-                if(error) throw error;
-            } catch (error) {
-                showToast('Erro ao atualizar', 'error');
-            }
-        };
-        
-        window.removerItem = async function(itemId) {
-            if(!confirm('Tem certeza que deseja remover este item?')) return;
-            
-            try {
-                const { error } = await supabase
-                    .from('items')
-                    .delete()
-                    .eq('id', itemId)
-                    .eq('user_id', currentUser.id);
-                
-                if(error) throw error;
-                showToast('Item removido!', 'success');
+                await supabase.from('items').delete().eq('id', productId).eq('user_id', currentUser.id);
+                showToast('Produto removido!', 'success');
             } catch (error) {
                 showToast('Erro ao remover', 'error');
             }
         };
         
-        window.limparComprados = async function() {
-            if(!confirm('Remover todos os itens já comprados?')) return;
-            
+        window.toggleComprado = async function(productId, comprado) {
             try {
-                const { error } = await supabase
-                    .from('items')
-                    .delete()
-                    .eq('user_id', currentUser.id)
-                    .eq('comprado', true);
-                
-                if(error) throw error;
-                showToast('Itens comprados removidos!', 'success');
+                await supabase.from('items').update({ comprado: !comprado }).eq('id', productId).eq('user_id', currentUser.id);
             } catch (error) {
-                showToast('Erro ao limpar', 'error');
-            }
-        };
-        
-        window.logout = async function() {
-            try {
-                await supabase.auth.signOut();
-                showToast('Até logo!', 'success');
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 500);
-            } catch (error) {
-                showToast('Erro ao sair', 'error');
+                showToast('Erro ao atualizar', 'error');
             }
         };
         
         // ============================================
-        // CÁLCULO DE TOTAIS
+        // RENDERIZAÇÃO PRODUTOS
         // ============================================
-        function calcularTotais() {
-            let totalGeral = 0;
-            let totalComprado = 0;
-            let totalPendente = 0;
-            let itensComprados = 0;
-            
-            allItems.forEach(item => {
-                const subtotal = (item.preco || 0) * (item.quantidade || 1);
-                totalGeral += subtotal;
-                
-                if(item.comprado) {
-                    totalComprado += subtotal;
-                    itensComprados++;
-                } else {
-                    totalPendente += subtotal;
-                }
-            });
-            
-            const percentual = allItems.length > 0 ? (itensComprados / allItems.length) * 100 : 0;
-            
-            document.getElementById('total-geral').textContent = formatMoney(totalGeral);
-            document.getElementById('total-pendente').textContent = formatMoney(totalPendente);
-            document.getElementById('total-comprado').textContent = formatMoney(totalComprado);
-            document.getElementById('progress-percent').textContent = `${Math.round(percentual)}%`;
-            document.getElementById('progress-fill').style.width = `${percentual}%`;
+        function getCategoryIcon(categoria) {
+            const icons = {
+                mercearia: '🥫',
+                hortifruti: '🥬',
+                carnes: '🥩',
+                laticinios: '🥛',
+                bebidas: '🥤',
+                limpeza: '🧹',
+                higiene: '🧴',
+                padaria: '🍞',
+                congelados: '❄️',
+                outros: '📦'
+            };
+            return icons[categoria] || '📦';
         }
         
-        // ============================================
-        // RENDERIZAÇÃO
-        // ============================================
-        function renderizarLista() {
-            let filteredItems = [...allItems];
+        function escapeHtml(text) {
+            if(!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function renderProducts() {
+            let filtered = [...allProducts];
             
+            // Busca
+            if(searchTerm) {
+                filtered = filtered.filter(p => 
+                    p.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    (p.marca && p.marca.toLowerCase().includes(searchTerm.toLowerCase()))
+                );
+            }
+            
+            // Categoria
+            if(currentCategory !== 'todos') {
+                filtered = filtered.filter(p => p.categoria === currentCategory);
+            }
+            
+            // Filtro de status
             if(currentFilter === 'pending') {
-                filteredItems = filteredItems.filter(i => !i.comprado);
+                filtered = filtered.filter(p => !p.comprado);
             } else if(currentFilter === 'completed') {
-                filteredItems = filteredItems.filter(i => i.comprado);
+                filtered = filtered.filter(p => p.comprado);
             } else if(currentFilter === 'high') {
-                filteredItems = filteredItems.filter(i => i.prioridade === 1 && !i.comprado);
+                filtered = filtered.filter(p => p.prioridade === 1 && !p.comprado);
+            } else if(currentFilter === 'low-price') {
+                filtered.sort((a, b) => (a.preco || 0) - (b.preco || 0));
+            } else if(currentFilter === 'high-price') {
+                filtered.sort((a, b) => (b.preco || 0) - (a.preco || 0));
             }
             
-            if(currentCategoria !== 'todos') {
-                filteredItems = filteredItems.filter(i => i.categoria === currentCategoria);
-            }
-            
-            filteredItems.sort((a, b) => {
-                if(a.comprado !== b.comprado) return a.comprado ? 1 : -1;
-                if(a.prioridade !== b.prioridade) return a.prioridade - b.prioridade;
-                return new Date(b.created_at) - new Date(a.created_at);
-            });
-            
-            if(filteredItems.length === 0) {
-                listaElement.innerHTML = `
-                    <div class="empty-state">
+            if(filtered.length === 0) {
+                productsGrid.innerHTML = `
+                    <div class="empty-products">
                         <div class="empty-icon">🛒</div>
-                        <p>Nenhum item encontrado</p>
+                        <p>Nenhum produto encontrado</p>
                         <small>Clique no botão + para adicionar</small>
                     </div>
                 `;
                 return;
             }
             
-            listaElement.innerHTML = filteredItems.map(item => {
-                const subtotal = (item.preco || 0) * (item.quantidade || 1);
-                const prioridade = prioridadeCores[item.prioridade];
-                
-                return `
-                    <li class="list-item ${item.comprado ? 'comprado' : ''}" data-prioridade="${item.prioridade}">
-                        <div class="item-checkbox-wrapper">
-                            <input 
-                                type="checkbox" 
-                                ${item.comprado ? 'checked' : ''} 
-                                onchange="toggleComprado('${item.id}', ${item.comprado})"
-                                class="item-checkbox"
-                            />
+            productsGrid.innerHTML = filtered.map(product => `
+                <div class="product-card ${product.comprado ? 'comprado' : ''}">
+                    <div class="product-badge">${getCategoryIcon(product.categoria)}</div>
+                    <div class="product-image" onclick="openProductDetail('${product.id}')">
+                        ${product.imagem ? `<img src="${escapeHtml(product.imagem)}" alt="${escapeHtml(product.nome)}">` : `<div class="product-placeholder">${getCategoryIcon(product.categoria)}</div>`}
+                    </div>
+                    <div class="product-info">
+                        <h4 class="product-title" onclick="openProductDetail('${product.id}')">${escapeHtml(product.nome)}</h4>
+                        ${product.marca ? `<p class="product-brand">${escapeHtml(product.marca)}</p>` : ''}
+                        <div class="product-price-section">
+                            <span class="product-price">${formatMoney(product.preco)}</span>
+                            <span class="product-unit">/${product.unidade || 'un'}</span>
                         </div>
-                        <div class="item-details" onclick="openDetailModal('${item.id}')">
-                            <div class="item-header">
-                                <span class="item-categoria">${categoriaIcones[item.categoria] || '📦'} ${item.categoria}</span>
-                                <span class="item-prioridade" style="color: ${prioridade.cor}">
-                                    ${prioridade.icon} ${prioridade.texto}
-                                </span>
-                            </div>
-                            <div class="item-nome">${escapeHtml(item.nome)}</div>
-                            ${item.marca ? `<div class="item-marca">🏷️ ${escapeHtml(item.marca)}</div>` : ''}
-                            <div class="item-meta">
-                                <span class="item-quantidade">📦 ${item.quantidade || 1} ${item.unidade || 'un'}</span>
-                                ${item.preco ? `<span class="item-preco">💰 ${formatMoney(item.preco)}/un</span>` : ''}
-                                <span class="item-total">📊 Total: ${formatMoney(subtotal)}</span>
-                            </div>
-                            ${item.observacao ? `<div class="item-obs">📝 ${escapeHtml(item.observacao.substring(0, 60))}${item.observacao.length > 60 ? '...' : ''}</div>` : ''}
+                        <div class="product-actions">
+                            <button class="btn-buy" onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')}, 1)">
+                                🛒 Comprar
+                            </button>
+                            <button class="btn-edit-small" onclick="openAddModal('${product.id}')">✏️</button>
+                            <button class="btn-delete-small" onclick="removerProduto('${product.id}')">🗑️</button>
                         </div>
-                        <div class="item-actions">
-                            <button onclick="openModal('${item.id}')" class="btn-edit" title="Editar">✏️</button>
-                            <button onclick="removerItem('${item.id}')" class="btn-delete" title="Remover">🗑️</button>
+                        <div class="product-checkout">
+                            <input type="checkbox" ${product.comprado ? 'checked' : ''} onchange="toggleComprado('${product.id}', ${product.comprado})">
+                            <span>Já comprei</span>
                         </div>
-                    </li>
-                `;
-            }).join('');
-            
-            calcularTotais();
+                    </div>
+                </div>
+            `).join('');
         }
         
         // ============================================
         // CARREGAR DADOS
         // ============================================
-        async function carregarLista() {
+        async function loadProducts() {
             if(!currentUser) return;
             
             if(subscription) {
@@ -656,14 +737,14 @@
                     table: 'items',
                     filter: `user_id=eq.${currentUser.id}`
                 }, () => {
-                    fetchItems();
+                    fetchProducts();
                 })
                 .subscribe();
             
-            await fetchItems();
+            await fetchProducts();
         }
         
-        async function fetchItems() {
+        async function fetchProducts() {
             const { data, error } = await supabase
                 .from('items')
                 .select('*')
@@ -672,39 +753,64 @@
             
             if(error) {
                 console.error(error);
-                showToast('Erro ao carregar itens', 'error');
                 return;
             }
             
-            allItems = data || [];
-            renderizarLista();
+            allProducts = data || [];
+            renderProducts();
         }
         
         // ============================================
-        // FILTROS
+        // FILTROS E CATEGORIAS
         // ============================================
         function initFilters() {
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    currentFilter = btn.dataset.filter;
-                    renderizarLista();
+            // Categorias
+            document.querySelectorAll('.cat-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+                    currentCategory = card.dataset.categoria;
+                    renderProducts();
                 });
             });
             
-            document.querySelectorAll('.category-chip').forEach(chip => {
+            // Filtros
+            document.querySelectorAll('.filter-chip').forEach(chip => {
                 chip.addEventListener('click', () => {
-                    document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+                    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
                     chip.classList.add('active');
-                    currentCategoria = chip.dataset.categoria;
-                    renderizarLista();
+                    currentFilter = chip.dataset.filter;
+                    renderProducts();
                 });
+            });
+            
+            // Busca
+            searchInput?.addEventListener('input', (e) => {
+                searchTerm = e.target.value;
+                renderProducts();
+            });
+            
+            // Abrir/fechar filtros
+            openFiltersBtn?.addEventListener('click', () => {
+                if(filtersPanel.style.display === 'none') {
+                    filtersPanel.style.display = 'flex';
+                } else {
+                    filtersPanel.style.display = 'none';
+                }
             });
         }
         
         // ============================================
-        // AUTENTICAÇÃO
+        // LOGOUT
+        // ============================================
+        window.logout = async function() {
+            await supabase.auth.signOut();
+            showToast('Até logo!', 'success');
+            setTimeout(() => window.location.href = 'login.html', 500);
+        };
+        
+        // ============================================
+        // INICIALIZAÇÃO
         // ============================================
         themeToggle?.addEventListener('click', toggleTheme);
         
@@ -712,7 +818,8 @@
             if(session) {
                 currentUser = session.user;
                 userEmailSpan.textContent = session.user.email;
-                await carregarLista();
+                await loadProducts();
+                updateCartUI();
             } else {
                 window.location.href = 'login.html';
             }
@@ -722,24 +829,32 @@
         if(session) {
             currentUser = session.user;
             userEmailSpan.textContent = session.user.email;
-            await carregarLista();
+            await loadProducts();
+            updateCartUI();
         } else {
             window.location.href = 'login.html';
         }
         
-        // Fechar modais
-        modal.addEventListener('click', (e) => {
-            if(e.target === modal) closeModal();
+        // Close modals
+        document.getElementById('cart-modal')?.addEventListener('click', (e) => {
+            if(e.target === document.getElementById('cart-modal')) closeCart();
         });
-        
-        detailModal.addEventListener('click', (e) => {
-            if(e.target === detailModal) closeDetailModal();
+        document.getElementById('product-modal')?.addEventListener('click', (e) => {
+            if(e.target === document.getElementById('product-modal')) closeProductModal();
+        });
+        document.getElementById('add-modal')?.addEventListener('click', (e) => {
+            if(e.target === document.getElementById('add-modal')) closeAddModal();
         });
         
         initTheme();
         initFilters();
         
-        console.log('✅ Lista 2026 carregada com sucesso!');
+        // Expor funções globais
+        window.addToCart = addToCart;
+        window.removeFromCart = removeFromCart;
+        window.updateCartItemQuantity = updateCartItemQuantity;
+        
+        console.log('✅ Mercado Lista 2026 carregado!');
     </script>
 </body>
 </html>
