@@ -9,6 +9,7 @@
     --success-light: #d1fae5;
     --danger: #ef4444;
     --warning: #f59e0b;
+    --info: #3b82f6;
     --dark: #0f172a;
     --gray-50: #f8fafc;
     --gray-100: #f1f5f9;
@@ -59,7 +60,7 @@ body {
 }
 
 .app-container {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
     min-height: 100vh;
     background: var(--gray-50);
@@ -101,105 +102,4 @@ body {
     color: transparent;
 }
 
-.logo-text span {
-    background: none;
-    color: var(--primary);
-}
-
-.header-actions {
-    display: flex;
-    gap: 0.75rem;
-}
-
-.theme-toggle,
-.btn-logout {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    background: var(--gray-100);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-}
-
-.theme-toggle:hover,
-.btn-logout:hover {
-    background: var(--gray-200);
-    transform: scale(1.05);
-}
-
-.user-info {
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--gray-200);
-}
-
-.user-email {
-    font-size: 0.75rem;
-    color: var(--gray-500);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.user-email::before {
-    content: '👤';
-}
-
-/* Stats Dashboard */
-.stats-dashboard {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    padding: 1rem;
-}
-
-.stat-card {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    padding: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.2s;
-}
-
-.stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-
-.stat-icon {
-    font-size: 2rem;
-}
-
-.stat-info {
-    flex: 1;
-}
-
-.stat-label {
-    font-size: 0.75rem;
-    color: var(--gray-500);
-    display: block;
-}
-
-.stat-value {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--gray-800);
-}
-
-/* Filters Bar */
-.filters-bar {
-    display: flex;
-    gap: 0.5rem;
-    padding: 0 1rem 1rem;
-    overflow-x: auto;
-}
-
-.filter-btn {
-    padding: 0.5rem ;}
+.logo

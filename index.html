@@ -36,40 +36,51 @@
             </div>
         </header>
 
-        <!-- Stats Dashboard -->
-        <div class="stats-dashboard">
-            <div class="stat-card">
-                <div class="stat-icon">📦</div>
-                <div class="stat-info">
-                    <span class="stat-label">Total Itens</span>
-                    <span class="stat-value" id="total-items">0</span>
+        <!-- Dashboard de Valores -->
+        <div class="dashboard">
+            <div class="dashboard-card total">
+                <div class="dashboard-icon">💰</div>
+                <div class="dashboard-info">
+                    <span class="dashboard-label">Total da Lista</span>
+                    <span class="dashboard-value" id="total-geral">R$ 0,00</span>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon">✅</div>
-                <div class="stat-info">
-                    <span class="stat-label">Comprados</span>
-                    <span class="stat-value" id="completed-items">0</span>
+            <div class="dashboard-card pendente">
+                <div class="dashboard-icon">⏳</div>
+                <div class="dashboard-info">
+                    <span class="dashboard-label">A Gastar</span>
+                    <span class="dashboard-value" id="total-pendente">R$ 0,00</span>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon">💰</div>
-                <div class="stat-info">
-                    <span class="stat-label">Total Estimado</span>
-                    <span class="stat-value" id="total-price">R$ 0</span>
+            <div class="dashboard-card comprado">
+                <div class="dashboard-icon">✅</div>
+                <div class="dashboard-info">
+                    <span class="dashboard-label">Já Gastou</span>
+                    <span class="dashboard-value" id="total-comprado">R$ 0,00</span>
                 </div>
             </div>
         </div>
 
-        <!-- Filtros -->
+        <!-- Barra de Progresso -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <span>Progresso da Lista</span>
+                <span id="progress-percent">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Filtros Rápidos -->
         <div class="filters-bar">
-            <button class="filter-btn active" data-filter="all">Todos</button>
-            <button class="filter-btn" data-filter="pending">Pendentes</button>
-            <button class="filter-btn" data-filter="completed">Comprados</button>
-            <button class="filter-btn" data-filter="high">Prioridade Alta</button>
+            <button class="filter-btn active" data-filter="all">📋 Todos</button>
+            <button class="filter-btn" data-filter="pending">⏳ Pendentes</button>
+            <button class="filter-btn" data-filter="completed">✅ Comprados</button>
+            <button class="filter-btn" data-filter="high">🔴 Alta Prioridade</button>
         </div>
 
-        <!-- Categorias Rápidas -->
+        <!-- Categorias -->
         <div class="categories-scroll">
             <button class="category-chip active" data-categoria="todos">🏠 Todos</button>
             <button class="category-chip" data-categoria="mercearia">🥫 Mercearia</button>
@@ -78,6 +89,8 @@
             <button class="category-chip" data-categoria="laticinios">🥛 Laticínios</button>
             <button class="category-chip" data-categoria="bebidas">🥤 Bebidas</button>
             <button class="category-chip" data-categoria="limpeza">🧹 Limpeza</button>
+            <button class="category-chip" data-categoria="higiene">🧴 Higiene</button>
+            <button class="category-chip" data-categoria="eletronicos">📱 Eletrônicos</button>
             <button class="category-chip" data-categoria="outros">📦 Outros</button>
         </div>
 
@@ -86,7 +99,7 @@
             <ul id="lista" class="shopping-list"></ul>
         </main>
 
-        <!-- Botão Flutuante para Adicionar -->
+        <!-- Botão Flutuante -->
         <button class="fab" id="fab" onclick="openModal()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="12" y1="5" x2="12" y2="19"/>
@@ -104,15 +117,23 @@
                 <form id="item-form">
                     <input type="hidden" id="item-id">
                     
+                    <!-- Nome do Item -->
                     <div class="form-group">
-                        <label>Nome do item *</label>
+                        <label>Nome do produto *</label>
                         <input type="text" id="item-nome" required placeholder="Ex: Arroz, Feijão, Leite...">
                     </div>
 
+                    <!-- Marca -->
+                    <div class="form-group">
+                        <label>🏷️ Marca</label>
+                        <input type="text" id="item-marca" placeholder="Ex: Tio João, Nestlé, Omo...">
+                    </div>
+
+                    <!-- Quantidade e Unidade -->
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Quantidade</label>
-                            <input type="number" id="item-quantidade" value="1" min="1">
+                            <label>📦 Quantidade</label>
+                            <input type="number" id="item-quantidade" value="1" min="0.01" step="0.01">
                         </div>
                         <div class="form-group">
                             <label>Unidade</label>
@@ -125,17 +146,19 @@
                                 <option value="pac">Pacote</option>
                                 <option value="lata">Lata</option>
                                 <option value="cx">Caixa</option>
+                                <option value="fd">Fardo</option>
                             </select>
                         </div>
                     </div>
 
+                    <!-- Preço e Categoria -->
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Preço unitário (R$)</label>
+                            <label>💰 Preço unitário (R$)</label>
                             <input type="number" id="item-preco" step="0.01" placeholder="0,00">
                         </div>
                         <div class="form-group">
-                            <label>Categoria</label>
+                            <label>📂 Categoria</label>
                             <select id="item-categoria">
                                 <option value="mercearia">🥫 Mercearia</option>
                                 <option value="hortifruti">🥬 Hortifrúti</option>
@@ -144,24 +167,33 @@
                                 <option value="bebidas">🥤 Bebidas</option>
                                 <option value="limpeza">🧹 Limpeza</option>
                                 <option value="higiene">🧴 Higiene</option>
+                                <option value="eletronicos">📱 Eletrônicos</option>
                                 <option value="outros">📦 Outros</option>
                             </select>
                         </div>
                     </div>
 
+                    <!-- Prioridade -->
                     <div class="form-group">
-                        <label>Prioridade</label>
+                        <label>⚡ Prioridade</label>
                         <div class="priority-buttons">
-                            <button type="button" class="priority-btn" data-prioridade="1">🔴 Alta</button>
-                            <button type="button" class="priority-btn" data-prioridade="2">🟡 Média</button>
-                            <button type="button" class="priority-btn" data-prioridade="3">🟢 Baixa</button>
+                            <button type="button" class="priority-btn alta" data-prioridade="1">🔴 Alta</button>
+                            <button type="button" class="priority-btn media" data-prioridade="2">🟡 Média</button>
+                            <button type="button" class="priority-btn baixa" data-prioridade="3">🟢 Baixa</button>
                         </div>
                         <input type="hidden" id="item-prioridade" value="2">
                     </div>
 
+                    <!-- Descrição/Observação -->
                     <div class="form-group">
-                        <label>Observação</label>
-                        <textarea id="item-observacao" rows="2" placeholder="Marca, local, etc..."></textarea>
+                        <label>📝 Descrição / Observação</label>
+                        <textarea id="item-observacao" rows="3" placeholder="Marca específica, local de compra, validade, etc..."></textarea>
+                    </div>
+
+                    <!-- Link da imagem (opcional) -->
+                    <div class="form-group">
+                        <label>🖼️ URL da imagem (opcional)</label>
+                        <input type="url" id="item-imagem" placeholder="https://exemplo.com/imagem.jpg">
                     </div>
 
                     <div class="modal-buttons">
@@ -169,6 +201,17 @@
                         <button type="submit" class="btn-save">Salvar</button>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- Modal de Detalhes do Item -->
+        <div id="detail-modal" class="modal">
+            <div class="modal-content detail-modal">
+                <div class="modal-header">
+                    <h2>Detalhes do Produto</h2>
+                    <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+                </div>
+                <div id="detail-content" class="detail-content"></div>
             </div>
         </div>
     </div>
@@ -198,9 +241,10 @@
         const userEmailSpan = document.getElementById('user-email');
         const themeToggle = document.getElementById('theme-toggle');
         const modal = document.getElementById('modal');
+        const detailModal = document.getElementById('detail-modal');
         const itemForm = document.getElementById('item-form');
         
-        // Mapeamento de ícones por categoria
+        // Mapeamento
         const categoriaIcones = {
             mercearia: '🥫',
             hortifruti: '🥬',
@@ -209,7 +253,14 @@
             bebidas: '🥤',
             limpeza: '🧹',
             higiene: '🧴',
+            eletronicos: '📱',
             outros: '📦'
+        };
+        
+        const prioridadeCores = {
+            1: { cor: '#ef4444', texto: 'Alta', icon: '🔴' },
+            2: { cor: '#f59e0b', texto: 'Média', icon: '🟡' },
+            3: { cor: '#10b981', texto: 'Baixa', icon: '🟢' }
         };
         
         // ============================================
@@ -253,6 +304,14 @@
             return div.innerHTML;
         }
         
+        function formatMoney(value) {
+            if(!value || isNaN(value)) return 'R$ 0,00';
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+        
         // ============================================
         // CRUD OPERATIONS
         // ============================================
@@ -263,14 +322,15 @@
                 if(item) {
                     document.getElementById('item-id').value = item.id;
                     document.getElementById('item-nome').value = item.nome;
+                    document.getElementById('item-marca').value = item.marca || '';
                     document.getElementById('item-quantidade').value = item.quantidade || 1;
                     document.getElementById('item-unidade').value = item.unidade || 'un';
                     document.getElementById('item-preco').value = item.preco || '';
                     document.getElementById('item-categoria').value = item.categoria || 'outros';
                     document.getElementById('item-prioridade').value = item.prioridade || 2;
                     document.getElementById('item-observacao').value = item.observacao || '';
+                    document.getElementById('item-imagem').value = item.imagem || '';
                     
-                    // Destacar botão de prioridade
                     document.querySelectorAll('.priority-btn').forEach(btn => {
                         btn.classList.remove('active');
                         if(btn.dataset.prioridade == item.prioridade) {
@@ -296,6 +356,55 @@
             modal.classList.remove('show');
         };
         
+        window.openDetailModal = function(itemId) {
+            const item = allItems.find(i => i.id === itemId);
+            if(!item) return;
+            
+            const total = (item.preco || 0) * (item.quantidade || 1);
+            
+            const detailContent = document.getElementById('detail-content');
+            detailContent.innerHTML = `
+                <div class="detail-image">
+                    ${item.imagem ? `<img src="${escapeHtml(item.imagem)}" alt="${escapeHtml(item.nome)}">` : '<div class="no-image">🛒</div>'}
+                </div>
+                <div class="detail-info">
+                    <h3>${escapeHtml(item.nome)}</h3>
+                    ${item.marca ? `<p class="detail-marca">🏷️ ${escapeHtml(item.marca)}</p>` : ''}
+                    <p class="detail-categoria">${categoriaIcones[item.categoria] || '📦'} ${item.categoria}</p>
+                    <p class="detail-prioridade" style="color: ${prioridadeCores[item.prioridade]?.cor}">
+                        ${prioridadeCores[item.prioridade]?.icon} Prioridade: ${prioridadeCores[item.prioridade]?.texto}
+                    </p>
+                    <div class="detail-preco">
+                        <div class="detail-preco-item">
+                            <span>Quantidade:</span>
+                            <strong>${item.quantidade || 1} ${item.unidade || 'un'}</strong>
+                        </div>
+                        <div class="detail-preco-item">
+                            <span>Preço unitário:</span>
+                            <strong>${formatMoney(item.preco)}</strong>
+                        </div>
+                        <div class="detail-preco-item total">
+                            <span>Total:</span>
+                            <strong>${formatMoney(total)}</strong>
+                        </div>
+                    </div>
+                    ${item.observacao ? `<div class="detail-obs">📝 ${escapeHtml(item.observacao)}</div>` : ''}
+                    <div class="detail-status">
+                        <span>Status:</span>
+                        <span class="status-badge ${item.comprado ? 'comprado' : 'pendente'}">
+                            ${item.comprado ? '✅ Comprado' : '⏳ Pendente'}
+                        </span>
+                    </div>
+                </div>
+            `;
+            
+            detailModal.classList.add('show');
+        };
+        
+        window.closeDetailModal = function() {
+            detailModal.classList.remove('show');
+        };
+        
         // Configurar botões de prioridade
         document.querySelectorAll('.priority-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -311,12 +420,14 @@
             
             const id = document.getElementById('item-id').value;
             const nome = document.getElementById('item-nome').value.trim();
-            const quantidade = parseInt(document.getElementById('item-quantidade').value);
+            const marca = document.getElementById('item-marca').value.trim();
+            const quantidade = parseFloat(document.getElementById('item-quantidade').value) || 1;
             const unidade = document.getElementById('item-unidade').value;
             const preco = parseFloat(document.getElementById('item-preco').value) || null;
             const categoria = document.getElementById('item-categoria').value;
             const prioridade = parseInt(document.getElementById('item-prioridade').value);
             const observacao = document.getElementById('item-observacao').value;
+            const imagem = document.getElementById('item-imagem').value;
             
             if(!nome) {
                 showToast('Digite o nome do item', 'error');
@@ -325,18 +436,19 @@
             
             const itemData = {
                 nome,
+                marca,
                 quantidade,
                 unidade,
                 preco,
                 categoria,
                 prioridade,
                 observacao,
+                imagem,
                 user_id: currentUser.id
             };
             
             try {
                 if(id) {
-                    // Atualizar
                     const { error } = await supabase
                         .from('items')
                         .update(itemData)
@@ -346,7 +458,6 @@
                     if(error) throw error;
                     showToast('Item atualizado!', 'success');
                 } else {
-                    // Inserir
                     const { error } = await supabase
                         .from('items')
                         .insert([itemData]);
@@ -361,7 +472,6 @@
             }
         });
         
-        // Alternar status comprado
         window.toggleComprado = async function(itemId, compradoAtual) {
             try {
                 const { error } = await supabase
@@ -376,7 +486,6 @@
             }
         };
         
-        // Remover item
         window.removerItem = async function(itemId) {
             if(!confirm('Tem certeza que deseja remover este item?')) return;
             
@@ -394,7 +503,6 @@
             }
         };
         
-        // Limpar comprados
         window.limparComprados = async function() {
             if(!confirm('Remover todos os itens já comprados?')) return;
             
@@ -412,7 +520,6 @@
             }
         };
         
-        // Logout
         window.logout = async function() {
             try {
                 await supabase.auth.signOut();
@@ -426,40 +533,41 @@
         };
         
         // ============================================
-        // RENDERIZAÇÃO DA LISTA
+        // CÁLCULO DE TOTAIS
         // ============================================
-        function getPrioridadeIcon(prioridade) {
-            switch(prioridade) {
-                case 1: return '🔴';
-                case 2: return '🟡';
-                case 3: return '🟢';
-                default: return '⚪';
-            }
+        function calcularTotais() {
+            let totalGeral = 0;
+            let totalComprado = 0;
+            let totalPendente = 0;
+            let itensComprados = 0;
+            
+            allItems.forEach(item => {
+                const subtotal = (item.preco || 0) * (item.quantidade || 1);
+                totalGeral += subtotal;
+                
+                if(item.comprado) {
+                    totalComprado += subtotal;
+                    itensComprados++;
+                } else {
+                    totalPendente += subtotal;
+                }
+            });
+            
+            const percentual = allItems.length > 0 ? (itensComprados / allItems.length) * 100 : 0;
+            
+            document.getElementById('total-geral').textContent = formatMoney(totalGeral);
+            document.getElementById('total-pendente').textContent = formatMoney(totalPendente);
+            document.getElementById('total-comprado').textContent = formatMoney(totalComprado);
+            document.getElementById('progress-percent').textContent = `${Math.round(percentual)}%`;
+            document.getElementById('progress-fill').style.width = `${percentual}%`;
         }
         
-        function formatPreco(preco) {
-            if(!preco) return '';
-            return `R$ ${preco.toFixed(2)}`;
-        }
-        
-        function formatQuantidade(quantidade, unidade) {
-            const unidadeMap = {
-                'un': 'un',
-                'kg': 'kg',
-                'g': 'g',
-                'l': 'L',
-                'ml': 'ml',
-                'pac': 'pac',
-                'lata': 'lata',
-                'cx': 'cx'
-            };
-            return `${quantidade} ${unidadeMap[unidade] || unidade}`;
-        }
-        
+        // ============================================
+        // RENDERIZAÇÃO
+        // ============================================
         function renderizarLista() {
             let filteredItems = [...allItems];
             
-            // Filtrar por status
             if(currentFilter === 'pending') {
                 filteredItems = filteredItems.filter(i => !i.comprado);
             } else if(currentFilter === 'completed') {
@@ -468,12 +576,10 @@
                 filteredItems = filteredItems.filter(i => i.prioridade === 1 && !i.comprado);
             }
             
-            // Filtrar por categoria
             if(currentCategoria !== 'todos') {
                 filteredItems = filteredItems.filter(i => i.categoria === currentCategoria);
             }
             
-            // Ordenar: não comprados primeiro, depois por prioridade, depois por data
             filteredItems.sort((a, b) => {
                 if(a.comprado !== b.comprado) return a.comprado ? 1 : -1;
                 if(a.prioridade !== b.prioridade) return a.prioridade - b.prioridade;
@@ -491,59 +597,49 @@
                 return;
             }
             
-            listaElement.innerHTML = filteredItems.map(item => `
-                <li class="list-item ${item.comprado ? 'comprado' : ''}" data-prioridade="${item.prioridade}">
-                    <div class="item-checkbox-wrapper">
-                        <input 
-                            type="checkbox" 
-                            ${item.comprado ? 'checked' : ''} 
-                            onchange="toggleComprado('${item.id}', ${item.comprado})"
-                            class="item-checkbox"
-                        />
-                    </div>
-                    <div class="item-details">
-                        <div class="item-header">
-                            <span class="item-categoria">${categoriaIcones[item.categoria] || '📦'} ${item.categoria}</span>
-                            <span class="item-prioridade ${item.prioridade === 1 ? 'alta' : item.prioridade === 2 ? 'media' : 'baixa'}">
-                                ${getPrioridadeIcon(item.prioridade)}
-                            </span>
+            listaElement.innerHTML = filteredItems.map(item => {
+                const subtotal = (item.preco || 0) * (item.quantidade || 1);
+                const prioridade = prioridadeCores[item.prioridade];
+                
+                return `
+                    <li class="list-item ${item.comprado ? 'comprado' : ''}" data-prioridade="${item.prioridade}">
+                        <div class="item-checkbox-wrapper">
+                            <input 
+                                type="checkbox" 
+                                ${item.comprado ? 'checked' : ''} 
+                                onchange="toggleComprado('${item.id}', ${item.comprado})"
+                                class="item-checkbox"
+                            />
                         </div>
-                        <div class="item-nome">${escapeHtml(item.nome)}</div>
-                        <div class="item-meta">
-                            <span class="item-quantidade">📦 ${formatQuantidade(item.quantidade || 1, item.unidade || 'un')}</span>
-                            ${item.preco ? `<span class="item-preco">💰 ${formatPreco(item.preco)}</span>` : ''}
-                            ${item.preco && item.quantidade ? `<span class="item-total">📊 Total: ${formatPreco(item.preco * (item.quantidade || 1))}</span>` : ''}
+                        <div class="item-details" onclick="openDetailModal('${item.id}')">
+                            <div class="item-header">
+                                <span class="item-categoria">${categoriaIcones[item.categoria] || '📦'} ${item.categoria}</span>
+                                <span class="item-prioridade" style="color: ${prioridade.cor}">
+                                    ${prioridade.icon} ${prioridade.texto}
+                                </span>
+                            </div>
+                            <div class="item-nome">${escapeHtml(item.nome)}</div>
+                            ${item.marca ? `<div class="item-marca">🏷️ ${escapeHtml(item.marca)}</div>` : ''}
+                            <div class="item-meta">
+                                <span class="item-quantidade">📦 ${item.quantidade || 1} ${item.unidade || 'un'}</span>
+                                ${item.preco ? `<span class="item-preco">💰 ${formatMoney(item.preco)}/un</span>` : ''}
+                                <span class="item-total">📊 Total: ${formatMoney(subtotal)}</span>
+                            </div>
+                            ${item.observacao ? `<div class="item-obs">📝 ${escapeHtml(item.observacao.substring(0, 60))}${item.observacao.length > 60 ? '...' : ''}</div>` : ''}
                         </div>
-                        ${item.observacao ? `<div class="item-obs">📝 ${escapeHtml(item.observacao)}</div>` : ''}
-                    </div>
-                    <div class="item-actions">
-                        <button onclick="openModal('${item.id}')" class="btn-edit" title="Editar">✏️</button>
-                        <button onclick="removerItem('${item.id}')" class="btn-delete" title="Remover">🗑️</button>
-                    </div>
-                </li>
-            `).join('');
-        }
-        
-        // ============================================
-        // ATUALIZAR ESTATÍSTICAS
-        // ============================================
-        function atualizarStats() {
-            const total = allItems.length;
-            const completed = allItems.filter(i => i.comprado).length;
-            const totalPreco = allItems.reduce((sum, item) => {
-                if(item.preco && !item.comprado) {
-                    return sum + (item.preco * (item.quantidade || 1));
-                }
-                return sum;
-            }, 0);
+                        <div class="item-actions">
+                            <button onclick="openModal('${item.id}')" class="btn-edit" title="Editar">✏️</button>
+                            <button onclick="removerItem('${item.id}')" class="btn-delete" title="Remover">🗑️</button>
+                        </div>
+                    </li>
+                `;
+            }).join('');
             
-            document.getElementById('total-items').textContent = total;
-            document.getElementById('completed-items').textContent = completed;
-            document.getElementById('total-price').textContent = `R$ ${totalPreco.toFixed(2)}`;
+            calcularTotais();
         }
         
         // ============================================
-        // CARREGAR DADOS DO SUPABASE
+        // CARREGAR DADOS
         // ============================================
         async function carregarLista() {
             if(!currentUser) return;
@@ -552,21 +648,16 @@
                 await subscription.unsubscribe();
             }
             
-            // Subscribe em tempo real
             subscription = supabase
                 .channel('items-changes')
-                .on(
-                    'postgres_changes',
-                    {
-                        event: '*',
-                        schema: 'public',
-                        table: 'items',
-                        filter: `user_id=eq.${currentUser.id}`
-                    },
-                    () => {
-                        fetchItems();
-                    }
-                )
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'items',
+                    filter: `user_id=eq.${currentUser.id}`
+                }, () => {
+                    fetchItems();
+                })
                 .subscribe();
             
             await fetchItems();
@@ -586,12 +677,11 @@
             }
             
             allItems = data || [];
-            atualizarStats();
             renderizarLista();
         }
         
         // ============================================
-        // FILTROS E CATEGORIAS
+        // FILTROS
         // ============================================
         function initFilters() {
             document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -637,9 +727,13 @@
             window.location.href = 'login.html';
         }
         
-        // Fechar modal ao clicar fora
+        // Fechar modais
         modal.addEventListener('click', (e) => {
             if(e.target === modal) closeModal();
+        });
+        
+        detailModal.addEventListener('click', (e) => {
+            if(e.target === detailModal) closeDetailModal();
         });
         
         initTheme();
