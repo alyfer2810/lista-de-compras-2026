@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#3b82f6">
+    <meta name="description" content="Lista de compras compartilhada com valores e acessibilidade">
     <link rel="manifest" href="manifest.json">
-    <title>Lista 2026 · Meu Mercado</title>
+    <title>Lista 2026 · Minhas Compras</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
+        /* Variáveis de cor */
         :root {
             --bg: #f3f4f6;
             --card: #ffffff;
@@ -18,8 +20,12 @@
             --primary: #3b82f6;
             --primary-dark: #2563eb;
             --success: #10b981;
+            --success-light: #d1fae5;
             --danger: #ef4444;
+            --danger-light: #fee2e2;
             --warning: #f59e0b;
+            --warning-light: #fed7aa;
+            --focus-ring: 0 0 0 3px rgba(59,130,246,0.5);
         }
 
         [data-theme="dark"] {
@@ -29,15 +35,45 @@
             --text-light: #94a3b8;
             --border: #334155;
             --primary: #60a5fa;
+            --success-light: #064e3b;
+            --danger-light: #7f1d1d;
+            --warning-light: #78350f;
         }
 
         body {
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg);
             color: var(--text);
             transition: all 0.3s;
         }
 
+        /* Skip to content - Acessibilidade */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary);
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            z-index: 1000;
+            transition: top 0.2s;
+            border-radius: 0 0 8px 0;
+        }
+        .skip-link:focus { top: 0; }
+
+        /* Foco visível */
+        :focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        button:focus-visible, a:focus-visible, input:focus-visible {
+            box-shadow: var(--focus-ring);
+        }
+
+        /* Header */
         .header {
             background: var(--primary);
             padding: 1rem;
@@ -63,8 +99,8 @@
         .header-actions { display: flex; gap: 0.5rem; }
 
         .btn-icon {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             border: none;
             background: rgba(255,255,255,0.2);
@@ -72,9 +108,13 @@
             color: white;
             font-size: 1.25rem;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .btn-icon:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
 
+        /* Busca */
         .search-bar {
             background: white;
             border-radius: 2rem;
@@ -90,7 +130,9 @@
             font-size: 1rem;
             background: transparent;
         }
+        .search-bar input::placeholder { color: #9ca3af; }
 
+        /* Info usuário */
         .user-info {
             display: flex;
             align-items: center;
@@ -101,6 +143,7 @@
             font-size: 0.875rem;
         }
 
+        /* Banner */
         .banner {
             background: linear-gradient(135deg, var(--warning), #ea580c);
             margin: 1rem;
@@ -119,44 +162,76 @@
         }
         .banner h3 { font-size: 1.25rem; margin-bottom: 0.25rem; }
 
+        /* Estatísticas de Valores */
         .stats {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
             padding: 0 1rem 1rem;
         }
         .stat-card {
             background: var(--card);
             border-radius: 1rem;
-            padding: 1rem;
+            padding: 0.75rem;
             text-align: center;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
         }
-        .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
-        .stat-label { font-size: 0.75rem; color: var(--text-light); }
+        .stat-card:hover { transform: translateY(-2px); }
+        .stat-value { font-size: 1.25rem; font-weight: 700; color: var(--primary); }
+        .stat-label { font-size: 0.7rem; color: var(--text-light); margin-top: 0.25rem; }
 
+        /* Lista de Compras */
         .shopping-list {
             padding: 0 1rem;
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
-            padding-bottom: 100px;
+            padding-bottom: 120px;
         }
+        
         .list-item {
             background: var(--card);
             border-radius: 1rem;
             padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             transition: all 0.2s;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary);
         }
         .list-item:hover { transform: translateX(4px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .item-info { flex: 1; }
+        .list-item.comprado { opacity: 0.7; border-left-color: var(--success); background: var(--success-light); }
+        
+        .item-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .item-info { flex: 2; min-width: 150px; }
         .item-name { font-weight: 600; font-size: 1rem; }
-        .item-date { font-size: 0.7rem; color: var(--text-light); margin-top: 0.25rem; }
-        .item-actions { display: flex; gap: 0.5rem; }
+        .item-details { font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+        .item-price { color: var(--success); font-weight: 600; }
+        .item-total { color: var(--primary); font-weight: 600; }
+        
+        .item-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .checkbox-custom {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        .checkbox-custom input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
         .btn-remove {
             background: var(--danger);
             border: none;
@@ -167,7 +242,88 @@
             transition: all 0.2s;
         }
         .btn-remove:hover { background: #dc2626; transform: scale(1.05); }
+        
+        .btn-edit {
+            background: var(--warning);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-edit:hover { background: #d97706; transform: scale(1.05); }
 
+        /* Modal de Edição */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: var(--card);
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: var(--bg);
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+        .form-group { padding: 0 1rem; margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.875rem; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            background: var(--bg);
+            color: var(--text);
+        }
+        .form-row { display: flex; gap: 1rem; padding: 0 1rem; }
+        .modal-buttons { display: flex; gap: 1rem; padding: 1rem; }
+        .btn-save {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 0.5rem;
+            color: white;
+            cursor: pointer;
+        }
+        .btn-cancel {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Adicionar Item */
         .add-section {
             position: fixed;
             bottom: 0;
@@ -181,12 +337,16 @@
         }
         .add-container {
             display: flex;
+            flex-direction: column;
             gap: 0.75rem;
             max-width: 800px;
             margin: 0 auto;
         }
-        .add-container input {
-            flex: 1;
+        .add-row {
+            display: flex;
+            gap: 0.75rem;
+        }
+        .add-container input, .add-container select {
             padding: 0.875rem 1rem;
             border: 2px solid var(--border);
             border-radius: 1rem;
@@ -195,11 +355,13 @@
             color: var(--text);
             transition: all 0.2s;
         }
-        .add-container input:focus {
+        .add-container input:focus, .add-container select:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+            box-shadow: var(--focus-ring);
         }
+        .add-container input { flex: 2; }
+        .add-container select { flex: 1; }
         .btn-add {
             padding: 0.875rem 1.5rem;
             background: var(--primary);
@@ -212,6 +374,7 @@
         }
         .btn-add:hover { background: var(--primary-dark); transform: translateY(-2px); }
 
+        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 3rem;
@@ -219,9 +382,10 @@
         }
         .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
 
+        /* Toast */
         .toast {
             position: fixed;
-            bottom: 5rem;
+            bottom: 7rem;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
             padding: 0.75rem 1.5rem;
@@ -230,82 +394,146 @@
             z-index: 2000;
             transition: 0.3s;
             opacity: 0;
+            font-weight: 500;
         }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
         .toast-success { background: var(--success); }
         .toast-error { background: var(--danger); }
+        .toast-info { background: var(--primary); }
 
+        /* Responsivo */
         @media (max-width: 640px) {
-            .stats { gap: 0.5rem; }
-            .stat-card { padding: 0.75rem; }
-            .stat-value { font-size: 1.25rem; }
-            .add-container { gap: 0.5rem; }
-            .btn-add { padding: 0.875rem 1rem; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .add-row { flex-direction: column; }
+            .item-content { flex-direction: column; }
+            .item-actions { align-self: flex-end; }
         }
     </style>
 </head>
 <body>
+    <!-- Skip Link - Acessibilidade -->
+    <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+
     <div class="app">
-        <div class="header">
+        <!-- Header -->
+        <div class="header" role="banner">
             <div class="header-top">
-                <div class="logo">Lista<span>2026</span></div>
+                <div class="logo" aria-label="Lista 2026">Lista<span>2026</span></div>
                 <div class="header-actions">
-                    <button class="btn-icon" id="themeBtn">🌙</button>
-                    <button class="btn-icon" onclick="logout()">🚪</button>
+                    <button class="btn-icon" id="themeBtn" aria-label="Alternar tema claro/escuro">🌙</button>
+                    <button class="btn-icon" onclick="logout()" aria-label="Sair da conta">🚪</button>
                 </div>
             </div>
             
-            <div class="search-bar">
-                <span>🔍</span>
-                <input type="text" id="searchInput" placeholder="Buscar na lista...">
+            <div class="search-bar" role="search">
+                <span aria-hidden="true">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar na lista..." aria-label="Buscar itens">
             </div>
             
             <div class="user-info">
-                <span>👤</span>
-                <span id="userEmail">carregando...</span>
+                <span aria-hidden="true">👤</span>
+                <span id="userEmail" aria-live="polite">carregando...</span>
             </div>
         </div>
 
-        <div class="banner">
+        <!-- Banner -->
+        <div class="banner" role="complementary" aria-label="Ofertas">
             <div class="banner-content">
                 <div>
-                    <span class="banner-tag">🎯 OBJETIVO DO DIA</span>
-                    <h3>Organize suas compras</h3>
-                    <p style="font-size:0.75rem;">Adicione itens e mantenha o foco</p>
+                    <span class="banner-tag">💰 CONTROLE DE GASTOS</span>
+                    <h3>Acompanhe seus valores</h3>
+                    <p style="font-size:0.75rem;">Adicione preços e veja o total</p>
                 </div>
-                <div style="font-size:3rem;">🛒</div>
+                <div style="font-size:3rem;" aria-hidden="true">💰</div>
             </div>
         </div>
 
-        <div class="stats">
+        <!-- Estatísticas de Valores -->
+        <div class="stats" role="region" aria-label="Resumo financeiro">
             <div class="stat-card">
-                <div class="stat-value" id="totalCount">0</div>
+                <div class="stat-value" id="totalItems">0</div>
                 <div class="stat-label">Total Itens</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="completedCount">0</div>
-                <div class="stat-label">Já Comprei</div>
+                <div class="stat-value" id="totalValue">R$ 0</div>
+                <div class="stat-label">Valor Total</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="pendingCount">0</div>
-                <div class="stat-label">Pendentes</div>
+                <div class="stat-value" id="completedValue">R$ 0</div>
+                <div class="stat-label">Já Comprado</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="pendingValue">R$ 0</div>
+                <div class="stat-label">Falta Gastar</div>
             </div>
         </div>
 
-        <ul class="shopping-list" id="shoppingList"></ul>
+        <!-- Lista de Compras -->
+        <main id="main-content" class="shopping-list" id="shoppingList" role="main" aria-label="Lista de compras"></main>
 
-        <div class="add-section">
+        <!-- Adicionar Item -->
+        <div class="add-section" role="complementary" aria-label="Adicionar novo item">
             <div class="add-container">
-                <input type="text" id="itemInput" placeholder="Digite um item..." autocomplete="off">
-                <button class="btn-add" onclick="adicionarItem()">Adicionar ➕</button>
+                <div class="add-row">
+                    <input type="text" id="itemInput" placeholder="Nome do item..." aria-label="Nome do produto" autocomplete="off">
+                    <select id="categorySelect" aria-label="Categoria">
+                        <option value="mercearia">🥫 Mercearia</option>
+                        <option value="hortifruti">🥬 Hortifrúti</option>
+                        <option value="carnes">🥩 Carnes</option>
+                        <option value="laticinios">🥛 Laticínios</option>
+                        <option value="bebidas">🥤 Bebidas</option>
+                        <option value="limpeza">🧹 Limpeza</option>
+                        <option value="outros">📦 Outros</option>
+                    </select>
+                </div>
+                <div class="add-row">
+                    <input type="number" id="priceInput" placeholder="Preço (R$)" step="0.01" aria-label="Preço do produto">
+                    <input type="number" id="quantityInput" placeholder="Quantidade" value="1" step="1" min="1" aria-label="Quantidade">
+                    <button class="btn-add" onclick="adicionarItem()" aria-label="Adicionar novo item">Adicionar ➕</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição -->
+    <div id="editModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Editar Item</h2>
+                <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="editNome">Nome do item</label>
+                <input type="text" id="editNome">
+            </div>
+            <div class="form-group">
+                <label for="editPreco">Preço (R$)</label>
+                <input type="number" id="editPreco" step="0.01">
+            </div>
+            <div class="form-group">
+                <label for="editQuantidade">Quantidade</label>
+                <input type="number" id="editQuantidade" step="1" min="1">
+            </div>
+            <div class="form-group">
+                <label for="editCategoria">Categoria</label>
+                <select id="editCategoria">
+                    <option value="mercearia">Mercearia</option>
+                    <option value="hortifruti">Hortifrúti</option>
+                    <option value="carnes">Carnes</option>
+                    <option value="laticinios">Laticínios</option>
+                    <option value="bebidas">Bebidas</option>
+                    <option value="limpeza">Limpeza</option>
+                    <option value="outros">Outros</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+                <button class="btn-save" onclick="salvarEdicao()">Salvar</button>
             </div>
         </div>
     </div>
 
     <script type="module">
-        // ============================================
-        // IMPORTAÇÃO DO SUPABASE
-        // ============================================
         import { supabase } from './supabaseClient.js';
         
         // ============================================
@@ -314,12 +542,18 @@
         let currentUser = null;
         let allItems = [];
         let searchTerm = '';
+        let editingId = null;
         
+        // Elementos
         const listaEl = document.getElementById('shoppingList');
         const itemInput = document.getElementById('itemInput');
+        const priceInput = document.getElementById('priceInput');
+        const quantityInput = document.getElementById('quantityInput');
+        const categorySelect = document.getElementById('categorySelect');
         const userEmailSpan = document.getElementById('userEmail');
         const searchInput = document.getElementById('searchInput');
         const themeBtn = document.getElementById('themeBtn');
+        const editModal = document.getElementById('editModal');
         
         // ============================================
         // MODO NOTURNO
@@ -345,6 +579,7 @@
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
             toast.textContent = message;
+            toast.setAttribute('role', 'alert');
             document.body.appendChild(toast);
             setTimeout(() => toast.classList.add('show'), 10);
             setTimeout(() => {
@@ -353,21 +588,9 @@
             }, 3000);
         }
         
-        function formatarData(data) {
-            if (!data) return '';
-            try {
-                const d = new Date(data);
-                return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-            } catch {
-                return '';
-            }
-        }
-        
-        function atualizarEstatisticas() {
-            const total = allItems.length;
-            document.getElementById('totalCount').textContent = total;
-            document.getElementById('completedCount').textContent = '0';
-            document.getElementById('pendingCount').textContent = total;
+        function formatMoney(value) {
+            if (!value) return 'R$ 0,00';
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
         }
         
         function escapeHtml(text) {
@@ -375,6 +598,27 @@
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+        
+        const categoriaIcon = {
+            mercearia: '🥫', hortifruti: '🥬', carnes: '🥩',
+            laticinios: '🥛', bebidas: '🥤', limpeza: '🧹',
+            outros: '📦'
+        };
+        
+        // ============================================
+        // ESTATÍSTICAS
+        // ============================================
+        function atualizarEstatisticas() {
+            const total = allItems.length;
+            const totalValor = allItems.reduce((sum, i) => sum + ((i.preco || 0) * (i.quantidade || 1)), 0);
+            const compradoValor = allItems.filter(i => i.comprado).reduce((sum, i) => sum + ((i.preco || 0) * (i.quantidade || 1)), 0);
+            const pendenteValor = totalValor - compradoValor;
+            
+            document.getElementById('totalItems').textContent = total;
+            document.getElementById('totalValue').textContent = formatMoney(totalValor);
+            document.getElementById('completedValue').textContent = formatMoney(compradoValor);
+            document.getElementById('pendingValue').textContent = formatMoney(pendenteValor);
         }
         
         // ============================================
@@ -395,59 +639,72 @@
                 listaEl.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">📋</div>
-                        <p>Nenhum item encontrado</p>
-                        <small>Adicione itens para começar</small>
+                        <p>Sua lista está vazia</p>
+                        <small>Adicione itens com preços para começar</small>
                     </div>
                 `;
+                atualizarEstatisticas();
                 return;
             }
             
-            listaEl.innerHTML = filtrados.map(item => `
-                <li class="list-item">
-                    <div class="item-info">
-                        <div class="item-name">${escapeHtml(item.item)}</div>
-                        ${item.created_at ? `<div class="item-date">📅 ${formatarData(item.created_at)}</div>` : ''}
-                    </div>
-                    <div class="item-actions">
-                        <button class="btn-remove" onclick="removerItem('${item.id}')">🗑️ Remover</button>
-                    </div>
-                </li>
-            `).join('');
+            listaEl.innerHTML = filtrados.map(item => {
+                const subtotal = (item.preco || 0) * (item.quantidade || 1);
+                return `
+                    <li class="list-item ${item.comprado ? 'comprado' : ''}" role="listitem">
+                        <div class="item-content">
+                            <div class="item-info">
+                                <div class="item-name">${categoriaIcon[item.categoria] || '📦'} ${escapeHtml(item.item)}</div>
+                                <div class="item-details">
+                                    <span>📦 ${item.quantidade || 1} un</span>
+                                    <span class="item-price">💰 ${formatMoney(item.preco)}/un</span>
+                                    <span class="item-total">📊 Total: ${formatMoney(subtotal)}</span>
+                                </div>
+                            </div>
+                            <div class="item-actions">
+                                <label class="checkbox-custom">
+                                    <input type="checkbox" ${item.comprado ? 'checked' : ''} onchange="toggleComprado('${item.id}', ${item.comprado})" aria-label="Marcar como comprado">
+                                    <span>Já comprei</span>
+                                </label>
+                                <button class="btn-edit" onclick="abrirModalEdicao('${item.id}')" aria-label="Editar item">✏️</button>
+                                <button class="btn-remove" onclick="removerItem('${item.id}')" aria-label="Remover item">🗑️</button>
+                            </div>
+                        </div>
+                    </li>
+                `;
+            }).join('');
             
             atualizarEstatisticas();
         }
         
         // ============================================
-        // CRUD COM SUPABASE (SEM ORDER BY created_at)
+        // CRUD COM SUPABASE
         // ============================================
-        
         async function carregarLista() {
             if (!currentUser) return;
             
-            console.log('🔄 Carregando lista para:', currentUser.id);
-            
-            // Removido o order_by para evitar erro
             const { data, error } = await supabase
                 .from('lista_compras')
                 .select('*')
                 .eq('adicionado_por', currentUser.id);
             
             if (error) {
-                console.error('❌ Erro ao carregar:', error);
-                showToast('Erro ao carregar lista: ' + error.message, 'error');
+                console.error('Erro:', error);
+                showToast('Erro ao carregar lista', 'error');
                 return;
             }
             
-            console.log(`✅ ${data?.length || 0} itens carregados`);
             allItems = data || [];
             renderizarLista();
         }
         
         window.adicionarItem = async function () {
             const item = itemInput.value.trim();
+            const preco = parseFloat(priceInput.value) || 0;
+            const quantidade = parseInt(quantityInput.value) || 1;
+            const categoria = categorySelect.value;
             
             if (!item) {
-                showToast('Digite um item para adicionar', 'error');
+                showToast('Digite o nome do item', 'error');
                 return;
             }
             
@@ -456,24 +713,26 @@
                 return;
             }
             
-            console.log('📝 Adicionando item:', item);
-            
             const { data, error } = await supabase
                 .from('lista_compras')
                 .insert({
                     item: item,
+                    preco: preco,
+                    quantidade: quantidade,
+                    categoria: categoria,
+                    comprado: false,
                     adicionado_por: currentUser.id
                 })
                 .select();
             
             if (error) {
-                console.error('❌ Erro ao adicionar:', error);
                 showToast('Erro ao adicionar: ' + error.message, 'error');
                 return;
             }
             
-            console.log('✅ Item adicionado:', data);
             itemInput.value = '';
+            priceInput.value = '';
+            quantityInput.value = '1';
             showToast('Item adicionado com sucesso!', 'success');
             await carregarLista();
         };
@@ -481,21 +740,74 @@
         window.removerItem = async function (id) {
             if (!confirm('Tem certeza que deseja remover este item?')) return;
             
-            console.log('🗑️ Removendo item:', id);
-            
             const { error } = await supabase
                 .from('lista_compras')
                 .delete()
                 .eq('id', id);
             
             if (error) {
-                console.error('❌ Erro ao remover:', error);
-                showToast('Erro ao remover: ' + error.message, 'error');
+                showToast('Erro ao remover', 'error');
                 return;
             }
             
-            console.log('✅ Item removido');
             showToast('Item removido!', 'success');
+            await carregarLista();
+        };
+        
+        window.toggleComprado = async function (id, atual) {
+            const { error } = await supabase
+                .from('lista_compras')
+                .update({ comprado: !atual })
+                .eq('id', id);
+            
+            if (!error) await carregarLista();
+        };
+        
+        window.abrirModalEdicao = function (id) {
+            const item = allItems.find(i => i.id === id);
+            if (item) {
+                editingId = id;
+                document.getElementById('editNome').value = item.item;
+                document.getElementById('editPreco').value = item.preco || '';
+                document.getElementById('editQuantidade').value = item.quantidade || 1;
+                document.getElementById('editCategoria').value = item.categoria || 'outros';
+                editModal.classList.add('show');
+            }
+        };
+        
+        window.fecharModal = function () {
+            editModal.classList.remove('show');
+            editingId = null;
+        };
+        
+        window.salvarEdicao = async function () {
+            const nome = document.getElementById('editNome').value.trim();
+            const preco = parseFloat(document.getElementById('editPreco').value) || 0;
+            const quantidade = parseInt(document.getElementById('editQuantidade').value) || 1;
+            const categoria = document.getElementById('editCategoria').value;
+            
+            if (!nome) {
+                showToast('Digite o nome do item', 'error');
+                return;
+            }
+            
+            const { error } = await supabase
+                .from('lista_compras')
+                .update({
+                    item: nome,
+                    preco: preco,
+                    quantidade: quantidade,
+                    categoria: categoria
+                })
+                .eq('id', editingId);
+            
+            if (error) {
+                showToast('Erro ao salvar', 'error');
+                return;
+            }
+            
+            showToast('Item atualizado!', 'success');
+            fecharModal();
             await carregarLista();
         };
         
@@ -524,10 +836,24 @@
             renderizarLista();
         });
         
+        // Enter para adicionar
         itemInput?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                window.adicionarItem();
+            if (e.key === 'Enter') window.adicionarItem();
+        });
+        priceInput?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') window.adicionarItem();
+        });
+        
+        // Fechar modal com ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && editModal.classList.contains('show')) {
+                fecharModal();
             }
+        });
+        
+        // Fechar modal clicando fora
+        editModal?.addEventListener('click', (e) => {
+            if (e.target === editModal) fecharModal();
         });
         
         // ============================================
@@ -545,7 +871,7 @@
         
         init();
         
-        console.log('✅ App iniciado com sucesso!');
+        console.log('✅ App iniciado com acessibilidade e valores!');
     </script>
 </body>
 </html>
