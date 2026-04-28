@@ -8,66 +8,41 @@
     <link rel="manifest" href="manifest.json">
     <title>Lista 2026 · Meu Mercado</title>
     <style>
-        /* ============================================
-           VARIÁVEIS - MODO CLARO (PADRÃO)
-        ============================================ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         :root {
             --bg-primary: #f3f4f6;
-            --bg-secondary: #ffffff;
             --bg-card: #ffffff;
             --text-primary: #111827;
             --text-secondary: #6b7280;
             --border: #e5e7eb;
             --header-bg: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            --header-text: #ffffff;
             --btn-primary: #3b82f6;
-            --btn-primary-hover: #2563eb;
             --btn-danger: #ef4444;
             --btn-success: #10b981;
-            --btn-warning: #f59e0b;
-            --shadow: 0 1px 3px rgba(0,0,0,0.1);
-            --shadow-lg: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        /* ============================================
-           VARIÁVEIS - MODO ESCURO
-        ============================================ */
         [data-theme="dark"] {
             --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
             --bg-card: #1e293b;
             --text-primary: #f1f5f9;
             --text-secondary: #94a3b8;
             --border: #334155;
             --header-bg: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
-            --header-text: #f1f5f9;
-            --btn-primary: #3b82f6;
-            --btn-primary-hover: #60a5fa;
-            --shadow: 0 1px 3px rgba(0,0,0,0.3);
-            --shadow-lg: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            font-family: system-ui, sans-serif;
             background: var(--bg-primary);
-            min-height: 100vh;
-            transition: background 0.3s ease;
+            color: var(--text-primary);
+            transition: all 0.3s;
         }
 
-        /* Header */
         .market-header {
             background: var(--header-bg);
             padding: 1rem;
             position: sticky;
             top: 0;
-            z-index: 100;
-            transition: background 0.3s ease;
         }
 
         .header-top {
@@ -77,14 +52,8 @@
             margin-bottom: 1rem;
         }
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .logo-icon { font-size: 1.75rem; }
-        .logo-text { font-size: 1.5rem; font-weight: 700; color: var(--header-text); }
+        .logo-area { display: flex; align-items: center; gap: 0.5rem; }
+        .logo-text { font-size: 1.5rem; font-weight: 700; color: white; }
         .logo-text span { color: #fbbf24; }
 
         .header-actions { display: flex; gap: 0.5rem; }
@@ -98,13 +67,6 @@
             cursor: pointer;
             color: white;
             font-size: 1.25rem;
-            position: relative;
-            transition: all 0.2s;
-        }
-
-        .theme-toggle:hover, .btn-cart:hover, .btn-logout:hover {
-            background: rgba(255,255,255,0.3);
-            transform: scale(1.05);
         }
 
         .cart-badge {
@@ -118,15 +80,15 @@
             border-radius: 20px;
         }
 
-        /* Busca */
+        .btn-cart { position: relative; }
+
         .search-bar {
             display: flex;
             gap: 0.5rem;
-            background: var(--bg-secondary);
+            background: white;
             border-radius: 2rem;
             padding: 0.5rem 1rem;
             margin-bottom: 1rem;
-            transition: background 0.3s ease;
         }
 
         .search-bar input {
@@ -135,24 +97,8 @@
             outline: none;
             font-size: 1rem;
             background: transparent;
-            color: var(--text-primary);
         }
 
-        .search-bar input::placeholder {
-            color: var(--text-secondary);
-        }
-
-        .filter-icon {
-            background: var(--border);
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        /* Info Cliente */
         .customer-info {
             display: flex;
             align-items: center;
@@ -161,28 +107,8 @@
             border-top: 1px solid rgba(255,255,255,0.2);
         }
 
-        .customer-avatar {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .customer-name { color: white; font-size: 0.875rem; }
 
-        .customer-label {
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.7);
-        }
-
-        .customer-name {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: white;
-        }
-
-        /* Banner */
         .promo-banner {
             background: linear-gradient(135deg, #f59e0b, #ea580c);
             margin: 1rem;
@@ -191,41 +117,13 @@
             color: white;
         }
 
-        .banner-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .banner-tag {
-            font-size: 0.7rem;
-            background: rgba(255,255,255,0.2);
-            padding: 0.2rem 0.5rem;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 0.5rem;
-        }
-
-        .banner-content h3 { font-size: 1.25rem; margin-bottom: 0.25rem; }
-        .banner-content p { font-size: 0.75rem; opacity: 0.9; }
-        .banner-icon { font-size: 3rem; }
-
-        /* Categorias */
-        .categories-section {
-            padding: 0 1rem 1rem;
-        }
-
-        .categories-section h3 {
-            font-size: 1rem;
-            margin-bottom: 0.75rem;
-            color: var(--text-primary);
-        }
+        .categories-section { padding: 0 1rem 1rem; }
+        .categories-section h3 { margin-bottom: 0.75rem; }
 
         .categories-carousel {
             display: flex;
             gap: 0.75rem;
             overflow-x: auto;
-            scrollbar-width: thin;
         }
 
         .cat-card {
@@ -238,51 +136,13 @@
             padding: 0.75rem;
             min-width: 70px;
             cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-primary);
         }
 
         .cat-card.active {
             border-color: #3b82f6;
             background: #dbeafe;
-            color: #1e40af;
         }
 
-        [data-theme="dark"] .cat-card.active {
-            background: #1e3a8a;
-            border-color: #60a5fa;
-            color: white;
-        }
-
-        .cat-icon { font-size: 1.75rem; }
-        .cat-card span { font-size: 0.7rem; }
-
-        /* Filtros */
-        .filters-row {
-            display: flex;
-            gap: 0.5rem;
-            padding: 0 1rem 1rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-chip {
-            padding: 0.5rem 1rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 2rem;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-primary);
-        }
-
-        .filter-chip.active {
-            background: var(--btn-primary);
-            color: white;
-            border-color: var(--btn-primary);
-        }
-
-        /* Grid Produtos */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -295,65 +155,23 @@
             background: var(--bg-card);
             border-radius: 1rem;
             overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .product-badge {
-            position: absolute;
-            top: 0.5rem;
-            left: 0.5rem;
-            background: rgba(0,0,0,0.6);
-            padding: 0.25rem 0.5rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            color: white;
-            z-index: 1;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .product-image {
-            height: 180px;
+            height: 150px;
             background: var(--bg-primary);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 4rem;
             cursor: pointer;
         }
-
-        .product-placeholder { font-size: 4rem; }
 
         .product-info { padding: 1rem; }
-
-        .product-title {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            cursor: pointer;
-            color: var(--text-primary);
-        }
-
-        .product-brand {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-        }
-
-        .product-price {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--btn-primary);
-            margin: 0.5rem 0;
-        }
-
-        .product-price small {
-            font-size: 0.7rem;
-            font-weight: normal;
-        }
+        .product-title { font-weight: 600; margin-bottom: 0.25rem; cursor: pointer; }
+        .product-brand { font-size: 0.7rem; color: var(--text-secondary); }
+        .product-price { font-size: 1.25rem; font-weight: 700; color: #3b82f6; margin: 0.5rem 0; }
 
         .product-actions {
             display: flex;
@@ -363,17 +181,12 @@
 
         .btn-buy {
             flex: 1;
-            background: var(--btn-primary);
+            background: #3b82f6;
             border: none;
             padding: 0.5rem;
             border-radius: 0.5rem;
             color: white;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-buy:hover {
-            background: var(--btn-primary-hover);
         }
 
         .btn-edit-small, .btn-delete-small {
@@ -382,63 +195,8 @@
             border: 1px solid var(--border);
             border-radius: 0.5rem;
             cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-primary);
         }
 
-        .btn-edit-small:hover { background: var(--btn-warning); color: white; }
-        .btn-delete-small:hover { background: var(--btn-danger); color: white; }
-
-        .product-checkout {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
-        .product-checkout input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        /* Carrinho Flutuante */
-        .cart-summary {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg-card);
-            padding: 0.75rem 1rem;
-            transform: translateY(100%);
-            transition: transform 0.3s;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            z-index: 90;
-            border-top: 1px solid var(--border);
-        }
-
-        .cart-summary.visible { transform: translateY(0); }
-
-        .cart-summary-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1200px;
-            margin: 0 auto;
-            color: var(--text-primary);
-        }
-
-        .cart-view-btn {
-            background: var(--btn-primary);
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            color: white;
-            cursor: pointer;
-        }
-
-        /* FAB Button */
         .fab {
             position: fixed;
             bottom: 1rem;
@@ -446,21 +204,28 @@
             width: 56px;
             height: 56px;
             border-radius: 50%;
-            background: var(--btn-primary);
+            background: #3b82f6;
             border: none;
             cursor: pointer;
-            box-shadow: var(--shadow-lg);
-            z-index: 95;
             color: white;
             font-size: 1.5rem;
-            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        .fab:hover {
-            transform: scale(1.1);
+        .cart-summary {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            padding: 0.75rem;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+            border-top: 1px solid var(--border);
         }
 
-        /* Modal */
+        .cart-summary.visible { transform: translateY(0); }
+
         .modal {
             display: none;
             position: fixed;
@@ -484,7 +249,6 @@
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            transition: background 0.3s ease;
         }
 
         .modal-header {
@@ -495,10 +259,6 @@
             border-bottom: 1px solid var(--border);
         }
 
-        .modal-header h2 {
-            color: var(--text-primary);
-        }
-
         .modal-close {
             width: 32px;
             height: 32px;
@@ -507,39 +267,17 @@
             background: var(--bg-primary);
             font-size: 1.5rem;
             cursor: pointer;
-            color: var(--text-primary);
         }
 
-        .form-group {
-            padding: 0 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.875rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
+        .form-group { padding: 0 1rem; margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.875rem; margin-bottom: 0.5rem; }
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 0.75rem;
             border: 2px solid var(--border);
             border-radius: 0.5rem;
-            font-family: inherit;
             background: var(--bg-primary);
             color: var(--text-primary);
-            transition: all 0.2s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--btn-primary);
         }
 
         .form-row {
@@ -555,117 +293,25 @@
             padding: 1rem;
         }
 
-        .btn-cancel, .btn-save {
+        .btn-save {
             flex: 1;
             padding: 0.75rem;
+            background: #3b82f6;
+            border: none;
             border-radius: 0.5rem;
+            color: white;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
         .btn-cancel {
+            flex: 1;
+            padding: 0.75rem;
             background: var(--bg-primary);
             border: 1px solid var(--border);
-            color: var(--text-primary);
-        }
-
-        .btn-save {
-            background: var(--btn-primary);
-            border: none;
-            color: white;
-        }
-
-        .btn-save:hover, .btn-cancel:hover {
-            transform: translateY(-2px);
-        }
-
-        .empty-products {
-            text-align: center;
-            padding: 3rem;
-            grid-column: 1 / -1;
-            color: var(--text-secondary);
-        }
-
-        .empty-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Carrinho Modal */
-        .cart-items-list { padding: 1rem; max-height: 400px; overflow-y: auto; }
-        
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem;
-            border-bottom: 1px solid var(--border);
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .cart-item-info { flex: 1; }
-        .cart-item-name { font-weight: 600; color: var(--text-primary); }
-        .cart-item-marca { font-size: 0.7rem; color: var(--text-secondary); }
-        .cart-item-price { font-size: 0.75rem; color: var(--btn-primary); }
-
-        .cart-item-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .cart-item-controls button {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 1px solid var(--border);
-            background: var(--bg-primary);
-            cursor: pointer;
-            color: var(--text-primary);
-        }
-
-        .cart-item-controls .remove-btn {
-            background: var(--btn-danger);
-            color: white;
-            border: none;
-        }
-
-        .cart-item-total {
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .empty-cart {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
-        }
-
-        .cart-footer {
-            padding: 1rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .cart-total-section {
-            display: flex;
-            justify-content: space-between;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .btn-checkout {
-            width: 100%;
-            padding: 0.75rem;
-            background: var(--btn-success);
-            border: none;
             border-radius: 0.5rem;
-            color: white;
             cursor: pointer;
         }
 
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -679,29 +325,15 @@
             opacity: 0;
         }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .toast-success { background: var(--btn-success); }
-        .toast-error { background: var(--btn-danger); }
-        .toast-info { background: var(--btn-primary); }
+        .toast-success { background: #10b981; }
+        .toast-error { background: #ef4444; }
 
-        /* Responsivo */
-        @media (max-width: 640px) {
-            .products-grid {
-                grid-template-columns: 1fr;
-                gap: 0.75rem;
-            }
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            .cart-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
+        .empty-products { text-align: center; padding: 3rem; grid-column: 1/-1; }
+        .empty-icon { font-size: 4rem; margin-bottom: 1rem; }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
         <header class="market-header">
             <div class="header-top">
                 <div class="logo-area">
@@ -709,7 +341,7 @@
                     <h1 class="logo-text">Meu<span>Mercado</span></h1>
                 </div>
                 <div class="header-actions">
-                    <button class="theme-toggle" id="theme-toggle" aria-label="Modo noturno">🌙</button>
+                    <button class="theme-toggle" id="theme-toggle">🌙</button>
                     <button class="btn-cart" onclick="openCart()">🛒<span class="cart-badge" id="cart-badge">0</span></button>
                     <button class="btn-logout" onclick="logout()">🚪</button>
                 </div>
@@ -718,58 +350,46 @@
             <div class="search-bar">
                 <span>🔍</span>
                 <input type="text" id="search-input" placeholder="Buscar produtos...">
-                <button class="filter-icon" onclick="toggleFilters()">⚡</button>
             </div>
             
             <div class="customer-info">
-                <div class="customer-avatar">👤</div>
-                <div class="customer-details">
-                    <span class="customer-label">Entregar para</span>
-                    <span class="customer-name" id="user-email">carregando...</span>
+                <div>👤</div>
+                <div>
+                    <div style="font-size:0.7rem;color:rgba(255,255,255,0.7);">Entregar para</div>
+                    <div class="customer-name" id="user-email">carregando...</div>
                 </div>
             </div>
         </header>
 
         <div class="promo-banner">
-            <div class="banner-content">
-                <div class="banner-text">
-                    <span class="banner-tag">🔥 OFERTA DO DIA</span>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                    <span style="font-size:0.7rem;background:rgba(255,255,255,0.2);padding:0.2rem 0.5rem;border-radius:20px;">🔥 OFERTA DO DIA</span>
                     <h3>Até 30% OFF</h3>
-                    <p>em produtos selecionados</p>
+                    <p style="font-size:0.75rem;">em produtos selecionados</p>
                 </div>
-                <div class="banner-icon">🎯</div>
+                <div style="font-size:3rem;">🎯</div>
             </div>
         </div>
 
-        <!-- Categorias -->
         <div class="categories-section">
             <h3>Categorias</h3>
             <div class="categories-carousel" id="categories"></div>
         </div>
 
-        <!-- Filtros -->
-        <div class="filters-row" id="filters-panel" style="display: none;">
-            <button class="filter-chip" data-filter="all">📋 Todos</button>
-            <button class="filter-chip" data-filter="pending">⏳ Pendentes</button>
-            <button class="filter-chip" data-filter="completed">✅ Comprados</button>
-        </div>
-
-        <!-- Produtos -->
         <main class="products-grid" id="products-grid"></main>
 
-        <!-- Carrinho Flutuante -->
         <div class="cart-summary" id="cart-summary" onclick="openCart()">
-            <div class="cart-summary-content">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
                 <span>🛒</span>
                 <div>
                     <div id="cart-items-count">0 itens</div>
                     <strong id="cart-total-value">R$ 0,00</strong>
                 </div>
-                <button class="cart-view-btn">Ver carrinho →</button>
+                <button style="background:#3b82f6;border:none;padding:0.5rem 1rem;border-radius:0.5rem;color:white;">Ver carrinho →</button>
             </div>
         </div>
 
-        <!-- FAB -->
         <button class="fab" onclick="openAddModal()">+</button>
 
         <!-- Modal Produto -->
@@ -784,17 +404,17 @@
                     
                     <div class="form-group">
                         <label>Nome do produto *</label>
-                        <input type="text" id="product-nome" required placeholder="Ex: Arroz, Feijão...">
+                        <input type="text" id="product-nome" required placeholder="Ex: Arroz">
                     </div>
 
                     <div class="form-group">
-                        <label>🏷️ Marca</label>
-                        <input type="text" id="product-marca" placeholder="Ex: Tio João, Nestlé">
+                        <label>Marca</label>
+                        <input type="text" id="product-marca" placeholder="Ex: Tio João">
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>📦 Quantidade</label>
+                            <label>Quantidade</label>
                             <input type="number" id="product-quantidade" value="1" step="0.01">
                         </div>
                         <div class="form-group">
@@ -804,39 +424,37 @@
                                 <option value="kg">kg</option>
                                 <option value="g">g</option>
                                 <option value="l">L</option>
-                                <option value="ml">ml</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>💰 Preço (R$)</label>
+                            <label>Preço (R$)</label>
                             <input type="number" id="product-preco" step="0.01" placeholder="0,00">
                         </div>
                         <div class="form-group">
-                            <label>📂 Categoria</label>
+                            <label>Categoria</label>
                             <select id="product-categoria">
-                                <option value="mercearia">🥫 Mercearia</option>
-                                <option value="hortifruti">🥬 Hortifrúti</option>
-                                <option value="carnes">🥩 Carnes</option>
-                                <option value="laticinios">🥛 Laticínios</option>
-                                <option value="bebidas">🥤 Bebidas</option>
-                                <option value="limpeza">🧹 Limpeza</option>
-                                <option value="higiene">🧴 Higiene</option>
-                                <option value="outros">📦 Outros</option>
+                                <option value="mercearia">Mercearia</option>
+                                <option value="hortifruti">Hortifrúti</option>
+                                <option value="carnes">Carnes</option>
+                                <option value="laticinios">Laticínios</option>
+                                <option value="bebidas">Bebidas</option>
+                                <option value="limpeza">Limpeza</option>
+                                <option value="outros">Outros</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>📝 Descrição</label>
-                        <textarea id="product-obs" rows="2" placeholder="Informações adicionais..."></textarea>
+                        <label>Descrição</label>
+                        <textarea id="product-obs" rows="2"></textarea>
                     </div>
 
                     <div class="modal-buttons">
                         <button type="button" class="btn-cancel" onclick="closeModal('product-modal')">Cancelar</button>
-                        <button type="submit" class="btn-save">Salvar</button>
+                        <button type="submit" class="btn-save" id="save-btn">Salvar</button>
                     </div>
                 </form>
             </div>
@@ -846,16 +464,16 @@
         <div id="cart-modal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>🛒 Meu Carrinho</h2>
+                    <h2>🛒 Carrinho</h2>
                     <button class="modal-close" onclick="closeModal('cart-modal')">&times;</button>
                 </div>
-                <div id="cart-list" class="cart-items-list"></div>
-                <div class="cart-footer">
-                    <div class="cart-total-section">
+                <div id="cart-list" style="padding:1rem;"></div>
+                <div style="padding:1rem;border-top:1px solid var(--border);">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:1rem;">
                         <span>Total:</span>
-                        <span id="cart-grand-total">R$ 0,00</span>
+                        <strong id="cart-grand-total">R$ 0,00</strong>
                     </div>
-                    <button class="btn-checkout" onclick="finalizarCompra()">Finalizar compra ✅</button>
+                    <button onclick="finalizarCompra()" style="width:100%;padding:0.75rem;background:#10b981;border:none;border-radius:0.5rem;color:white;">Finalizar compra ✅</button>
                 </div>
             </div>
         </div>
@@ -868,8 +486,13 @@
         const SUPABASE_URL = 'https://pquobavzpooyygfoczpn.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxdW9iYXZ6cG9veXlnZm9jenBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMTE5NDQsImV4cCI6MjA4NzY4Nzk0NH0.-6WeJxqq_bzYD0chC1SF2iZzpK96FzWtl3xmcjeuRi4';
         
+        console.log('📦 Iniciando app...');
+        console.log('URL Supabase:', SUPABASE_URL);
+        
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        console.log('✅ Supabase client criado');
         
         // ============================================
         // VARIÁVEIS
@@ -878,7 +501,6 @@
         let allProducts = [];
         let cart = JSON.parse(localStorage.getItem('mercado_cart') || '[]');
         let currentCategory = 'todos';
-        let currentFilter = 'all';
         let searchTerm = '';
         
         // ============================================
@@ -887,25 +509,30 @@
         function initTheme() {
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
-            const themeToggle = document.getElementById('theme-toggle');
-            if (themeToggle) {
-                themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-            }
+            const btn = document.getElementById('theme-toggle');
+            if (btn) btn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
         }
         
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        window.toggleTheme = function() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            const themeToggle = document.getElementById('theme-toggle');
-            if (themeToggle) {
-                themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-            }
-        }
+            const btn = document.getElementById('theme-toggle');
+            if (btn) btn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        };
+        
+        document.getElementById('theme-toggle')?.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            const btn = document.getElementById('theme-toggle');
+            if (btn) btn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
         
         // ============================================
-        // FUNÇÕES AUXILIARES
+        // FUNÇÕES
         // ============================================
         function showToast(message, type) {
             const toast = document.createElement('div');
@@ -942,15 +569,10 @@
         function updateCartUI() {
             const totalItems = cart.reduce((s, i) => s + i.quantidade, 0);
             const totalValue = cart.reduce((s, i) => s + (i.preco * i.quantidade), 0);
-            const badge = document.getElementById('cart-badge');
-            const itemsCount = document.getElementById('cart-items-count');
-            const totalValueEl = document.getElementById('cart-total-value');
-            const cartSummary = document.getElementById('cart-summary');
-            
-            if (badge) badge.textContent = totalItems;
-            if (itemsCount) itemsCount.innerHTML = `${totalItems} ${totalItems === 1 ? 'item' : 'itens'}`;
-            if (totalValueEl) totalValueEl.innerHTML = formatMoney(totalValue);
-            if (cartSummary) cartSummary.classList.toggle('visible', totalItems > 0);
+            document.getElementById('cart-badge').textContent = totalItems;
+            document.getElementById('cart-items-count').innerHTML = `${totalItems} ${totalItems === 1 ? 'item' : 'itens'}`;
+            document.getElementById('cart-total-value').innerHTML = formatMoney(totalValue);
+            document.getElementById('cart-summary').classList.toggle('visible', totalItems > 0);
         }
         
         window.addToCart = function(product, quantidade = 1) {
@@ -998,30 +620,27 @@
             const container = document.getElementById('cart-list');
             const total = cart.reduce((s, i) => s + (i.preco * i.quantidade), 0);
             
-            if (!container) return;
-            
             if (cart.length === 0) {
-                container.innerHTML = '<div class="empty-cart"><div class="empty-icon">🛒</div><p>Carrinho vazio</p></div>';
+                container.innerHTML = '<div style="text-align:center;padding:2rem;">Carrinho vazio</div>';
             } else {
                 container.innerHTML = cart.map(i => `
-                    <div class="cart-item">
-                        <div class="cart-item-info">
-                            <div class="cart-item-name">${escapeHtml(i.nome)}</div>
-                            <div class="cart-item-marca">${i.marca || ''}</div>
-                            <div class="cart-item-price">${formatMoney(i.preco)}/un</div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem;border-bottom:1px solid var(--border);">
+                        <div>
+                            <strong>${escapeHtml(i.nome)}</strong>
+                            <div style="font-size:0.7rem;color:var(--text-secondary);">${i.marca || ''}</div>
+                            <div>${formatMoney(i.preco)}/un</div>
                         </div>
-                        <div class="cart-item-controls">
-                            <button onclick="updateQuantity('${i.id}', -1)">-</button>
+                        <div style="display:flex;align-items:center;gap:0.5rem;">
+                            <button onclick="updateQuantity('${i.id}', -1)" style="width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--bg-primary);">-</button>
                             <span>${i.quantidade}</span>
-                            <button onclick="updateQuantity('${i.id}', 1)">+</button>
-                            <button class="remove-btn" onclick="removeFromCart('${i.id}')">🗑️</button>
+                            <button onclick="updateQuantity('${i.id}', 1)" style="width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--bg-primary);">+</button>
+                            <button onclick="removeFromCart('${i.id}')" style="background:#ef4444;color:white;border:none;padding:0.25rem 0.5rem;border-radius:0.25rem;">🗑️</button>
                         </div>
-                        <div class="cart-item-total">${formatMoney(i.preco * i.quantidade)}</div>
+                        <div><strong>${formatMoney(i.preco * i.quantidade)}</strong></div>
                     </div>
                 `).join('');
             }
-            const grandTotal = document.getElementById('cart-grand-total');
-            if (grandTotal) grandTotal.textContent = formatMoney(total);
+            document.getElementById('cart-grand-total').textContent = formatMoney(total);
         }
         
         window.finalizarCompra = async function() {
@@ -1040,12 +659,10 @@
         };
         
         // ============================================
-        // CRUD PRODUTOS
+        // CRUD PRODUTOS - COM DEBUG
         // ============================================
         window.openAddModal = function(productId = null) {
-            const form = document.getElementById('product-form');
-            if (!form) return;
-            
+            console.log('📝 Abrindo modal, productId:', productId);
             if (productId) {
                 const p = allProducts.find(p => p.id === productId);
                 if (p) {
@@ -1061,10 +678,9 @@
                 }
             } else {
                 document.getElementById('modal-title').textContent = 'Adicionar Produto';
-                form.reset();
+                document.getElementById('product-form').reset();
                 document.getElementById('product-id').value = '';
                 document.getElementById('product-quantidade').value = 1;
-                document.getElementById('product-unidade').value = 'un';
                 document.getElementById('product-categoria').value = 'mercearia';
             }
             openModal('product-modal');
@@ -1074,9 +690,10 @@
             if (!confirm('Remover produto?')) return;
             const { error } = await supabase.from('items').delete().eq('id', id).eq('user_id', currentUser.id);
             if (error) {
-                showToast('Erro ao remover', 'error');
+                showToast('Erro: ' + error.message, 'error');
             } else {
                 showToast('Removido!', 'success');
+                await loadProducts();
             }
         };
         
@@ -1084,18 +701,31 @@
             await supabase.from('items').update({ comprado: !atual }).eq('id', id).eq('user_id', currentUser.id);
         };
         
-        // SUBMIT DO FORMULÁRIO
+        // SUBMIT DO FORMULÁRIO - COM DEBUG DETALHADO
         const productForm = document.getElementById('product-form');
         if (productForm) {
             productForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
+                console.log('🔵 FORMULÁRIO SUBMETIDO');
                 
                 const id = document.getElementById('product-id').value;
                 const nome = document.getElementById('product-nome').value.trim();
+                
+                console.log('📝 Dados do formulário:', { id, nome });
+                
                 if (!nome) {
-                    showToast('Digite o nome', 'error');
+                    console.log('❌ Nome vazio');
+                    showToast('Digite o nome do produto', 'error');
                     return;
                 }
+                
+                if (!currentUser) {
+                    console.log('❌ Usuário não logado');
+                    showToast('Usuário não autenticado', 'error');
+                    return;
+                }
+                
+                console.log('👤 Usuário atual:', currentUser.id, currentUser.email);
                 
                 const data = {
                     nome: nome,
@@ -1108,28 +738,50 @@
                     user_id: currentUser.id
                 };
                 
-                let result;
-                if (id) {
-                    result = await supabase.from('items').update(data).eq('id', id).eq('user_id', currentUser.id);
-                } else {
-                    result = await supabase.from('items').insert([data]);
-                }
+                console.log('📦 Dados a serem enviados:', data);
                 
-                if (result.error) {
-                    console.error('Erro:', result.error);
-                    showToast('Erro: ' + result.error.message, 'error');
-                } else {
-                    showToast(id ? 'Atualizado!' : 'Adicionado!', 'success');
-                    closeModal('product-modal');
-                    await loadProducts();
+                try {
+                    let result;
+                    if (id) {
+                        console.log('✏️ Atualizando produto ID:', id);
+                        result = await supabase
+                            .from('items')
+                            .update(data)
+                            .eq('id', id)
+                            .eq('user_id', currentUser.id);
+                    } else {
+                        console.log('➕ Inserindo novo produto');
+                        result = await supabase
+                            .from('items')
+                            .insert([data]);
+                    }
+                    
+                    console.log('📡 Resposta do Supabase:', result);
+                    
+                    if (result.error) {
+                        console.error('❌ ERRO SUPABASE:', result.error);
+                        showToast('Erro: ' + result.error.message, 'error');
+                    } else {
+                        console.log('✅ Sucesso!');
+                        showToast(id ? 'Produto atualizado!' : 'Produto adicionado!', 'success');
+                        closeModal('product-modal');
+                        await loadProducts();
+                    }
+                } catch (error) {
+                    console.error('❌ ERRO FATAL:', error);
+                    showToast('Erro fatal: ' + error.message, 'error');
                 }
             });
+        } else {
+            console.error('❌ Formulário não encontrado!');
         }
         
         // ============================================
         // RENDERIZAÇÃO
         // ============================================
         function renderProducts() {
+            console.log('🎨 Renderizando produtos, total:', allProducts.length);
+            
             let filtered = [...allProducts];
             
             if (searchTerm) {
@@ -1137,11 +789,6 @@
             }
             if (currentCategory !== 'todos') {
                 filtered = filtered.filter(p => p.categoria === currentCategory);
-            }
-            if (currentFilter === 'pending') {
-                filtered = filtered.filter(p => !p.comprado);
-            } else if (currentFilter === 'completed') {
-                filtered = filtered.filter(p => p.comprado);
             }
             
             const grid = document.getElementById('products-grid');
@@ -1159,18 +806,16 @@
                 laticinios: '🥛',
                 bebidas: '🥤',
                 limpeza: '🧹',
-                higiene: '🧴',
                 outros: '📦'
             };
             
             grid.innerHTML = filtered.map(p => `
-                <div class="product-card ${p.comprado ? 'comprado' : ''}">
-                    <div class="product-badge">${categoriaIcon[p.categoria] || '📦'}</div>
+                <div class="product-card">
                     <div class="product-image" onclick="openAddModal('${p.id}')">
-                        <div class="product-placeholder">${categoriaIcon[p.categoria] || '📦'}</div>
+                        ${categoriaIcon[p.categoria] || '📦'}
                     </div>
                     <div class="product-info">
-                        <h4 class="product-title">${escapeHtml(p.nome)}</h4>
+                        <h4 class="product-title" onclick="openAddModal('${p.id}')">${escapeHtml(p.nome)}</h4>
                         ${p.marca ? `<p class="product-brand">${escapeHtml(p.marca)}</p>` : ''}
                         <div class="product-price">${formatMoney(p.preco)} <small>/${p.unidade || 'un'}</small></div>
                         <div class="product-actions">
@@ -1178,7 +823,7 @@
                             <button class="btn-edit-small" onclick="openAddModal('${p.id}')">✏️</button>
                             <button class="btn-delete-small" onclick="removerProduto('${p.id}')">🗑️</button>
                         </div>
-                        <div class="product-checkout">
+                        <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;">
                             <input type="checkbox" ${p.comprado ? 'checked' : ''} onchange="toggleComprado('${p.id}', ${p.comprado})">
                             <span>Já comprei</span>
                         </div>
@@ -1191,7 +836,12 @@
         // CARREGAR PRODUTOS
         // ============================================
         async function loadProducts() {
-            if (!currentUser) return;
+            if (!currentUser) {
+                console.log('⏳ Aguardando usuário...');
+                return;
+            }
+            
+            console.log('🔄 Carregando produtos para usuário:', currentUser.id);
             
             const { data, error } = await supabase
                 .from('items')
@@ -1200,17 +850,18 @@
                 .order('created_at', { ascending: false });
             
             if (error) {
-                console.error('Erro:', error);
-                showToast('Erro ao carregar', 'error');
+                console.error('❌ Erro ao carregar produtos:', error);
+                showToast('Erro ao carregar: ' + error.message, 'error');
                 return;
             }
             
+            console.log(`✅ Carregados ${data?.length || 0} produtos`);
             allProducts = data || [];
             renderProducts();
         }
         
         // ============================================
-        // FILTROS
+        // CATEGORIAS
         // ============================================
         function loadCategories() {
             const categories = [
@@ -1221,7 +872,6 @@
                 { id: 'laticinios', nome: 'Laticínios', icon: '🥛' },
                 { id: 'bebidas', nome: 'Bebidas', icon: '🥤' },
                 { id: 'limpeza', nome: 'Limpeza', icon: '🧹' },
-                { id: 'higiene', nome: 'Higiene', icon: '🧴' },
                 { id: 'outros', nome: 'Outros', icon: '📦' }
             ];
             
@@ -1230,7 +880,7 @@
             
             container.innerHTML = categories.map(cat => `
                 <button class="cat-card ${cat.id === 'todos' ? 'active' : ''}" data-cat="${cat.id}">
-                    <div class="cat-icon">${cat.icon}</div>
+                    <div style="font-size:1.75rem;">${cat.icon}</div>
                     <span>${cat.nome}</span>
                 </button>
             `).join('');
@@ -1244,15 +894,6 @@
                 });
             });
             
-            document.querySelectorAll('.filter-chip').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    currentFilter = btn.dataset.filter;
-                    renderProducts();
-                });
-            });
-            
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
@@ -1262,24 +903,15 @@
             }
         }
         
-        window.toggleFilters = function() {
-            const panel = document.getElementById('filters-panel');
-            if (panel) {
-                panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
-            }
-        };
-        
         // ============================================
         // MODAIS
         // ============================================
         function openModal(id) {
-            const modal = document.getElementById(id);
-            if (modal) modal.classList.add('show');
+            document.getElementById(id).classList.add('show');
         }
         
         window.closeModal = function(id) {
-            const modal = document.getElementById(id);
-            if (modal) modal.classList.remove('show');
+            document.getElementById(id).classList.remove('show');
         };
         
         // ============================================
@@ -1293,17 +925,11 @@
         // ============================================
         // INICIAR
         // ============================================
-        // Botão tema
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        if (themeToggleBtn) {
-            themeToggleBtn.addEventListener('click', toggleTheme);
-        }
-        
         supabase.auth.onAuthStateChange(async (event, session) => {
+            console.log('🔐 Auth event:', event, session?.user?.email);
             if (session) {
                 currentUser = session.user;
-                const userEmailSpan = document.getElementById('user-email');
-                if (userEmailSpan) userEmailSpan.textContent = session.user.email;
+                document.getElementById('user-email').textContent = session.user.email;
                 await loadProducts();
                 updateCartUI();
             } else {
@@ -1312,10 +938,11 @@
         });
         
         const { data: { session } } = await supabase.auth.getSession();
+        console.log('📋 Sessão inicial:', session?.user?.email);
+        
         if (session) {
             currentUser = session.user;
-            const userEmailSpan = document.getElementById('user-email');
-            if (userEmailSpan) userEmailSpan.textContent = session.user.email;
+            document.getElementById('user-email').textContent = session.user.email;
             await loadProducts();
             updateCartUI();
         } else {
@@ -1332,7 +959,7 @@
             });
         });
         
-        console.log('✅ App iniciado com modo noturno!');
+        console.log('✅ App iniciado com DEBUG ativado!');
     </script>
 </body>
 </html>
