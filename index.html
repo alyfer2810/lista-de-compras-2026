@@ -38,7 +38,6 @@
             transition: all 0.3s;
         }
 
-        /* Header */
         .header {
             background: var(--primary);
             padding: 1rem;
@@ -76,7 +75,6 @@
         }
         .btn-icon:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
 
-        /* Busca */
         .search-bar {
             background: white;
             border-radius: 2rem;
@@ -92,9 +90,7 @@
             font-size: 1rem;
             background: transparent;
         }
-        .search-bar input::placeholder { color: #9ca3af; }
 
-        /* Info usuário */
         .user-info {
             display: flex;
             align-items: center;
@@ -105,7 +101,6 @@
             font-size: 0.875rem;
         }
 
-        /* Banner */
         .banner {
             background: linear-gradient(135deg, var(--warning), #ea580c);
             margin: 1rem;
@@ -124,7 +119,6 @@
         }
         .banner h3 { font-size: 1.25rem; margin-bottom: 0.25rem; }
 
-        /* Estatísticas */
         .stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -141,7 +135,6 @@
         .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
         .stat-label { font-size: 0.75rem; color: var(--text-light); }
 
-        /* Lista de Compras */
         .shopping-list {
             padding: 0 1rem;
             display: flex;
@@ -175,7 +168,6 @@
         }
         .btn-remove:hover { background: #dc2626; transform: scale(1.05); }
 
-        /* Adicionar Item */
         .add-section {
             position: fixed;
             bottom: 0;
@@ -220,7 +212,6 @@
         }
         .btn-add:hover { background: var(--primary-dark); transform: translateY(-2px); }
 
-        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 3rem;
@@ -228,7 +219,6 @@
         }
         .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
 
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 5rem;
@@ -245,7 +235,6 @@
         .toast-success { background: var(--success); }
         .toast-error { background: var(--danger); }
 
-        /* Responsivo */
         @media (max-width: 640px) {
             .stats { gap: 0.5rem; }
             .stat-card { padding: 0.75rem; }
@@ -257,13 +246,12 @@
 </head>
 <body>
     <div class="app">
-        <!-- Header -->
         <div class="header">
             <div class="header-top">
                 <div class="logo">Lista<span>2026</span></div>
                 <div class="header-actions">
-                    <button class="btn-icon" id="themeBtn" aria-label="Modo noturno">🌙</button>
-                    <button class="btn-icon" onclick="logout()" aria-label="Sair">🚪</button>
+                    <button class="btn-icon" id="themeBtn">🌙</button>
+                    <button class="btn-icon" onclick="logout()">🚪</button>
                 </div>
             </div>
             
@@ -289,7 +277,6 @@
             </div>
         </div>
 
-        <!-- Estatísticas -->
         <div class="stats">
             <div class="stat-card">
                 <div class="stat-value" id="totalCount">0</div>
@@ -305,10 +292,8 @@
             </div>
         </div>
 
-        <!-- Lista de Compras -->
         <ul class="shopping-list" id="shoppingList"></ul>
 
-        <!-- Adicionar Item -->
         <div class="add-section">
             <div class="add-container">
                 <input type="text" id="itemInput" placeholder="Digite um item..." autocomplete="off">
@@ -330,7 +315,6 @@
         let allItems = [];
         let searchTerm = '';
         
-        // Elementos DOM
         const listaEl = document.getElementById('shoppingList');
         const itemInput = document.getElementById('itemInput');
         const userEmailSpan = document.getElementById('userEmail');
@@ -371,8 +355,12 @@
         
         function formatarData(data) {
             if (!data) return '';
-            const d = new Date(data);
-            return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+            try {
+                const d = new Date(data);
+                return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+            } catch {
+                return '';
+            }
         }
         
         function atualizarEstatisticas() {
@@ -380,6 +368,13 @@
             document.getElementById('totalCount').textContent = total;
             document.getElementById('completedCount').textContent = '0';
             document.getElementById('pendingCount').textContent = total;
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
         
         // ============================================
@@ -390,7 +385,7 @@
             
             if (searchTerm) {
                 filtrados = filtrados.filter(item => 
-                    item.item.toLowerCase().includes(searchTerm.toLowerCase())
+                    item.item?.toLowerCase().includes(searchTerm.toLowerCase())
                 );
             }
             
@@ -422,28 +417,20 @@
             atualizarEstatisticas();
         }
         
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
         // ============================================
-        // CRUD COM SUPABASE
+        // CRUD COM SUPABASE (SEM ORDER BY created_at)
         // ============================================
         
-        // Carregar lista do Supabase
         async function carregarLista() {
             if (!currentUser) return;
             
             console.log('🔄 Carregando lista para:', currentUser.id);
             
+            // Removido o order_by para evitar erro
             const { data, error } = await supabase
                 .from('lista_compras')
                 .select('*')
-                .eq('adicionado_por', currentUser.id)
-                .order('created_at', { ascending: false });
+                .eq('adicionado_por', currentUser.id);
             
             if (error) {
                 console.error('❌ Erro ao carregar:', error);
@@ -456,7 +443,6 @@
             renderizarLista();
         }
         
-        // Adicionar item (SEM a coluna comprado)
         window.adicionarItem = async function () {
             const item = itemInput.value.trim();
             
@@ -492,7 +478,6 @@
             await carregarLista();
         };
         
-        // Remover item
         window.removerItem = async function (id) {
             if (!confirm('Tem certeza que deseja remover este item?')) return;
             
@@ -526,7 +511,6 @@
             return user;
         }
         
-        // Logout
         window.logout = async function () {
             await supabase.auth.signOut();
             window.location.href = 'login.html';
@@ -540,7 +524,6 @@
             renderizarLista();
         });
         
-        // Enter para adicionar
         itemInput?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 window.adicionarItem();
