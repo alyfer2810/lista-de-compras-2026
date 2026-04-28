@@ -6,44 +6,509 @@
     <meta name="theme-color" content="#3b82f6" id="theme-color">
     <link rel="shortcut icon" href="src/img/favicon.ico" type="image/x-icon">
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="src/css/index.css">
     <title>Lista 2026 · Meu Mercado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #f3f4f6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .market-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon { font-size: 1.75rem; }
+        .logo-text { font-size: 1.5rem; font-weight: 700; color: white; }
+        .logo-text span { color: #fbbf24; }
+
+        .header-actions { display: flex; gap: 0.5rem; }
+
+        .theme-toggle, .btn-cart, .btn-logout {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            color: white;
+            font-size: 1.25rem;
+            position: relative;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #f59e0b;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 20px;
+        }
+
+        /* Busca */
+        .search-bar {
+            display: flex;
+            gap: 0.5rem;
+            background: white;
+            border-radius: 2rem;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .filter-icon {
+            background: #e5e7eb;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Info Cliente */
+        .customer-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .customer-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .customer-label {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .customer-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        /* Banner */
+        .promo-banner {
+            background: linear-gradient(135deg, #f59e0b, #ea580c);
+            margin: 1rem;
+            border-radius: 1rem;
+            padding: 1rem;
+            color: white;
+        }
+
+        .banner-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .banner-tag {
+            font-size: 0.7rem;
+            background: rgba(255,255,255,0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+        }
+
+        /* Categorias */
+        .categories-section {
+            padding: 0 1rem 1rem;
+        }
+
+        .categories-section h3 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .categories-carousel {
+            display: flex;
+            gap: 0.75rem;
+            overflow-x: auto;
+        }
+
+        .cat-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 1rem;
+            padding: 0.75rem;
+            min-width: 70px;
+            cursor: pointer;
+        }
+
+        .cat-card.active {
+            border-color: #3b82f6;
+            background: #dbeafe;
+        }
+
+        .cat-icon { font-size: 1.75rem; }
+        .cat-card span { font-size: 0.7rem; }
+
+        /* Filtros */
+        .filters-row {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0 1rem 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .filter-chip.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        /* Grid Produtos */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+            padding-bottom: 80px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .product-badge {
+            position: absolute;
+            background: rgba(0,0,0,0.6);
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 0.5rem;
+        }
+
+        .product-image {
+            height: 180px;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .product-placeholder { font-size: 4rem; }
+
+        .product-info { padding: 1rem; }
+
+        .product-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            cursor: pointer;
+        }
+
+        .product-brand {
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+
+        .product-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin: 0.75rem 0;
+        }
+
+        .btn-buy {
+            flex: 1;
+            background: #3b82f6;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-edit-small, .btn-delete-small {
+            width: 36px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        .product-checkout {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        /* Carrinho Flutuante */
+        .cart-summary {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 0.75rem 1rem;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 90;
+        }
+
+        .cart-summary.visible { transform: translateY(0); }
+
+        .cart-summary-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .cart-view-btn {
+            background: #3b82f6;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* FAB Button */
+        .fab {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #3b82f6;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 95;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.show { display: flex; }
+
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: #f3f4f6;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            padding: 0 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-family: inherit;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            padding: 0 1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .btn-cancel, .btn-save {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn-save {
+            background: #3b82f6;
+            border: none;
+            color: white;
+        }
+
+        .empty-products {
+            text-align: center;
+            padding: 3rem;
+            grid-column: 1 / -1;
+        }
+
+        .cart-items-list { padding: 1rem; max-height: 400px; overflow-y: auto; }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .cart-footer { padding: 1rem; border-top: 1px solid #e5e7eb; }
+        .cart-total-section {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .btn-checkout {
+            width: 100%;
+            padding: 0.75rem;
+            background: #10b981;
+            border: none;
+            border-radius: 0.5rem;
+            color: white;
+            cursor: pointer;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            color: white;
+            z-index: 2000;
+            transition: transform 0.3s;
+            opacity: 0;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .toast-success { background: #10b981; }
+        .toast-error { background: #ef4444; }
+    </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Header Estilo Mercado - COR ALTERADA PARA AZUL -->
-        <header class="market-header" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+        <!-- Header -->
+        <header class="market-header">
             <div class="header-top">
                 <div class="logo-area">
                     <div class="logo-icon">🛒</div>
                     <h1 class="logo-text">Meu<span>Mercado</span></h1>
                 </div>
                 <div class="header-actions">
-                    <button class="theme-toggle" id="theme-toggle">
-                        <span class="theme-icon">🌙</span>
-                    </button>
-                    <button class="btn-cart" onclick="openCart()">
-                        🛒
-                        <span class="cart-badge" id="cart-badge">0</span>
-                    </button>
-                    <button class="btn-logout" onclick="logout()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                            <polyline points="16 17 21 12 16 7"/>
-                            <line x1="21" y1="12" x2="9" y2="12"/>
-                        </svg>
-                    </button>
+                    <button class="btn-cart" onclick="openCart()">🛒<span class="cart-badge" id="cart-badge">0</span></button>
+                    <button class="btn-logout" onclick="logout()">🚪</button>
                 </div>
             </div>
             
-            <!-- Barra de Busca -->
             <div class="search-bar">
-                <div class="search-icon">🔍</div>
-                <input type="text" id="search-input" placeholder="Buscar produtos..." autocomplete="off">
-                <button class="filter-icon" id="open-filters">⚡</button>
+                <span>🔍</span>
+                <input type="text" id="search-input" placeholder="Buscar produtos...">
+                <button class="filter-icon" onclick="toggleFilters()">⚡</button>
             </div>
             
-            <!-- Info do Cliente -->
             <div class="customer-info">
                 <div class="customer-avatar">👤</div>
                 <div class="customer-details">
@@ -53,7 +518,6 @@
             </div>
         </header>
 
-        <!-- Banner Ofertas -->
         <div class="promo-banner">
             <div class="banner-content">
                 <div class="banner-text">
@@ -65,220 +529,132 @@
             </div>
         </div>
 
-        <!-- Categorias Rápidas -->
+        <!-- Categorias -->
         <div class="categories-section">
             <h3>Categorias</h3>
-            <div class="categories-carousel">
-                <button class="cat-card active" data-categoria="todos">
-                    <div class="cat-icon">🏠</div>
-                    <span>Todos</span>
-                </button>
-                <button class="cat-card" data-categoria="mercearia">
-                    <div class="cat-icon">🥫</div>
-                    <span>Mercearia</span>
-                </button>
-                <button class="cat-card" data-categoria="hortifruti">
-                    <div class="cat-icon">🥬</div>
-                    <span>Hortifrúti</span>
-                </button>
-                <button class="cat-card" data-categoria="carnes">
-                    <div class="cat-icon">🥩</div>
-                    <span>Carnes</span>
-                </button>
-                <button class="cat-card" data-categoria="laticinios">
-                    <div class="cat-icon">🥛</div>
-                    <span>Laticínios</span>
-                </button>
-                <button class="cat-card" data-categoria="bebidas">
-                    <div class="cat-icon">🥤</div>
-                    <span>Bebidas</span>
-                </button>
-                <button class="cat-card" data-categoria="limpeza">
-                    <div class="cat-icon">🧹</div>
-                    <span>Limpeza</span>
-                </button>
-                <button class="cat-card" data-categoria="higiene">
-                    <div class="cat-icon">🧴</div>
-                    <span>Higiene</span>
-                </button>
-                <button class="cat-card" data-categoria="padaria">
-                    <div class="cat-icon">🍞</div>
-                    <span>Padaria</span>
-                </button>
-                <button class="cat-card" data-categoria="congelados">
-                    <div class="cat-icon">❄️</div>
-                    <span>Congelados</span>
-                </button>
-            </div>
+            <div class="categories-carousel" id="categories"></div>
         </div>
 
         <!-- Filtros -->
         <div class="filters-row" id="filters-panel" style="display: none;">
-            <button class="filter-chip active" data-filter="all">Todos</button>
+            <button class="filter-chip" data-filter="all">Todos</button>
             <button class="filter-chip" data-filter="pending">Pendentes</button>
             <button class="filter-chip" data-filter="completed">Comprados</button>
-            <button class="filter-chip" data-filter="high">Prioridade Alta</button>
-            <button class="filter-chip" data-filter="low-price">Menor Preço</button>
-            <button class="filter-chip" data-filter="high-price">Maior Preço</button>
         </div>
 
-        <!-- Resumo do Carrinho Flutuante -->
+        <!-- Produtos -->
+        <main class="products-grid" id="products-grid"></main>
+
+        <!-- Carrinho Flutuante -->
         <div class="cart-summary" id="cart-summary" onclick="openCart()">
             <div class="cart-summary-content">
-                <span class="cart-icon">🛒</span>
-                <div class="cart-info">
-                    <span class="cart-items" id="cart-items-count">0 itens</span>
-                    <span class="cart-total" id="cart-total-value">R$ 0,00</span>
+                <span>🛒</span>
+                <div>
+                    <div id="cart-items-count">0 itens</div>
+                    <strong id="cart-total-value">R$ 0,00</strong>
                 </div>
                 <button class="cart-view-btn">Ver carrinho →</button>
             </div>
         </div>
 
-        <!-- Lista de Produtos -->
-        <main class="products-grid" id="products-grid"></main>
+        <!-- FAB -->
+        <button class="fab" onclick="openAddModal()">+</button>
 
-        <!-- Modal do Carrinho -->
-        <div id="cart-modal" class="modal">
-            <div class="modal-content cart-modal-content">
-                <div class="modal-header">
-                    <h2>🛒 Meu Carrinho</h2>
-                    <button class="modal-close" onclick="closeCart()">&times;</button>
-                </div>
-                <div id="cart-items-list" class="cart-items-list"></div>
-                <div class="cart-footer">
-                    <div class="cart-total-section">
-                        <span>Total:</span>
-                        <span class="cart-grand-total" id="cart-grand-total">R$ 0,00</span>
-                    </div>
-                    <div class="cart-actions">
-                        <button class="btn-clear-cart" onclick="clearCart()">Limpar carrinho</button>
-                        <button class="btn-checkout" onclick="checkout()">Finalizar compra ✅</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal de Detalhes do Produto -->
+        <!-- Modal Produto -->
         <div id="product-modal" class="modal">
-            <div class="modal-content product-modal-content">
-                <button class="modal-close" onclick="closeProductModal()">&times;</button>
-                <div id="product-detail" class="product-detail"></div>
-            </div>
-        </div>
-
-        <!-- Modal de Adicionar Produto - VERSÃO CORRIGIDA -->
-        <div id="add-modal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>Adicionar Produto</h2>
-                    <button class="modal-close" onclick="closeAddModal()">&times;</button>
+                    <h2 id="modal-title">Adicionar Produto</h2>
+                    <button class="modal-close" onclick="closeModal('product-modal')">&times;</button>
                 </div>
                 <form id="product-form">
                     <input type="hidden" id="product-id">
                     
                     <div class="form-group">
                         <label>Nome do produto *</label>
-                        <input type="text" id="product-nome" required placeholder="Ex: Arroz, Feijão...">
+                        <input type="text" id="product-nome" required>
                     </div>
 
                     <div class="form-group">
-                        <label>🏷️ Marca</label>
-                        <input type="text" id="product-marca" placeholder="Ex: Tio João, Nestlé">
+                        <label>Marca</label>
+                        <input type="text" id="product-marca">
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>📦 Quantidade</label>
-                            <input type="number" id="product-quantidade" value="1" min="0.01" step="0.01">
+                            <label>Quantidade</label>
+                            <input type="number" id="product-quantidade" value="1" step="0.01">
                         </div>
                         <div class="form-group">
                             <label>Unidade</label>
                             <select id="product-unidade">
                                 <option value="un">Unidade</option>
-                                <option value="kg">Quilograma</option>
-                                <option value="g">Grama</option>
-                                <option value="l">Litro</option>
-                                <option value="ml">Mililitro</option>
-                                <option value="pac">Pacote</option>
-                                <option value="lata">Lata</option>
-                                <option value="cx">Caixa</option>
+                                <option value="kg">kg</option>
+                                <option value="g">g</option>
+                                <option value="l">L</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label>💰 Preço (R$)</label>
+                            <label>Preço (R$)</label>
                             <input type="number" id="product-preco" step="0.01" placeholder="0,00">
                         </div>
                         <div class="form-group">
-                            <label>📂 Categoria</label>
+                            <label>Categoria</label>
                             <select id="product-categoria">
-                                <option value="mercearia">🥫 Mercearia</option>
-                                <option value="hortifruti">🥬 Hortifrúti</option>
-                                <option value="carnes">🥩 Carnes</option>
-                                <option value="laticinios">🥛 Laticínios</option>
-                                <option value="bebidas">🥤 Bebidas</option>
-                                <option value="limpeza">🧹 Limpeza</option>
-                                <option value="higiene">🧴 Higiene</option>
-                                <option value="padaria">🍞 Padaria</option>
-                                <option value="congelados">❄️ Congelados</option>
-                                <option value="outros">📦 Outros</option>
+                                <option value="mercearia">Mercearia</option>
+                                <option value="hortifruti">Hortifrúti</option>
+                                <option value="carnes">Carnes</option>
+                                <option value="laticinios">Laticínios</option>
+                                <option value="bebidas">Bebidas</option>
+                                <option value="limpeza">Limpeza</option>
+                                <option value="outros">Outros</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>⚡ Prioridade</label>
-                        <div class="priority-select">
-                            <label class="priority-option">
-                                <input type="radio" name="prioridade" value="1"> 🔴 Alta
-                            </label>
-                            <label class="priority-option">
-                                <input type="radio" name="prioridade" value="2" checked> 🟡 Média
-                            </label>
-                            <label class="priority-option">
-                                <input type="radio" name="prioridade" value="3"> 🟢 Baixa
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>📝 Descrição</label>
-                        <textarea id="product-desc" rows="2" placeholder="Informações adicionais..."></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>🖼️ URL da imagem (opcional)</label>
-                        <input type="url" id="product-imagem" placeholder="https://exemplo.com/produto.jpg">
+                        <label>Descrição</label>
+                        <textarea id="product-obs" rows="2"></textarea>
                     </div>
 
                     <div class="modal-buttons">
-                        <button type="button" class="btn-cancel" onclick="closeAddModal()">Cancelar</button>
-                        <button type="submit" class="btn-save">Salvar produto</button>
+                        <button type="button" class="btn-cancel" onclick="closeModal('product-modal')">Cancelar</button>
+                        <button type="submit" class="btn-save">Salvar</button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Botão Flutuante -->
-        <button class="fab" onclick="openAddModal()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="12" y1="5" x2="12" y2="19"/>
-                <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-        </button>
+        <!-- Modal Carrinho -->
+        <div id="cart-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🛒 Meu Carrinho</h2>
+                    <button class="modal-close" onclick="closeModal('cart-modal')">&times;</button>
+                </div>
+                <div id="cart-list" class="cart-items-list"></div>
+                <div class="cart-footer">
+                    <div class="cart-total-section">
+                        <span>Total:</span>
+                        <span id="cart-grand-total">R$ 0,00</span>
+                    </div>
+                    <button class="btn-checkout" onclick="finalizarCompra()">Finalizar compra ✅</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module">
         // ============================================
-        // CONFIGURAÇÃO SUPABASE
+        // SUPABASE - SUAS CREDENCIAIS
         // ============================================
         const SUPABASE_URL = 'https://pquobavzpooyygfoczpn.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxdW9iYXZ6cG9veXlnZm9jenBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMTE5NDQsImV4cCI6MjA4NzY4Nzk0NH0.-6WeJxqq_bzYD0chC1SF2iZzpK96FzWtl3xmcjeuRi4';
         
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-        
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         // ============================================
@@ -286,46 +662,18 @@
         // ============================================
         let currentUser = null;
         let allProducts = [];
-        let cart = JSON.parse(localStorage.getItem('market_cart') || '[]');
+        let cart = JSON.parse(localStorage.getItem('mercado_cart') || '[]');
         let currentCategory = 'todos';
         let currentFilter = 'all';
         let searchTerm = '';
-        let subscription = null;
-        
-        // Elementos
-        const productsGrid = document.getElementById('products-grid');
-        const userEmailSpan = document.getElementById('user-email');
-        const themeToggle = document.getElementById('theme-toggle');
-        const searchInput = document.getElementById('search-input');
-        const filtersPanel = document.getElementById('filters-panel');
-        const openFiltersBtn = document.getElementById('open-filters');
         
         // ============================================
         // FUNÇÕES AUXILIARES
         // ============================================
-        function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            const icon = themeToggle?.querySelector('.theme-icon');
-            if(icon) icon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-        }
-        
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            const icon = themeToggle?.querySelector('.theme-icon');
-            if(icon) icon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-        }
-        
-        function showToast(message, type = 'info') {
-            const existingToast = document.querySelector('.toast');
-            if(existingToast) existingToast.remove();
-            
+        function showToast(message, type) {
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
-            toast.innerHTML = `<span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span> ${message}`;
+            toast.textContent = message;
             document.body.appendChild(toast);
             setTimeout(() => toast.classList.add('show'), 10);
             setTimeout(() => {
@@ -335,69 +683,37 @@
         }
         
         function formatMoney(value) {
-            if(!value || isNaN(value)) return 'R$ 0,00';
-            return new Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            }).format(value);
+            if (!value) return 'R$ 0,00';
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
         }
         
         function escapeHtml(text) {
-            if(!text) return '';
+            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
-        }
-        
-        function getCategoryIcon(categoria) {
-            const icons = {
-                mercearia: '🥫',
-                hortifruti: '🥬',
-                carnes: '🥩',
-                laticinios: '🥛',
-                bebidas: '🥤',
-                limpeza: '🧹',
-                higiene: '🧴',
-                padaria: '🍞',
-                congelados: '❄️',
-                outros: '📦'
-            };
-            return icons[categoria] || '📦';
         }
         
         // ============================================
         // CARRINHO
         // ============================================
         function saveCart() {
-            localStorage.setItem('market_cart', JSON.stringify(cart));
+            localStorage.setItem('mercado_cart', JSON.stringify(cart));
             updateCartUI();
         }
         
         function updateCartUI() {
-            const totalItems = cart.reduce((sum, item) => sum + item.quantidade, 0);
-            const totalValue = cart.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
-            
-            const badge = document.getElementById('cart-badge');
-            const itemsCount = document.getElementById('cart-items-count');
-            const totalValueEl = document.getElementById('cart-total-value');
-            const cartSummary = document.getElementById('cart-summary');
-            
-            if(badge) badge.textContent = totalItems;
-            if(itemsCount) itemsCount.textContent = `${totalItems} ${totalItems === 1 ? 'item' : 'itens'}`;
-            if(totalValueEl) totalValueEl.textContent = formatMoney(totalValue);
-            
-            if(cartSummary) {
-                if(totalItems > 0) {
-                    cartSummary.classList.add('visible');
-                } else {
-                    cartSummary.classList.remove('visible');
-                }
-            }
+            const totalItems = cart.reduce((s, i) => s + i.quantidade, 0);
+            const totalValue = cart.reduce((s, i) => s + (i.preco * i.quantidade), 0);
+            document.getElementById('cart-badge').textContent = totalItems;
+            document.getElementById('cart-items-count').innerHTML = `${totalItems} ${totalItems === 1 ? 'item' : 'itens'}`;
+            document.getElementById('cart-total-value').innerHTML = formatMoney(totalValue);
+            document.getElementById('cart-summary').classList.toggle('visible', totalItems > 0);
         }
         
         window.addToCart = function(product, quantidade = 1) {
-            const existing = cart.find(item => item.id === product.id);
-            if(existing) {
+            const existing = cart.find(i => i.id === product.id);
+            if (existing) {
                 existing.quantidade += quantidade;
             } else {
                 cart.push({
@@ -405,378 +721,191 @@
                     nome: product.nome,
                     marca: product.marca,
                     preco: product.preco || 0,
-                    unidade: product.unidade,
-                    imagem: product.imagem,
                     quantidade: quantidade
                 });
             }
             saveCart();
-            showToast(`${product.nome} adicionado ao carrinho!`, 'success');
+            showToast(`${product.nome} adicionado!`, 'success');
         };
         
-        window.removeFromCart = function(productId) {
-            cart = cart.filter(item => item.id !== productId);
+        window.removeFromCart = function(id) {
+            cart = cart.filter(i => i.id !== id);
             saveCart();
             renderCartModal();
         };
         
-        window.updateCartItemQuantity = function(productId, quantidade) {
-            const item = cart.find(item => item.id === productId);
-            if(item) {
-                if(quantidade <= 0) {
-                    window.removeFromCart(productId);
+        window.updateQuantity = function(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.quantidade += delta;
+                if (item.quantidade <= 0) {
+                    window.removeFromCart(id);
                 } else {
-                    item.quantidade = quantidade;
                     saveCart();
+                    renderCartModal();
                 }
             }
-            renderCartModal();
         };
         
         window.openCart = function() {
             renderCartModal();
-            const cartModal = document.getElementById('cart-modal');
-            if(cartModal) cartModal.classList.add('show');
-        };
-        
-        window.closeCart = function() {
-            const cartModal = document.getElementById('cart-modal');
-            if(cartModal) cartModal.classList.remove('show');
-        };
-        
-        window.clearCart = function() {
-            if(confirm('Limpar todo o carrinho?')) {
-                cart = [];
-                saveCart();
-                renderCartModal();
-                showToast('Carrinho limpo!', 'success');
-            }
-        };
-        
-        window.checkout = async function() {
-            if(cart.length === 0) {
-                showToast('Seu carrinho está vazio!', 'error');
-                return;
-            }
-            
-            const total = cart.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
-            alert(`🛒 Compra finalizada!\n\nTotal: ${formatMoney(total)}\n\nObrigado por comprar conosco!`);
-            
-            // Marcar como comprados
-            for(const item of cart) {
-                await supabase
-                    .from('items')
-                    .update({ comprado: true })
-                    .eq('id', item.id)
-                    .eq('user_id', currentUser.id);
-            }
-            
-            cart = [];
-            saveCart();
-            window.closeCart();
-            showToast('Compra finalizada com sucesso!', 'success');
+            openModal('cart-modal');
         };
         
         function renderCartModal() {
-            const cartList = document.getElementById('cart-items-list');
-            const grandTotal = cart.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+            const container = document.getElementById('cart-list');
+            const total = cart.reduce((s, i) => s + (i.preco * i.quantidade), 0);
             
-            if(!cartList) return;
-            
-            if(cart.length === 0) {
-                cartList.innerHTML = '<div class="empty-cart">🛒 Seu carrinho está vazio</div>';
+            if (cart.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:2rem;">Carrinho vazio</div>';
             } else {
-                cartList.innerHTML = cart.map(item => `
+                container.innerHTML = cart.map(i => `
                     <div class="cart-item">
-                        <div class="cart-item-info">
-                            <div class="cart-item-name">${escapeHtml(item.nome)}</div>
-                            <div class="cart-item-marca">${item.marca ? escapeHtml(item.marca) : ''}</div>
-                            <div class="cart-item-price">${formatMoney(item.preco)}/un</div>
+                        <div>
+                            <strong>${escapeHtml(i.nome)}</strong>
+                            <div style="font-size:0.7rem;color:#6b7280;">${i.marca || ''}</div>
+                            <div>${formatMoney(i.preco)}/un</div>
                         </div>
-                        <div class="cart-item-controls">
-                            <button onclick="updateCartItemQuantity('${item.id}', ${item.quantidade - 1})">-</button>
-                            <span>${item.quantidade}</span>
-                            <button onclick="updateCartItemQuantity('${item.id}', ${item.quantidade + 1})">+</button>
-                            <button class="remove-btn" onclick="removeFromCart('${item.id}')">🗑️</button>
+                        <div style="display:flex;align-items:center;gap:0.5rem;">
+                            <button onclick="updateQuantity('${i.id}', -1)">-</button>
+                            <span>${i.quantidade}</span>
+                            <button onclick="updateQuantity('${i.id}', 1)">+</button>
+                            <button onclick="removeFromCart('${i.id}')" style="background:#ef4444;color:white;border:none;padding:0.25rem 0.5rem;border-radius:0.25rem;">🗑️</button>
                         </div>
-                        <div class="cart-item-total">${formatMoney(item.preco * item.quantidade)}</div>
+                        <div><strong>${formatMoney(i.preco * i.quantidade)}</strong></div>
                     </div>
                 `).join('');
             }
-            
-            const grandTotalEl = document.getElementById('cart-grand-total');
-            if(grandTotalEl) grandTotalEl.textContent = formatMoney(grandTotal);
+            document.getElementById('cart-grand-total').textContent = formatMoney(total);
         }
         
+        window.finalizarCompra = async function() {
+            if (cart.length === 0) return showToast('Carrinho vazio', 'error');
+            
+            for (const item of cart) {
+                await supabase.from('items').update({ comprado: true }).eq('id', item.id).eq('user_id', currentUser.id);
+            }
+            cart = [];
+            saveCart();
+            closeModal('cart-modal');
+            showToast('Compra finalizada!', 'success');
+        };
+        
         // ============================================
-        // CRUD PRODUTOS - CORRIGIDO
+        // CRUD PRODUTOS
         // ============================================
         window.openAddModal = function(productId = null) {
-            const form = document.getElementById('product-form');
-            if(!form) return;
-            
-            if(productId) {
-                const product = allProducts.find(p => p.id === productId);
-                if(product) {
-                    document.getElementById('product-id').value = product.id;
-                    document.getElementById('product-nome').value = product.nome || '';
-                    document.getElementById('product-marca').value = product.marca || '';
-                    document.getElementById('product-quantidade').value = product.quantidade || 1;
-                    document.getElementById('product-unidade').value = product.unidade || 'un';
-                    document.getElementById('product-preco').value = product.preco || '';
-                    document.getElementById('product-categoria').value = product.categoria || 'outros';
-                    document.getElementById('product-desc').value = product.observacao || '';
-                    document.getElementById('product-imagem').value = product.imagem || '';
-                    
-                    const radios = document.querySelectorAll('input[name="prioridade"]');
-                    radios.forEach(radio => {
-                        radio.checked = parseInt(radio.value) === (product.prioridade || 2);
-                    });
+            if (productId) {
+                const p = allProducts.find(p => p.id === productId);
+                if (p) {
+                    document.getElementById('modal-title').textContent = 'Editar Produto';
+                    document.getElementById('product-id').value = p.id;
+                    document.getElementById('product-nome').value = p.nome;
+                    document.getElementById('product-marca').value = p.marca || '';
+                    document.getElementById('product-quantidade').value = p.quantidade || 1;
+                    document.getElementById('product-unidade').value = p.unidade || 'un';
+                    document.getElementById('product-preco').value = p.preco || '';
+                    document.getElementById('product-categoria').value = p.categoria || 'outros';
+                    document.getElementById('product-obs').value = p.observacao || '';
                 }
             } else {
-                form.reset();
+                document.getElementById('modal-title').textContent = 'Adicionar Produto';
+                document.getElementById('product-form').reset();
                 document.getElementById('product-id').value = '';
                 document.getElementById('product-quantidade').value = 1;
-                document.getElementById('product-unidade').value = 'un';
-                const radioDefault = document.querySelector('input[name="prioridade"][value="2"]');
-                if(radioDefault) radioDefault.checked = true;
+            }
+            openModal('product-modal');
+        };
+        
+        window.removerProduto = async function(id) {
+            if (!confirm('Remover produto?')) return;
+            const { error } = await supabase.from('items').delete().eq('id', id).eq('user_id', currentUser.id);
+            if (error) showToast('Erro ao remover', 'error');
+            else showToast('Removido!', 'success');
+        };
+        
+        window.toggleComprado = async function(id, atual) {
+            await supabase.from('items').update({ comprado: !atual }).eq('id', id).eq('user_id', currentUser.id);
+        };
+        
+        // SUBMIT DO FORMULÁRIO
+        document.getElementById('product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('product-id').value;
+            const nome = document.getElementById('product-nome').value.trim();
+            if (!nome) return showToast('Digite o nome', 'error');
+            
+            const data = {
+                nome,
+                marca: document.getElementById('product-marca').value,
+                quantidade: parseFloat(document.getElementById('product-quantidade').value) || 1,
+                unidade: document.getElementById('product-unidade').value,
+                preco: parseFloat(document.getElementById('product-preco').value) || null,
+                categoria: document.getElementById('product-categoria').value,
+                observacao: document.getElementById('product-obs').value,
+                user_id: currentUser.id
+            };
+            
+            console.log('Enviando:', data);
+            
+            let result;
+            if (id) {
+                result = await supabase.from('items').update(data).eq('id', id).eq('user_id', currentUser.id);
+            } else {
+                result = await supabase.from('items').insert([data]);
             }
             
-            const addModal = document.getElementById('add-modal');
-            if(addModal) addModal.classList.add('show');
-        };
-        
-        window.closeAddModal = function() {
-            const addModal = document.getElementById('add-modal');
-            if(addModal) addModal.classList.remove('show');
-        };
-        
-        window.openProductDetail = function(productId) {
-            const product = allProducts.find(p => p.id === productId);
-            if(!product) return;
-            
-            const detailDiv = document.getElementById('product-detail');
-            if(!detailDiv) return;
-            
-            detailDiv.innerHTML = `
-                <div class="product-detail-image">
-                    ${product.imagem ? `<img src="${escapeHtml(product.imagem)}" alt="${escapeHtml(product.nome)}">` : '<div class="no-image">🛒</div>'}
-                </div>
-                <div class="product-detail-info">
-                    <h2>${escapeHtml(product.nome)}</h2>
-                    ${product.marca ? `<p class="product-detail-marca">🏷️ ${escapeHtml(product.marca)}</p>` : ''}
-                    <p class="product-detail-categoria">${getCategoryIcon(product.categoria)} ${product.categoria}</p>
-                    <div class="product-detail-price">
-                        <span class="price-label">Preço</span>
-                        <span class="price-value">${formatMoney(product.preco)}</span>
-                        <span class="price-unit">/ ${product.unidade || 'un'}</span>
-                    </div>
-                    ${product.observacao ? `<div class="product-detail-desc">📝 ${escapeHtml(product.observacao)}</div>` : ''}
-                    <div class="product-detail-actions">
-                        <div class="quantity-selector">
-                            <button onclick="window.changeQuantity(${product.id}, -1)">-</button>
-                            <span id="qty-${product.id}">1</span>
-                            <button onclick="window.changeQuantity(${product.id}, 1)">+</button>
-                        </div>
-                        <button class="btn-add-cart" onclick="window.addToCartFromDetail('${product.id}')">
-                            🛒 Adicionar ao carrinho
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            window.currentDetailProduct = product;
-            const productModal = document.getElementById('product-modal');
-            if(productModal) productModal.classList.add('show');
-        };
-        
-        window.changeQuantity = function(productId, delta) {
-            const span = document.getElementById(`qty-${productId}`);
-            if(span) {
-                let current = parseInt(span.textContent) || 1;
-                current = Math.max(1, current + delta);
-                span.textContent = current;
+            if (result.error) {
+                console.error('Erro:', result.error);
+                showToast('Erro: ' + result.error.message, 'error');
+            } else {
+                showToast(id ? 'Atualizado!' : 'Adicionado!', 'success');
+                closeModal('product-modal');
+                await loadProducts();
             }
-        };
-        
-        window.addToCartFromDetail = function(productId) {
-            const qtySpan = document.getElementById(`qty-${productId}`);
-            const qty = qtySpan ? parseInt(qtySpan.textContent) : 1;
-            const product = allProducts.find(p => p.id === productId);
-            if(product) {
-                window.addToCart(product, qty);
-                window.closeProductModal();
-            }
-        };
-        
-        window.closeProductModal = function() {
-            const productModal = document.getElementById('product-modal');
-            if(productModal) productModal.classList.remove('show');
-        };
-        
-        window.toggleComprado = async function(productId, comprado) {
-            try {
-                await supabase
-                    .from('items')
-                    .update({ comprado: !comprado })
-                    .eq('id', productId)
-                    .eq('user_id', currentUser.id);
-                showToast('Status atualizado!', 'success');
-            } catch (error) {
-                showToast('Erro ao atualizar', 'error');
-            }
-        };
-        
-        window.removerProduto = async function(productId) {
-            if(!confirm('Remover este produto?')) return;
-            try {
-                await supabase
-                    .from('items')
-                    .delete()
-                    .eq('id', productId)
-                    .eq('user_id', currentUser.id);
-                showToast('Produto removido!', 'success');
-            } catch (error) {
-                showToast('Erro ao remover', 'error');
-            }
-        };
-        
-        // SUBMIT DO FORMULÁRIO - CORRIGIDO
-        const productForm = document.getElementById('product-form');
-        if(productForm) {
-            productForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const id = document.getElementById('product-id').value;
-                const nome = document.getElementById('product-nome')?.value.trim();
-                const marca = document.getElementById('product-marca')?.value.trim() || '';
-                const quantidade = parseFloat(document.getElementById('product-quantidade')?.value) || 1;
-                const unidade = document.getElementById('product-unidade')?.value || 'un';
-                const preco = parseFloat(document.getElementById('product-preco')?.value) || null;
-                const categoria = document.getElementById('product-categoria')?.value || 'outros';
-                const prioridade = parseInt(document.querySelector('input[name="prioridade"]:checked')?.value || 2);
-                const observacao = document.getElementById('product-desc')?.value || '';
-                const imagem = document.getElementById('product-imagem')?.value || '';
-                
-                if(!nome) {
-                    showToast('Digite o nome do produto', 'error');
-                    return;
-                }
-                
-                if(!currentUser) {
-                    showToast('Usuário não autenticado', 'error');
-                    return;
-                }
-                
-                const productData = {
-                    nome,
-                    marca,
-                    quantidade,
-                    unidade,
-                    preco,
-                    categoria,
-                    prioridade,
-                    observacao,
-                    imagem,
-                    comprado: false,
-                    user_id: currentUser.id
-                };
-                
-                console.log('Enviando produto:', productData);
-                
-                try {
-                    let result;
-                    if(id) {
-                        result = await supabase
-                            .from('items')
-                            .update(productData)
-                            .eq('id', id)
-                            .eq('user_id', currentUser.id);
-                    } else {
-                        result = await supabase
-                            .from('items')
-                            .insert([productData]);
-                    }
-                    
-                    if(result.error) {
-                        console.error('Erro Supabase:', result.error);
-                        showToast(`Erro: ${result.error.message}`, 'error');
-                    } else {
-                        showToast(id ? 'Produto atualizado!' : 'Produto adicionado!', 'success');
-                        window.closeAddModal();
-                        await fetchProducts();
-                    }
-                } catch (error) {
-                    console.error('Erro:', error);
-                    showToast('Erro ao salvar produto', 'error');
-                }
-            });
-        }
+        });
         
         // ============================================
         // RENDERIZAÇÃO
         // ============================================
         function renderProducts() {
-            if(!productsGrid) return;
-            
             let filtered = [...allProducts];
             
-            if(searchTerm) {
-                filtered = filtered.filter(p => 
-                    p.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    (p.marca && p.marca.toLowerCase().includes(searchTerm.toLowerCase()))
-                );
+            if (searchTerm) {
+                filtered = filtered.filter(p => p.nome.toLowerCase().includes(searchTerm.toLowerCase()));
             }
-            
-            if(currentCategory !== 'todos') {
+            if (currentCategory !== 'todos') {
                 filtered = filtered.filter(p => p.categoria === currentCategory);
             }
-            
-            if(currentFilter === 'pending') {
+            if (currentFilter === 'pending') {
                 filtered = filtered.filter(p => !p.comprado);
-            } else if(currentFilter === 'completed') {
+            } else if (currentFilter === 'completed') {
                 filtered = filtered.filter(p => p.comprado);
-            } else if(currentFilter === 'high') {
-                filtered = filtered.filter(p => p.prioridade === 1 && !p.comprado);
-            } else if(currentFilter === 'low-price') {
-                filtered.sort((a, b) => (a.preco || 0) - (b.preco || 0));
-            } else if(currentFilter === 'high-price') {
-                filtered.sort((a, b) => (b.preco || 0) - (a.preco || 0));
             }
             
-            if(filtered.length === 0) {
-                productsGrid.innerHTML = `
-                    <div class="empty-products">
-                        <div class="empty-icon">🛒</div>
-                        <p>Nenhum produto encontrado</p>
-                        <small>Clique no botão + para adicionar</small>
-                    </div>
-                `;
+            const grid = document.getElementById('products-grid');
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="empty-products"><div style="font-size:4rem;">🛒</div><p>Nenhum produto</p><small>Clique em + para adicionar</small></div>';
                 return;
             }
             
-            productsGrid.innerHTML = filtered.map(product => `
-                <div class="product-card ${product.comprado ? 'comprado' : ''}">
-                    <div class="product-badge">${getCategoryIcon(product.categoria)}</div>
-                    <div class="product-image" onclick="openProductDetail('${product.id}')">
-                        ${product.imagem ? `<img src="${escapeHtml(product.imagem)}" alt="${escapeHtml(product.nome)}">` : `<div class="product-placeholder">${getCategoryIcon(product.categoria)}</div>`}
+            grid.innerHTML = filtered.map(p => `
+                <div class="product-card">
+                    <div class="product-image" onclick="openAddModal('${p.id}')">
+                        <div class="product-placeholder">${p.categoria === 'mercearia' ? '🥫' : p.categoria === 'hortifruti' ? '🥬' : p.categoria === 'carnes' ? '🥩' : '📦'}</div>
                     </div>
                     <div class="product-info">
-                        <h4 class="product-title" onclick="openProductDetail('${product.id}')">${escapeHtml(product.nome)}</h4>
-                        ${product.marca ? `<p class="product-brand">${escapeHtml(product.marca)}</p>` : ''}
-                        <div class="product-price-section">
-                            <span class="product-price">${formatMoney(product.preco)}</span>
-                            <span class="product-unit">/${product.unidade || 'un'}</span>
-                        </div>
+                        <h4 class="product-title">${escapeHtml(p.nome)}</h4>
+                        ${p.marca ? `<p class="product-brand">${escapeHtml(p.marca)}</p>` : ''}
+                        <div class="product-price">${formatMoney(p.preco)} <small>/${p.unidade || 'un'}</small></div>
                         <div class="product-actions">
-                            <button class="btn-buy" onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')}, 1)">
-                                🛒 Comprar
-                            </button>
-                            <button class="btn-edit-small" onclick="openAddModal('${product.id}')">✏️</button>
-                            <button class="btn-delete-small" onclick="removerProduto('${product.id}')">🗑️</button>
+                            <button class="btn-buy" onclick="addToCart(${JSON.stringify(p).replace(/"/g, '&quot;')}, 1)">🛒 Comprar</button>
+                            <button class="btn-edit-small" onclick="openAddModal('${p.id}')">✏️</button>
+                            <button class="btn-delete-small" onclick="removerProduto('${p.id}')">🗑️</button>
                         </div>
                         <div class="product-checkout">
-                            <input type="checkbox" ${product.comprado ? 'checked' : ''} onchange="toggleComprado('${product.id}', ${product.comprado})">
+                            <input type="checkbox" ${p.comprado ? 'checked' : ''} onchange="toggleComprado('${p.id}', ${p.comprado})">
                             <span>Já comprei</span>
                         </div>
                     </div>
@@ -785,111 +914,104 @@
         }
         
         // ============================================
-        // CARREGAR DADOS
+        // CARREGAR PRODUTOS
         // ============================================
-        async function fetchProducts() {
-            if(!currentUser) return;
-            
-            try {
-                const { data, error } = await supabase
-                    .from('items')
-                    .select('*')
-                    .eq('user_id', currentUser.id)
-                    .order('created_at', { ascending: false });
-                
-                if(error) {
-                    console.error('Erro ao buscar produtos:', error);
-                    showToast('Erro ao carregar produtos', 'error');
-                    return;
-                }
-                
-                allProducts = data || [];
-                renderProducts();
-            } catch (error) {
-                console.error('Erro:', error);
-            }
-        }
-        
         async function loadProducts() {
-            if(!currentUser) return;
+            if (!currentUser) return;
             
-            if(subscription) {
-                await subscription.unsubscribe();
+            const { data, error } = await supabase
+                .from('items')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .order('created_at', { ascending: false });
+            
+            if (error) {
+                console.error('Erro:', error);
+                showToast('Erro ao carregar', 'error');
+                return;
             }
             
-            subscription = supabase
-                .channel('items-changes')
-                .on('postgres_changes', {
-                    event: '*',
-                    schema: 'public',
-                    table: 'items',
-                    filter: `user_id=eq.${currentUser.id}`
-                }, () => {
-                    fetchProducts();
-                })
-                .subscribe();
-            
-            await fetchProducts();
+            allProducts = data || [];
+            renderProducts();
         }
         
         // ============================================
         // FILTROS
         // ============================================
-        function initFilters() {
-            document.querySelectorAll('.cat-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
-                    card.classList.add('active');
-                    currentCategory = card.dataset.categoria;
+        function loadCategories() {
+            const categories = [
+                { id: 'todos', nome: 'Todos', icon: '🏠' },
+                { id: 'mercearia', nome: 'Mercearia', icon: '🥫' },
+                { id: 'hortifruti', nome: 'Hortifrúti', icon: '🥬' },
+                { id: 'carnes', nome: 'Carnes', icon: '🥩' },
+                { id: 'laticinios', nome: 'Laticínios', icon: '🥛' },
+                { id: 'bebidas', nome: 'Bebidas', icon: '🥤' },
+                { id: 'limpeza', nome: 'Limpeza', icon: '🧹' },
+                { id: 'outros', nome: 'Outros', icon: '📦' }
+            ];
+            
+            const container = document.getElementById('categories');
+            container.innerHTML = categories.map(cat => `
+                <button class="cat-card ${cat.id === 'todos' ? 'active' : ''}" data-cat="${cat.id}">
+                    <div class="cat-icon">${cat.icon}</div>
+                    <span>${cat.nome}</span>
+                </button>
+            `).join('');
+            
+            document.querySelectorAll('.cat-card').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.cat-card').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentCategory = btn.dataset.cat;
                     renderProducts();
                 });
             });
             
-            document.querySelectorAll('.filter-chip').forEach(chip => {
-                chip.addEventListener('click', () => {
-                    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-                    chip.classList.add('active');
-                    currentFilter = chip.dataset.filter;
+            document.querySelectorAll('.filter-chip').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
                     renderProducts();
                 });
             });
             
-            if(searchInput) {
-                searchInput.addEventListener('input', (e) => {
-                    searchTerm = e.target.value;
-                    renderProducts();
-                });
-            }
-            
-            if(openFiltersBtn && filtersPanel) {
-                openFiltersBtn.addEventListener('click', () => {
-                    if(filtersPanel.style.display === 'none') {
-                        filtersPanel.style.display = 'flex';
-                    } else {
-                        filtersPanel.style.display = 'none';
-                    }
-                });
-            }
+            document.getElementById('search-input').addEventListener('input', (e) => {
+                searchTerm = e.target.value;
+                renderProducts();
+            });
         }
+        
+        window.toggleFilters = function() {
+            const panel = document.getElementById('filters-panel');
+            panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+        };
+        
+        // ============================================
+        // MODAIS
+        // ============================================
+        function openModal(id) {
+            document.getElementById(id).classList.add('show');
+        }
+        window.closeModal = function(id) {
+            document.getElementById(id).classList.remove('show');
+        };
         
         // ============================================
         // LOGOUT
         // ============================================
         window.logout = async function() {
             await supabase.auth.signOut();
-            showToast('Até logo!', 'success');
-            setTimeout(() => window.location.href = 'login.html', 500);
+            window.location.href = 'login.html';
         };
         
         // ============================================
-        // INICIALIZAÇÃO
+        // INICIAR
         // ============================================
-        if(themeToggle) themeToggle.addEventListener('click', toggleTheme);
-        
         supabase.auth.onAuthStateChange(async (event, session) => {
-            if(session) {
+            if (session) {
                 currentUser = session.user;
-                if(userEmailSpan) userEmailSpan.textContent = session.user.email;
+                document.getElementById('user-email').textContent = session.user.email;
                 await loadProducts();
                 updateCartUI();
             } else {
@@ -898,34 +1020,25 @@
         });
         
         const { data: { session } } = await supabase.auth.getSession();
-        if(session) {
+        if (session) {
             currentUser = session.user;
-            if(userEmailSpan) userEmailSpan.textContent = session.user.email;
+            document.getElementById('user-email').textContent = session.user.email;
             await loadProducts();
             updateCartUI();
         } else {
             window.location.href = 'login.html';
         }
         
-        // Fechar modais
-        const cartModal = document.getElementById('cart-modal');
-        const productModal = document.getElementById('product-modal');
-        const addModal = document.getElementById('add-modal');
+        loadCategories();
         
-        if(cartModal) cartModal.addEventListener('click', (e) => {
-            if(e.target === cartModal) window.closeCart();
-        });
-        if(productModal) productModal.addEventListener('click', (e) => {
-            if(e.target === productModal) window.closeProductModal();
-        });
-        if(addModal) addModal.addEventListener('click', (e) => {
-            if(e.target === addModal) window.closeAddModal();
+        // Fechar modal clicando fora
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.remove('show');
+            });
         });
         
-        initTheme();
-        initFilters();
-        
-        console.log('✅ Mercado Lista 2026 carregado!');
+        console.log('✅ App iniciado!');
     </script>
 </body>
 </html>
