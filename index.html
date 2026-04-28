@@ -16,7 +16,6 @@
             --text-light: #6b7280;
             --border: #e5e7eb;
             --primary: #3b82f6;
-            --primary-dark: #2563eb;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
@@ -36,23 +35,6 @@
             background: var(--bg);
             color: var(--text);
             transition: all 0.3s;
-        }
-
-        .skip-link {
-            position: absolute;
-            top: -40px;
-            left: 0;
-            background: var(--primary);
-            color: white;
-            padding: 8px 16px;
-            text-decoration: none;
-            z-index: 1000;
-        }
-        .skip-link:focus { top: 0; }
-
-        :focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
         }
 
         .header {
@@ -90,7 +72,6 @@
             font-size: 1.25rem;
             transition: all 0.2s;
         }
-        .btn-icon:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
 
         .search-bar {
             background: white;
@@ -124,14 +105,6 @@
             border-radius: 1rem;
             padding: 1rem;
             color: white;
-        }
-        .banner-tag {
-            font-size: 0.7rem;
-            background: rgba(255,255,255,0.2);
-            padding: 0.2rem 0.5rem;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 0.5rem;
         }
 
         .stats {
@@ -169,8 +142,6 @@
             flex-wrap: wrap;
             gap: 0.75rem;
         }
-        .list-item:hover { transform: translateX(4px); }
-        .list-item.comprado { opacity: 0.6; }
         .item-name { font-weight: 600; font-size: 1rem; }
         .item-price { font-size: 0.875rem; color: var(--success); font-weight: 600; }
         .item-actions { display: flex; gap: 0.5rem; align-items: center; }
@@ -205,16 +176,26 @@
             margin: 0 auto;
             flex-wrap: wrap;
         }
-        .add-container input, .add-container select {
+        .add-container input {
+            flex: 2;
             padding: 0.875rem 1rem;
             border: 2px solid var(--border);
             border-radius: 1rem;
             font-size: 1rem;
             background: var(--bg);
             color: var(--text);
+            min-width: 150px;
         }
-        .add-container input { flex: 2; min-width: 150px; }
-        .add-container select { flex: 1; min-width: 100px; }
+        .add-container select {
+            flex: 1;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 1rem;
+            font-size: 1rem;
+            background: var(--bg);
+            color: var(--text);
+            min-width: 100px;
+        }
         .btn-add {
             padding: 0.875rem 1.5rem;
             background: var(--primary);
@@ -254,8 +235,6 @@
     </style>
 </head>
 <body>
-    <a href="#main-content" class="skip-link">Pular para o conteúdo</a>
-
     <div class="app">
         <div class="header">
             <div class="header-top">
@@ -381,6 +360,8 @@
         }
         
         function renderizarLista() {
+            console.log('🎨 Renderizando lista com', allItems.length, 'itens');
+            
             let filtrados = [...allItems];
             if (searchTerm) {
                 filtrados = filtrados.filter(i => i.item?.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -414,7 +395,12 @@
         }
         
         async function carregarLista() {
-            if (!currentUser) return;
+            if (!currentUser) {
+                console.log('⏳ Aguardando usuário...');
+                return;
+            }
+            
+            console.log('🔄 Buscando itens para usuário:', currentUser.id);
             
             const { data, error } = await supabase
                 .from('lista_compras')
@@ -422,11 +408,12 @@
                 .eq('adicionado_por', currentUser.id);
             
             if (error) {
-                console.error('Erro:', error);
+                console.error('❌ Erro ao carregar:', error);
                 showToast('Erro ao carregar: ' + error.message, 'error');
                 return;
             }
             
+            console.log(`✅ ${data?.length || 0} itens carregados do banco:`, data);
             allItems = data || [];
             renderizarLista();
         }
@@ -455,7 +442,7 @@
                 adicionado_por: currentUser.id
             };
             
-            console.log('Enviando:', novoItem);
+            console.log('📝 Enviando para o Supabase:', novoItem);
             
             const { data, error } = await supabase
                 .from('lista_compras')
@@ -463,41 +450,65 @@
                 .select();
             
             if (error) {
-                console.error('Erro detalhado:', error);
+                console.error('❌ Erro ao inserir:', error);
                 showToast('Erro: ' + error.message, 'error');
                 return;
             }
             
-            console.log('Item adicionado:', data);
+            console.log('✅ Item inserido com sucesso:', data);
             itemInput.value = '';
             priceInput.value = '';
             showToast('Item adicionado!', 'success');
+            
+            // Recarregar a lista
             await carregarLista();
         };
         
         window.removerItem = async function (id) {
             if (!confirm('Remover item?')) return;
             
-            const { error } = await supabase.from('lista_compras').delete().eq('id', id);
+            console.log('🗑️ Removendo item:', id);
+            
+            const { error } = await supabase
+                .from('lista_compras')
+                .delete()
+                .eq('id', id);
+            
             if (error) {
+                console.error('❌ Erro ao remover:', error);
                 showToast('Erro ao remover', 'error');
                 return;
             }
+            
+            console.log('✅ Item removido');
             showToast('Item removido!', 'success');
             await carregarLista();
         };
         
         window.toggleComprado = async function (id, atual) {
+            console.log('🔄 Alternando status do item:', id, 'atual:', atual);
+            
             const { error } = await supabase
                 .from('lista_compras')
                 .update({ comprado: !atual })
                 .eq('id', id);
-            if (!error) await carregarLista();
+            
+            if (error) {
+                console.error('❌ Erro ao atualizar:', error);
+                showToast('Erro ao atualizar', 'error');
+                return;
+            }
+            
+            console.log('✅ Status atualizado');
+            await carregarLista();
         };
         
         async function getUser() {
             const { data: { user } } = await supabase.auth.getUser();
+            console.log('🔐 Usuário atual:', user?.id);
+            
             if (!user) {
+                console.log('🚪 Usuário não logado, redirecionando...');
                 window.location.href = 'login.html';
                 return null;
             }
@@ -522,6 +533,7 @@
         });
         
         async function init() {
+            console.log('🚀 Iniciando aplicação...');
             const user = await getUser();
             if (user) {
                 currentUser = user;
@@ -532,7 +544,6 @@
         }
         
         init();
-        console.log('✅ App iniciado');
     </script>
 </body>
 </html>
