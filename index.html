@@ -4,42 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#3b82f6">
-    <link rel="shortcut icon" href="src/img/favicon.ico" type="image/x-icon">
     <link rel="manifest" href="manifest.json">
     <title>Lista 2026 · Meu Mercado</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         :root {
-            --bg-primary: #f3f4f6;
-            --bg-card: #ffffff;
-            --text-primary: #111827;
-            --text-secondary: #6b7280;
+            --bg: #f3f4f6;
+            --card: #ffffff;
+            --text: #111827;
+            --text-light: #6b7280;
             --border: #e5e7eb;
-            --header-bg: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            --btn-primary: #3b82f6;
-            --btn-success: #10b981;
-            --btn-danger: #ef4444;
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
         }
 
         [data-theme="dark"] {
-            --bg-primary: #0f172a;
-            --bg-card: #1e293b;
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --text-light: #94a3b8;
             --border: #334155;
-            --header-bg: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            --primary: #60a5fa;
         }
 
         body {
             font-family: system-ui, -apple-system, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            background: var(--bg);
+            color: var(--text);
             transition: all 0.3s;
         }
 
-        .market-header {
-            background: var(--header-bg);
+        /* Header */
+        .header {
+            background: var(--primary);
             padding: 1rem;
             position: sticky;
             top: 0;
@@ -53,13 +54,16 @@
             margin-bottom: 1rem;
         }
 
-        .logo-area { display: flex; align-items: center; gap: 0.5rem; }
-        .logo-text { font-size: 1.5rem; font-weight: 700; color: white; }
-        .logo-text span { color: #fbbf24; }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+        .logo span { color: #fbbf24; }
 
         .header-actions { display: flex; gap: 0.5rem; }
 
-        .theme-toggle, .btn-cart, .btn-logout {
+        .btn-icon {
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -68,465 +72,290 @@
             cursor: pointer;
             color: white;
             font-size: 1.25rem;
-            position: relative;
+            transition: all 0.2s;
         }
+        .btn-icon:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
 
-        .cart-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #f59e0b;
-            color: white;
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 20px;
-        }
-
+        /* Busca */
         .search-bar {
-            display: flex;
-            gap: 0.5rem;
             background: white;
             border-radius: 2rem;
             padding: 0.5rem 1rem;
             margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
         }
-
         .search-bar input {
             flex: 1;
             border: none;
             outline: none;
             font-size: 1rem;
+            background: transparent;
         }
+        .search-bar input::placeholder { color: #9ca3af; }
 
-        .customer-info {
+        /* Info usuário */
+        .user-info {
             display: flex;
             align-items: center;
             gap: 0.75rem;
             padding-top: 0.5rem;
             border-top: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            font-size: 0.875rem;
         }
 
-        .customer-name { color: white; font-size: 0.875rem; }
-
-        .promo-banner {
-            background: linear-gradient(135deg, #f59e0b, #ea580c);
+        /* Banner */
+        .banner {
+            background: linear-gradient(135deg, var(--warning), #ea580c);
             margin: 1rem;
             border-radius: 1rem;
             padding: 1rem;
             color: white;
         }
-
-        .categories-section { padding: 0 1rem 1rem; }
-        .categories-section h3 { margin-bottom: 0.75rem; }
-
-        .categories-carousel {
-            display: flex;
-            gap: 0.75rem;
-            overflow-x: auto;
+        .banner-content { display: flex; justify-content: space-between; align-items: center; }
+        .banner-tag {
+            font-size: 0.7rem;
+            background: rgba(255,255,255,0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 0.5rem;
         }
+        .banner h3 { font-size: 1.25rem; margin-bottom: 0.25rem; }
 
-        .cat-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: var(--bg-card);
-            border: 2px solid var(--border);
-            border-radius: 1rem;
-            padding: 0.75rem;
-            min-width: 70px;
-            cursor: pointer;
-        }
-
-        .cat-card.active {
-            border-color: #3b82f6;
-            background: #dbeafe;
-        }
-
-        .products-grid {
+        /* Estatísticas */
+        .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
-            padding: 1rem;
-            padding-bottom: 80px;
+            padding: 0 1rem 1rem;
         }
-
-        .product-card {
-            background: var(--bg-card);
+        .stat-card {
+            background: var(--card);
             border-radius: 1rem;
-            overflow: hidden;
+            padding: 1rem;
+            text-align: center;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
+        .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .stat-label { font-size: 0.75rem; color: var(--text-light); }
 
-        .product-image {
-            height: 150px;
-            background: var(--bg-primary);
+        /* Lista de Compras */
+        .shopping-list {
+            padding: 0 1rem;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            cursor: pointer;
+            flex-direction: column;
+            gap: 0.75rem;
+            padding-bottom: 80px;
         }
-
-        .product-info { padding: 1rem; }
-        .product-title { font-weight: 600; margin-bottom: 0.25rem; cursor: pointer; }
-        .product-brand { font-size: 0.7rem; color: var(--text-secondary); }
-        .product-price { font-size: 1.25rem; font-weight: 700; color: #3b82f6; margin: 0.5rem 0; }
-
-        .product-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin: 0.75rem 0;
-        }
-
-        .btn-buy {
-            flex: 1;
-            background: #3b82f6;
-            border: none;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            color: white;
-            cursor: pointer;
-        }
-
-        .btn-edit-small, .btn-delete-small {
-            width: 36px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            cursor: pointer;
-        }
-
-        .fab {
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: #3b82f6;
-            border: none;
-            cursor: pointer;
-            color: white;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            z-index: 95;
-        }
-
-        .cart-summary {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg-card);
-            padding: 0.75rem;
-            transform: translateY(100%);
-            transition: transform 0.3s;
-            border-top: 1px solid var(--border);
-            z-index: 90;
-        }
-
-        .cart-summary.visible { transform: translateY(0); }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-
-        .modal.show { display: flex; }
-
-        .modal-content {
-            background: var(--bg-card);
+        .list-item {
+            background: var(--card);
             border-radius: 1rem;
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
+            padding: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-
-        .modal-close {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+        .list-item:hover { transform: translateX(4px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .item-info { flex: 1; }
+        .item-name { font-weight: 600; font-size: 1rem; }
+        .item-date { font-size: 0.7rem; color: var(--text-light); margin-top: 0.25rem; }
+        .item-actions { display: flex; gap: 0.5rem; }
+        .btn-remove {
+            background: var(--danger);
             border: none;
-            background: var(--bg-primary);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .form-group { padding: 0 1rem; margin-bottom: 1rem; }
-        .form-group label { display: block; font-size: 0.875rem; margin-bottom: 0.5rem; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid var(--border);
-            border-radius: 0.5rem;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            padding: 0 1rem;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem;
-        }
-
-        .btn-save {
-            flex: 1;
-            padding: 0.75rem;
-            background: #3b82f6;
-            border: none;
+            padding: 0.5rem 1rem;
             border-radius: 0.5rem;
             color: white;
             cursor: pointer;
+            transition: all 0.2s;
         }
+        .btn-remove:hover { background: #dc2626; transform: scale(1.05); }
 
-        .btn-cancel {
+        /* Adicionar Item */
+        .add-section {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 90;
+        }
+        .add-container {
+            display: flex;
+            gap: 0.75rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .add-container input {
             flex: 1;
-            padding: 0.75rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 0.5rem;
-            cursor: pointer;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 1rem;
+            font-size: 1rem;
+            background: var(--bg);
+            color: var(--text);
+            transition: all 0.2s;
         }
+        .add-container input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+        }
+        .btn-add {
+            padding: 0.875rem 1.5rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 1rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-add:hover { background: var(--primary-dark); transform: translateY(-2px); }
 
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+        .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
+
+        /* Toast */
         .toast {
             position: fixed;
-            bottom: 2rem;
+            bottom: 5rem;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
             padding: 0.75rem 1.5rem;
             border-radius: 2rem;
             color: white;
             z-index: 2000;
-            transition: transform 0.3s;
+            transition: 0.3s;
             opacity: 0;
         }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-        .toast-success { background: #10b981; }
-        .toast-error { background: #ef4444; }
+        .toast-success { background: var(--success); }
+        .toast-error { background: var(--danger); }
 
-        .empty-products { text-align: center; padding: 3rem; grid-column: 1/-1; }
-        .empty-icon { font-size: 4rem; margin-bottom: 1rem; }
-
+        /* Responsivo */
         @media (max-width: 640px) {
-            .products-grid { grid-template-columns: 1fr; }
-            .form-row { grid-template-columns: 1fr; }
+            .stats { gap: 0.5rem; }
+            .stat-card { padding: 0.75rem; }
+            .stat-value { font-size: 1.25rem; }
+            .add-container { gap: 0.5rem; }
+            .btn-add { padding: 0.875rem 1rem; }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <header class="market-header">
+    <div class="app">
+        <!-- Header -->
+        <div class="header">
             <div class="header-top">
-                <div class="logo-area">
-                    <div class="logo-icon">🛒</div>
-                    <h1 class="logo-text">Meu<span>Mercado</span></h1>
-                </div>
+                <div class="logo">Lista<span>2026</span></div>
                 <div class="header-actions">
-                    <button class="theme-toggle" id="theme-toggle">🌙</button>
-                    <button class="btn-cart" onclick="openCart()">🛒<span class="cart-badge" id="cart-badge">0</span></button>
-                    <button class="btn-logout" onclick="logout()">🚪</button>
+                    <button class="btn-icon" id="themeBtn" aria-label="Modo noturno">🌙</button>
+                    <button class="btn-icon" onclick="logout()" aria-label="Sair">🚪</button>
                 </div>
             </div>
             
             <div class="search-bar">
                 <span>🔍</span>
-                <input type="text" id="search-input" placeholder="Buscar produtos...">
+                <input type="text" id="searchInput" placeholder="Buscar na lista...">
             </div>
             
-            <div class="customer-info">
-                <div>👤</div>
+            <div class="user-info">
+                <span>👤</span>
+                <span id="userEmail">carregando...</span>
+            </div>
+        </div>
+
+        <div class="banner">
+            <div class="banner-content">
                 <div>
-                    <div style="font-size:0.7rem;color:rgba(255,255,255,0.7);">Entregar para</div>
-                    <div class="customer-name" id="user-email">carregando...</div>
+                    <span class="banner-tag">🎯 OBJETIVO DO DIA</span>
+                    <h3>Organize suas compras</h3>
+                    <p style="font-size:0.75rem;">Adicione itens e mantenha o foco</p>
                 </div>
-            </div>
-        </header>
-
-        <div class="promo-banner">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-                <div>
-                    <span style="font-size:0.7rem;background:rgba(255,255,255,0.2);padding:0.2rem 0.5rem;border-radius:20px;">🔥 OFERTA DO DIA</span>
-                    <h3>Até 30% OFF</h3>
-                    <p style="font-size:0.75rem;">em produtos selecionados</p>
-                </div>
-                <div style="font-size:3rem;">🎯</div>
+                <div style="font-size:3rem;">🛒</div>
             </div>
         </div>
 
-        <div class="categories-section">
-            <h3>Categorias</h3>
-            <div class="categories-carousel" id="categories"></div>
-        </div>
-
-        <main class="products-grid" id="products-grid"></main>
-
-        <div class="cart-summary" id="cart-summary" onclick="openCart()">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span>🛒</span>
-                <div>
-                    <div id="cart-items-count">0 itens</div>
-                    <strong id="cart-total-value">R$ 0,00</strong>
-                </div>
-                <button style="background:#3b82f6;border:none;padding:0.5rem 1rem;border-radius:0.5rem;color:white;">Ver carrinho →</button>
+        <!-- Estatísticas -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalCount">0</div>
+                <div class="stat-label">Total Itens</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completedCount">0</div>
+                <div class="stat-label">Já Comprei</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="pendingCount">0</div>
+                <div class="stat-label">Pendentes</div>
             </div>
         </div>
 
-        <button class="fab" onclick="openAddModal()">+</button>
+        <!-- Lista de Compras -->
+        <ul class="shopping-list" id="shoppingList"></ul>
 
-        <!-- Modal Produto -->
-        <div id="product-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 id="modal-title">Adicionar Produto</h2>
-                    <button class="modal-close" onclick="closeModal('product-modal')">&times;</button>
-                </div>
-                <form id="product-form">
-                    <input type="hidden" id="product-id">
-                    
-                    <div class="form-group">
-                        <label>Nome do produto *</label>
-                        <input type="text" id="product-nome" required placeholder="Ex: Arroz">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Marca</label>
-                        <input type="text" id="product-marca" placeholder="Ex: Tio João">
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Quantidade</label>
-                            <input type="number" id="product-quantidade" value="1" step="0.01">
-                        </div>
-                        <div class="form-group">
-                            <label>Unidade</label>
-                            <select id="product-unidade">
-                                <option value="un">Unidade</option>
-                                <option value="kg">kg</option>
-                                <option value="g">g</option>
-                                <option value="l">L</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Preço (R$)</label>
-                            <input type="number" id="product-preco" step="0.01" placeholder="0,00">
-                        </div>
-                        <div class="form-group">
-                            <label>Categoria</label>
-                            <select id="product-categoria">
-                                <option value="mercearia">Mercearia</option>
-                                <option value="hortifruti">Hortifrúti</option>
-                                <option value="carnes">Carnes</option>
-                                <option value="laticinios">Laticínios</option>
-                                <option value="bebidas">Bebidas</option>
-                                <option value="limpeza">Limpeza</option>
-                                <option value="outros">Outros</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Descrição</label>
-                        <textarea id="product-obs" rows="2"></textarea>
-                    </div>
-
-                    <div class="modal-buttons">
-                        <button type="button" class="btn-cancel" onclick="closeModal('product-modal')">Cancelar</button>
-                        <button type="submit" class="btn-save">Salvar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Modal Carrinho -->
-        <div id="cart-modal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>🛒 Carrinho</h2>
-                    <button class="modal-close" onclick="closeModal('cart-modal')">&times;</button>
-                </div>
-                <div id="cart-list" style="padding:1rem;"></div>
-                <div style="padding:1rem;border-top:1px solid var(--border);">
-                    <div style="display:flex;justify-content:space-between;margin-bottom:1rem;">
-                        <span>Total:</span>
-                        <strong id="cart-grand-total">R$ 0,00</strong>
-                    </div>
-                    <button onclick="finalizarCompra()" style="width:100%;padding:0.75rem;background:#10b981;border:none;border-radius:0.5rem;color:white;">Finalizar compra ✅</button>
-                </div>
+        <!-- Adicionar Item -->
+        <div class="add-section">
+            <div class="add-container">
+                <input type="text" id="itemInput" placeholder="Digite um item..." autocomplete="off">
+                <button class="btn-add" onclick="adicionarItem()">Adicionar ➕</button>
             </div>
         </div>
     </div>
 
     <script type="module">
         // ============================================
-        // CONFIGURAÇÃO SUPABASE
+        // IMPORTAÇÃO DO SUPABASE
         // ============================================
-        const SUPABASE_URL = 'https://pquobavzpooyygfoczpn.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxdW9iYXZ6cG9veXlnZm9jenBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIxMTE5NDQsImV4cCI6MjA4NzY4Nzk0NH0.-6WeJxqq_bzYD0chC1SF2iZzpK96FzWtl3xmcjeuRi4';
-        
-        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        console.log('✅ Supabase client criado');
+        import { supabase } from './supabaseClient.js';
         
         // ============================================
         // VARIÁVEIS
         // ============================================
         let currentUser = null;
-        let allProducts = [];
-        let cart = JSON.parse(localStorage.getItem('mercado_cart') || '[]');
-        let currentCategory = 'todos';
+        let allItems = [];
         let searchTerm = '';
+        
+        // Elementos DOM
+        const listaEl = document.getElementById('shoppingList');
+        const itemInput = document.getElementById('itemInput');
+        const userEmailSpan = document.getElementById('userEmail');
+        const searchInput = document.getElementById('searchInput');
+        const themeBtn = document.getElementById('themeBtn');
         
         // ============================================
         // MODO NOTURNO
         // ============================================
         function initTheme() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            const btn = document.getElementById('theme-toggle');
-            if (btn) btn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+            const saved = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+            if (themeBtn) themeBtn.textContent = saved === 'dark' ? '☀️' : '🌙';
         }
         
-        document.getElementById('theme-toggle')?.addEventListener('click', () => {
+        themeBtn?.addEventListener('click', () => {
             const current = document.documentElement.getAttribute('data-theme');
-            const newTheme = current === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            const btn = document.getElementById('theme-toggle');
-            if (btn) btn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            const novo = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', novo);
+            localStorage.setItem('theme', novo);
+            themeBtn.textContent = novo === 'dark' ? '☀️' : '🌙';
         });
         
         // ============================================
-        // FUNÇÕES AUXILIARES
+        // UTILIDADES
         // ============================================
         function showToast(message, type) {
             const toast = document.createElement('div');
@@ -540,9 +369,60 @@
             }, 3000);
         }
         
-        function formatMoney(value) {
-            if (!value) return 'R$ 0,00';
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        function formatarData(data) {
+            if (!data) return '';
+            const d = new Date(data);
+            return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+        }
+        
+        function atualizarEstatisticas() {
+            const total = allItems.length;
+            const comprados = allItems.filter(i => i.comprado === true).length;
+            const pendentes = total - comprados;
+            
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('completedCount').textContent = comprados;
+            document.getElementById('pendingCount').textContent = pendentes;
+        }
+        
+        // ============================================
+        // RENDERIZAR LISTA
+        // ============================================
+        function renderizarLista() {
+            let filtrados = [...allItems];
+            
+            if (searchTerm) {
+                filtrados = filtrados.filter(item => 
+                    item.item.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+            
+            if (!listaEl) return;
+            
+            if (filtrados.length === 0) {
+                listaEl.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <p>Nenhum item encontrado</p>
+                        <small>Adicione itens para começar</small>
+                    </div>
+                `;
+                return;
+            }
+            
+            listaEl.innerHTML = filtrados.map(item => `
+                <li class="list-item">
+                    <div class="item-info">
+                        <div class="item-name">${escapeHtml(item.item)}</div>
+                        ${item.created_at ? `<div class="item-date">📅 ${formatarData(item.created_at)}</div>` : ''}
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn-remove" onclick="removerItem('${item.id}')">🗑️ Remover</button>
+                    </div>
+                </li>
+            `).join('');
+            
+            atualizarEstatisticas();
         }
         
         function escapeHtml(text) {
@@ -553,380 +433,150 @@
         }
         
         // ============================================
-        // CARRINHO
+        // CRUD COM SUPABASE (usando sua estrutura)
         // ============================================
-        function saveCart() {
-            localStorage.setItem('mercado_cart', JSON.stringify(cart));
-            updateCartUI();
-        }
         
-        function updateCartUI() {
-            const totalItems = cart.reduce((s, i) => s + i.quantidade, 0);
-            const totalValue = cart.reduce((s, i) => s + (i.preco * i.quantidade), 0);
-            document.getElementById('cart-badge').textContent = totalItems;
-            document.getElementById('cart-items-count').innerHTML = `${totalItems} ${totalItems === 1 ? 'item' : 'itens'}`;
-            document.getElementById('cart-total-value').innerHTML = formatMoney(totalValue);
-            document.getElementById('cart-summary').classList.toggle('visible', totalItems > 0);
-        }
-        
-        window.addToCart = function(product, quantidade = 1) {
-            const existing = cart.find(i => i.id === product.id);
-            if (existing) {
-                existing.quantidade += quantidade;
-            } else {
-                cart.push({
-                    id: product.id,
-                    nome: product.nome,
-                    marca: product.marca,
-                    preco: product.preco || 0,
-                    quantidade: quantidade
-                });
-            }
-            saveCart();
-            showToast(`${product.nome} adicionado!`, 'success');
-        };
-        
-        window.removeFromCart = function(id) {
-            cart = cart.filter(i => i.id !== id);
-            saveCart();
-            renderCartModal();
-        };
-        
-        window.updateQuantity = function(id, delta) {
-            const item = cart.find(i => i.id === id);
-            if (item) {
-                item.quantidade += delta;
-                if (item.quantidade <= 0) {
-                    window.removeFromCart(id);
-                } else {
-                    saveCart();
-                    renderCartModal();
-                }
-            }
-        };
-        
-        window.openCart = function() {
-            renderCartModal();
-            openModal('cart-modal');
-        };
-        
-        function renderCartModal() {
-            const container = document.getElementById('cart-list');
-            const total = cart.reduce((s, i) => s + (i.preco * i.quantidade), 0);
+        // Carregar lista do Supabase
+        async function carregarLista() {
+            if (!currentUser) return;
             
-            if (cart.length === 0) {
-                container.innerHTML = '<div style="text-align:center;padding:2rem;">Carrinho vazio</div>';
-            } else {
-                container.innerHTML = cart.map(i => `
-                    <div style="display:flex;justify-content:space-between;align-items:center;padding:0.75rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:0.5rem;">
-                        <div>
-                            <strong>${escapeHtml(i.nome)}</strong>
-                            <div style="font-size:0.7rem;">${i.marca || ''}</div>
-                            <div>${formatMoney(i.preco)}/un</div>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:0.5rem;">
-                            <button onclick="updateQuantity('${i.id}', -1)" style="width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--bg-primary);">-</button>
-                            <span>${i.quantidade}</span>
-                            <button onclick="updateQuantity('${i.id}', 1)" style="width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--bg-primary);">+</button>
-                            <button onclick="removeFromCart('${i.id}')" style="background:#ef4444;color:white;border:none;padding:0.25rem 0.5rem;border-radius:0.25rem;">🗑️</button>
-                        </div>
-                        <div><strong>${formatMoney(i.preco * i.quantidade)}</strong></div>
-                    </div>
-                `).join('');
-            }
-            document.getElementById('cart-grand-total').textContent = formatMoney(total);
-        }
-        
-        window.finalizarCompra = async function() {
-            if (cart.length === 0) {
-                showToast('Carrinho vazio', 'error');
-                return;
-            }
-            
-            for (const item of cart) {
-                await supabase.from('items').update({ comprado: true }).eq('id', item.id).eq('user_id', currentUser.id);
-            }
-            cart = [];
-            saveCart();
-            closeModal('cart-modal');
-            showToast('Compra finalizada!', 'success');
-            await loadProducts();
-        };
-        
-        // ============================================
-        // CRUD PRODUTOS - FUNCIONAL
-        // ============================================
-        window.openAddModal = function(productId = null) {
-            const form = document.getElementById('product-form');
-            if (form) form.reset();
-            
-            if (productId) {
-                const p = allProducts.find(p => p.id === productId);
-                if (p) {
-                    document.getElementById('modal-title').textContent = 'Editar Produto';
-                    document.getElementById('product-id').value = p.id;
-                    document.getElementById('product-nome').value = p.nome || '';
-                    document.getElementById('product-marca').value = p.marca || '';
-                    document.getElementById('product-quantidade').value = p.quantidade || 1;
-                    document.getElementById('product-unidade').value = p.unidade || 'un';
-                    document.getElementById('product-preco').value = p.preco || '';
-                    document.getElementById('product-categoria').value = p.categoria || 'outros';
-                    document.getElementById('product-obs').value = p.observacao || '';
-                }
-            } else {
-                document.getElementById('modal-title').textContent = 'Adicionar Produto';
-                document.getElementById('product-id').value = '';
-                document.getElementById('product-quantidade').value = 1;
-                document.getElementById('product-unidade').value = 'un';
-            }
-            openModal('product-modal');
-        };
-        
-        window.removerProduto = async function(id) {
-            if (!confirm('Remover produto?')) return;
-            const { error } = await supabase.from('items').delete().eq('id', id).eq('user_id', currentUser.id);
-            if (error) {
-                showToast('Erro: ' + error.message, 'error');
-            } else {
-                showToast('Removido!', 'success');
-                await loadProducts();
-            }
-        };
-        
-        window.toggleComprado = async function(id, atual) {
-            const { error } = await supabase
-                .from('items')
-                .update({ comprado: !atual })
-                .eq('id', id)
-                .eq('user_id', currentUser.id);
-            if (!error) await loadProducts();
-        };
-        
-        // SUBMIT - CORRIGIDO
-        const productForm = document.getElementById('product-form');
-        if (productForm) {
-            productForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                console.log('📝 Formulário enviado');
-                
-                const id = document.getElementById('product-id').value;
-                const nome = document.getElementById('product-nome').value.trim();
-                
-                if (!nome) {
-                    showToast('Digite o nome do produto', 'error');
-                    return;
-                }
-                
-                if (!currentUser) {
-                    showToast('Usuário não autenticado', 'error');
-                    return;
-                }
-                
-                const data = {
-                    nome: nome,
-                    marca: document.getElementById('product-marca').value || '',
-                    quantidade: parseFloat(document.getElementById('product-quantidade').value) || 1,
-                    unidade: document.getElementById('product-unidade').value,
-                    preco: parseFloat(document.getElementById('product-preco').value) || null,
-                    categoria: document.getElementById('product-categoria').value,
-                    observacao: document.getElementById('product-obs').value || '',
-                    user_id: currentUser.id
-                };
-                
-                console.log('Enviando dados:', data);
-                
-                let result;
-                if (id) {
-                    result = await supabase.from('items').update(data).eq('id', id).eq('user_id', currentUser.id);
-                } else {
-                    result = await supabase.from('items').insert([data]);
-                }
-                
-                console.log('Resposta:', result);
-                
-                if (result.error) {
-                    console.error('Erro:', result.error);
-                    showToast('Erro: ' + result.error.message, 'error');
-                } else {
-                    showToast(id ? 'Atualizado!' : 'Adicionado!', 'success');
-                    closeModal('product-modal');
-                    await loadProducts();
-                }
-            });
-        }
-        
-        // ============================================
-        // RENDERIZAÇÃO
-        // ============================================
-        function renderProducts() {
-            let filtered = [...allProducts];
-            
-            if (searchTerm) {
-                filtered = filtered.filter(p => p.nome.toLowerCase().includes(searchTerm.toLowerCase()));
-            }
-            if (currentCategory !== 'todos') {
-                filtered = filtered.filter(p => p.categoria === currentCategory);
-            }
-            
-            const grid = document.getElementById('products-grid');
-            if (!grid) return;
-            
-            if (filtered.length === 0) {
-                grid.innerHTML = '<div class="empty-products"><div class="empty-icon">🛒</div><p>Nenhum produto</p><small>Clique no botão + para adicionar</small></div>';
-                return;
-            }
-            
-            const icons = {
-                mercearia: '🥫', hortifruti: '🥬', carnes: '🥩',
-                laticinios: '🥛', bebidas: '🥤', limpeza: '🧹', outros: '📦'
-            };
-            
-            grid.innerHTML = filtered.map(p => `
-                <div class="product-card">
-                    <div class="product-image" onclick="openAddModal('${p.id}')">
-                        ${icons[p.categoria] || '📦'}
-                    </div>
-                    <div class="product-info">
-                        <h4 class="product-title" onclick="openAddModal('${p.id}')">${escapeHtml(p.nome)}</h4>
-                        ${p.marca ? `<p class="product-brand">${escapeHtml(p.marca)}</p>` : ''}
-                        <div class="product-price">${formatMoney(p.preco)} <small>/${p.unidade || 'un'}</small></div>
-                        <div class="product-actions">
-                            <button class="btn-buy" onclick="addToCart(${JSON.stringify(p).replace(/"/g, '&quot;')}, 1)">🛒 Comprar</button>
-                            <button class="btn-edit-small" onclick="openAddModal('${p.id}')">✏️</button>
-                            <button class="btn-delete-small" onclick="removerProduto('${p.id}')">🗑️</button>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;">
-                            <input type="checkbox" ${p.comprado ? 'checked' : ''} onchange="toggleComprado('${p.id}', ${p.comprado})">
-                            <span>Já comprei</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        // ============================================
-        // CARREGAR PRODUTOS DO SUPABASE
-        // ============================================
-        async function loadProducts() {
-            if (!currentUser) {
-                console.log('⏳ Aguardando usuário...');
-                return;
-            }
-            
-            console.log('🔄 Buscando produtos para:', currentUser.id);
+            console.log('🔄 Carregando lista para:', currentUser.id);
             
             const { data, error } = await supabase
-                .from('items')
+                .from('lista_compras')
                 .select('*')
-                .eq('user_id', currentUser.id)
+                .eq('adicionado_por', currentUser.id)
                 .order('created_at', { ascending: false });
             
             if (error) {
-                console.error('❌ Erro:', error);
-                showToast('Erro ao carregar: ' + error.message, 'error');
+                console.error('❌ Erro ao carregar:', error);
+                showToast('Erro ao carregar lista: ' + error.message, 'error');
                 return;
             }
             
-            console.log(`✅ ${data?.length || 0} produtos carregados`);
-            allProducts = data || [];
-            renderProducts();
+            console.log(`✅ ${data?.length || 0} itens carregados`);
+            allItems = data || [];
+            renderizarLista();
         }
         
-        // ============================================
-        // CATEGORIAS
-        // ============================================
-        function loadCategories() {
-            const categories = [
-                { id: 'todos', nome: 'Todos', icon: '🏠' },
-                { id: 'mercearia', nome: 'Mercearia', icon: '🥫' },
-                { id: 'hortifruti', nome: 'Hortifrúti', icon: '🥬' },
-                { id: 'carnes', nome: 'Carnes', icon: '🥩' },
-                { id: 'laticinios', nome: 'Laticínios', icon: '🥛' },
-                { id: 'bebidas', nome: 'Bebidas', icon: '🥤' },
-                { id: 'limpeza', nome: 'Limpeza', icon: '🧹' },
-                { id: 'outros', nome: 'Outros', icon: '📦' }
-            ];
+        // Adicionar item
+        window.adicionarItem = async function () {
+            const item = itemInput.value.trim();
             
-            const container = document.getElementById('categories');
-            if (!container) return;
+            if (!item) {
+                showToast('Digite um item para adicionar', 'error');
+                return;
+            }
             
-            container.innerHTML = categories.map(cat => `
-                <button class="cat-card ${cat.id === 'todos' ? 'active' : ''}" data-cat="${cat.id}">
-                    <div style="font-size:1.75rem;">${cat.icon}</div>
-                    <span>${cat.nome}</span>
-                </button>
-            `).join('');
+            if (!currentUser) {
+                showToast('Usuário não autenticado', 'error');
+                return;
+            }
             
-            document.querySelectorAll('.cat-card').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.cat-card').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    currentCategory = btn.dataset.cat;
-                    renderProducts();
-                });
-            });
+            console.log('📝 Adicionando item:', item);
             
-            document.getElementById('search-input')?.addEventListener('input', (e) => {
-                searchTerm = e.target.value;
-                renderProducts();
-            });
-        }
-        
-        // ============================================
-        // MODAIS
-        // ============================================
-        function openModal(id) {
-            document.getElementById(id).classList.add('show');
-        }
-        
-        window.closeModal = function(id) {
-            document.getElementById(id).classList.remove('show');
+            const { data, error } = await supabase
+                .from('lista_compras')
+                .insert({
+                    item: item,
+                    adicionado_por: currentUser.id,
+                    comprado: false
+                })
+                .select();
+            
+            if (error) {
+                console.error('❌ Erro ao adicionar:', error);
+                showToast('Erro ao adicionar: ' + error.message, 'error');
+                return;
+            }
+            
+            console.log('✅ Item adicionado:', data);
+            itemInput.value = '';
+            showToast('Item adicionado com sucesso!', 'success');
+            await carregarLista();
         };
         
-        // Fechar ao clicar fora
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) modal.classList.remove('show');
-            });
-        });
+        // Remover item
+        window.removerItem = async function (id) {
+            if (!confirm('Tem certeza que deseja remover este item?')) return;
+            
+            console.log('🗑️ Removendo item:', id);
+            
+            const { error } = await supabase
+                .from('lista_compras')
+                .delete()
+                .eq('id', id);
+            
+            if (error) {
+                console.error('❌ Erro ao remover:', error);
+                showToast('Erro ao remover: ' + error.message, 'error');
+                return;
+            }
+            
+            console.log('✅ Item removido');
+            showToast('Item removido!', 'success');
+            await carregarLista();
+        };
         
         // ============================================
-        // LOGOUT
+        // AUTENTICAÇÃO
         // ============================================
-        window.logout = async function() {
+        async function getUser() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                window.location.href = 'login.html';
+                return null;
+            }
+            return user;
+        }
+        
+        // Logout
+        window.logout = async function () {
             await supabase.auth.signOut();
             window.location.href = 'login.html';
         };
         
         // ============================================
-        // INICIAR APP
+        // FILTROS
         // ============================================
-        supabase.auth.onAuthStateChange(async (event, session) => {
-            console.log('🔐 Auth event:', event);
-            if (session) {
-                currentUser = session.user;
-                document.getElementById('user-email').textContent = session.user.email;
-                await loadProducts();
-                updateCartUI();
-            } else {
-                window.location.href = 'login.html';
+        searchInput?.addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            renderizarLista();
+        });
+        
+        // Enter para adicionar
+        itemInput?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                window.adicionarItem();
             }
         });
         
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-            currentUser = session.user;
-            document.getElementById('user-email').textContent = session.user.email;
-            await loadProducts();
-            updateCartUI();
-        } else {
-            window.location.href = 'login.html';
+        // ============================================
+        // INICIAR APP
+        // ============================================
+        async function init() {
+            const user = await getUser();
+            if (user) {
+                currentUser = user;
+                userEmailSpan.textContent = user.email;
+                await carregarLista();
+            }
+            initTheme();
         }
         
-        loadCategories();
-        initTheme();
+        init();
         
-        console.log('✅ App pronto!');
+        // Escutar mudanças em tempo real (opcional)
+        supabase.channel('lista_changes')
+            .on('postgres_changes', 
+                { event: '*', schema: 'public', table: 'lista_compras', filter: `adicionado_por=eq.${currentUser?.id}` },
+                () => {
+                    if (currentUser) carregarLista();
+                }
+            )
+            .subscribe();
+        
+        console.log('✅ App iniciado com sucesso!');
     </script>
 </body>
 </html>
