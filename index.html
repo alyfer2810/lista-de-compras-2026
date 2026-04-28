@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#3b82f6">
     <link rel="manifest" href="manifest.json">
-    <title>Lista 2026 · Minhas Compras</title>
+    <title>Lista 2026 · Meu Mercado</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -16,6 +16,7 @@
             --text-light: #6b7280;
             --border: #e5e7eb;
             --primary: #3b82f6;
+            --primary-dark: #2563eb;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
@@ -31,7 +32,7 @@
         }
 
         body {
-            font-family: system-ui, sans-serif;
+            font-family: system-ui, -apple-system, sans-serif;
             background: var(--bg);
             color: var(--text);
             transition: all 0.3s;
@@ -72,6 +73,7 @@
             font-size: 1.25rem;
             transition: all 0.2s;
         }
+        .btn-icon:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
 
         .search-bar {
             background: white;
@@ -106,6 +108,16 @@
             padding: 1rem;
             color: white;
         }
+        .banner-content { display: flex; justify-content: space-between; align-items: center; }
+        .banner-tag {
+            font-size: 0.7rem;
+            background: rgba(255,255,255,0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+        .banner h3 { font-size: 1.25rem; margin-bottom: 0.25rem; }
 
         .stats {
             display: grid;
@@ -120,15 +132,15 @@
             text-align: center;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .stat-value { font-size: 1.25rem; font-weight: 700; color: var(--primary); }
-        .stat-label { font-size: 0.7rem; color: var(--text-light); }
+        .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .stat-label { font-size: 0.75rem; color: var(--text-light); }
 
         .shopping-list {
             padding: 0 1rem;
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
-            padding-bottom: 140px;
+            padding-bottom: 100px;
         }
         .list-item {
             background: var(--card);
@@ -139,18 +151,12 @@
             align-items: center;
             transition: all 0.2s;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            flex-wrap: wrap;
-            gap: 0.75rem;
         }
+        .list-item:hover { transform: translateX(4px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .item-info { flex: 1; }
         .item-name { font-weight: 600; font-size: 1rem; }
-        .item-price { font-size: 0.875rem; color: var(--success); font-weight: 600; }
-        .item-actions { display: flex; gap: 0.5rem; align-items: center; }
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-        }
+        .item-date { font-size: 0.7rem; color: var(--text-light); margin-top: 0.25rem; }
+        .item-actions { display: flex; gap: 0.5rem; }
         .btn-remove {
             background: var(--danger);
             border: none;
@@ -158,7 +164,10 @@
             border-radius: 0.5rem;
             color: white;
             cursor: pointer;
+            transition: all 0.2s;
         }
+        .btn-remove:hover { background: #dc2626; transform: scale(1.05); }
+
         .add-section {
             position: fixed;
             bottom: 0;
@@ -167,6 +176,7 @@
             background: var(--card);
             padding: 1rem;
             border-top: 1px solid var(--border);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             z-index: 90;
         }
         .add-container {
@@ -174,19 +184,8 @@
             gap: 0.75rem;
             max-width: 800px;
             margin: 0 auto;
-            flex-wrap: wrap;
         }
         .add-container input {
-            flex: 2;
-            padding: 0.875rem 1rem;
-            border: 2px solid var(--border);
-            border-radius: 1rem;
-            font-size: 1rem;
-            background: var(--bg);
-            color: var(--text);
-            min-width: 150px;
-        }
-        .add-container select {
             flex: 1;
             padding: 0.875rem 1rem;
             border: 2px solid var(--border);
@@ -194,7 +193,12 @@
             font-size: 1rem;
             background: var(--bg);
             color: var(--text);
-            min-width: 100px;
+            transition: all 0.2s;
+        }
+        .add-container input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
         }
         .btn-add {
             padding: 0.875rem 1.5rem;
@@ -204,7 +208,10 @@
             color: white;
             font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s;
         }
+        .btn-add:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
         .empty-state {
             text-align: center;
             padding: 3rem;
@@ -214,7 +221,7 @@
 
         .toast {
             position: fixed;
-            bottom: 6rem;
+            bottom: 5rem;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
             padding: 0.75rem 1.5rem;
@@ -229,8 +236,11 @@
         .toast-error { background: var(--danger); }
 
         @media (max-width: 640px) {
-            .stats { grid-template-columns: repeat(2, 1fr); }
-            .add-container { flex-direction: column; }
+            .stats { gap: 0.5rem; }
+            .stat-card { padding: 0.75rem; }
+            .stat-value { font-size: 1.25rem; }
+            .add-container { gap: 0.5rem; }
+            .btn-add { padding: 0.875rem 1rem; }
         }
     </style>
 </head>
@@ -244,10 +254,12 @@
                     <button class="btn-icon" onclick="logout()">🚪</button>
                 </div>
             </div>
+            
             <div class="search-bar">
                 <span>🔍</span>
-                <input type="text" id="searchInput" placeholder="Buscar...">
+                <input type="text" id="searchInput" placeholder="Buscar na lista...">
             </div>
+            
             <div class="user-info">
                 <span>👤</span>
                 <span id="userEmail">carregando...</span>
@@ -255,68 +267,69 @@
         </div>
 
         <div class="banner">
-            <div>
-                <span class="banner-tag">💰 CONTROLE DE GASTOS</span>
-                <h3>Lista de compras</h3>
-                <p>Adicione itens e acompanhe os valores</p>
+            <div class="banner-content">
+                <div>
+                    <span class="banner-tag">🎯 OBJETIVO DO DIA</span>
+                    <h3>Organize suas compras</h3>
+                    <p style="font-size:0.75rem;">Adicione itens e mantenha o foco</p>
+                </div>
+                <div style="font-size:3rem;">🛒</div>
             </div>
         </div>
 
         <div class="stats">
             <div class="stat-card">
-                <div class="stat-value" id="totalItems">0</div>
+                <div class="stat-value" id="totalCount">0</div>
                 <div class="stat-label">Total Itens</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="totalValue">R$ 0</div>
-                <div class="stat-label">Valor Total</div>
+                <div class="stat-value" id="completedCount">0</div>
+                <div class="stat-label">Já Comprei</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="completedValue">R$ 0</div>
-                <div class="stat-label">Já Comprado</div>
+                <div class="stat-value" id="pendingCount">0</div>
+                <div class="stat-label">Pendentes</div>
             </div>
         </div>
 
-        <main id="main-content" class="shopping-list" id="shoppingList"></main>
+        <ul class="shopping-list" id="shoppingList"></ul>
 
         <div class="add-section">
             <div class="add-container">
-                <input type="text" id="itemInput" placeholder="Nome do item...">
-                <input type="number" id="priceInput" placeholder="Preço (R$)" step="0.01">
-                <select id="categorySelect">
-                    <option value="mercearia">Mercearia</option>
-                    <option value="hortifruti">Hortifrúti</option>
-                    <option value="carnes">Carnes</option>
-                    <option value="bebidas">Bebidas</option>
-                    <option value="limpeza">Limpeza</option>
-                    <option value="outros">Outros</option>
-                </select>
+                <input type="text" id="itemInput" placeholder="Digite um item..." autocomplete="off">
                 <button class="btn-add" onclick="adicionarItem()">Adicionar ➕</button>
             </div>
         </div>
     </div>
 
     <script type="module">
+        // ============================================
+        // IMPORTAÇÃO DO SUPABASE
+        // ============================================
         import { supabase } from './supabaseClient.js';
         
+        // ============================================
+        // VARIÁVEIS
+        // ============================================
         let currentUser = null;
         let allItems = [];
         let searchTerm = '';
         
         const listaEl = document.getElementById('shoppingList');
         const itemInput = document.getElementById('itemInput');
-        const priceInput = document.getElementById('priceInput');
-        const categorySelect = document.getElementById('categorySelect');
         const userEmailSpan = document.getElementById('userEmail');
         const searchInput = document.getElementById('searchInput');
         const themeBtn = document.getElementById('themeBtn');
         
-        // Tema
+        // ============================================
+        // MODO NOTURNO
+        // ============================================
         function initTheme() {
             const saved = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', saved);
             if (themeBtn) themeBtn.textContent = saved === 'dark' ? '☀️' : '🌙';
         }
+        
         themeBtn?.addEventListener('click', () => {
             const current = document.documentElement.getAttribute('data-theme');
             const novo = current === 'dark' ? 'light' : 'dark';
@@ -325,10 +338,13 @@
             themeBtn.textContent = novo === 'dark' ? '☀️' : '🌙';
         });
         
-        function showToast(msg, type) {
+        // ============================================
+        // UTILIDADES
+        // ============================================
+        function showToast(message, type) {
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
-            toast.textContent = msg;
+            toast.textContent = message;
             document.body.appendChild(toast);
             setTimeout(() => toast.classList.add('show'), 10);
             setTimeout(() => {
@@ -337,9 +353,21 @@
             }, 3000);
         }
         
-        function formatMoney(value) {
-            if (!value) return 'R$ 0,00';
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+        function formatarData(data) {
+            if (!data) return '';
+            try {
+                const d = new Date(data);
+                return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+            } catch {
+                return '';
+            }
+        }
+        
+        function atualizarEstatisticas() {
+            const total = allItems.length;
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('completedCount').textContent = '0';
+            document.getElementById('pendingCount').textContent = total;
         }
         
         function escapeHtml(text) {
@@ -349,59 +377,56 @@
             return div.innerHTML;
         }
         
-        function atualizarStats() {
-            const total = allItems.length;
-            const totalValor = allItems.reduce((s, i) => s + ((i.preco || 0) * (i.quantidade || 1)), 0);
-            const compradoValor = allItems.filter(i => i.comprado).reduce((s, i) => s + ((i.preco || 0) * (i.quantidade || 1)), 0);
-            
-            document.getElementById('totalItems').textContent = total;
-            document.getElementById('totalValue').textContent = formatMoney(totalValor);
-            document.getElementById('completedValue').textContent = formatMoney(compradoValor);
-        }
-        
+        // ============================================
+        // RENDERIZAR LISTA
+        // ============================================
         function renderizarLista() {
-            console.log('🎨 Renderizando lista com', allItems.length, 'itens');
-            
             let filtrados = [...allItems];
+            
             if (searchTerm) {
-                filtrados = filtrados.filter(i => i.item?.toLowerCase().includes(searchTerm.toLowerCase()));
+                filtrados = filtrados.filter(item => 
+                    item.item?.toLowerCase().includes(searchTerm.toLowerCase())
+                );
             }
             
             if (!listaEl) return;
             
             if (filtrados.length === 0) {
-                listaEl.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><p>Nenhum item</p><small>Adicione itens</small></div>`;
-                atualizarStats();
+                listaEl.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <p>Nenhum item encontrado</p>
+                        <small>Adicione itens para começar</small>
+                    </div>
+                `;
                 return;
             }
             
             listaEl.innerHTML = filtrados.map(item => `
-                <li class="list-item ${item.comprado ? 'comprado' : ''}">
-                    <div>
+                <li class="list-item">
+                    <div class="item-info">
                         <div class="item-name">${escapeHtml(item.item)}</div>
-                        <div class="item-price">💰 ${formatMoney(item.preco)}</div>
+                        ${item.created_at ? `<div class="item-date">📅 ${formatarData(item.created_at)}</div>` : ''}
                     </div>
                     <div class="item-actions">
-                        <label class="checkbox-label">
-                            <input type="checkbox" ${item.comprado ? 'checked' : ''} onchange="toggleComprado('${item.id}', ${item.comprado})">
-                            <span>Comprei</span>
-                        </label>
-                        <button class="btn-remove" onclick="removerItem('${item.id}')">🗑️</button>
+                        <button class="btn-remove" onclick="removerItem('${item.id}')">🗑️ Remover</button>
                     </div>
                 </li>
             `).join('');
             
-            atualizarStats();
+            atualizarEstatisticas();
         }
         
+        // ============================================
+        // CRUD COM SUPABASE (SEM ORDER BY created_at)
+        // ============================================
+        
         async function carregarLista() {
-            if (!currentUser) {
-                console.log('⏳ Aguardando usuário...');
-                return;
-            }
+            if (!currentUser) return;
             
-            console.log('🔄 Buscando itens para usuário:', currentUser.id);
+            console.log('🔄 Carregando lista para:', currentUser.id);
             
+            // Removido o order_by para evitar erro
             const { data, error } = await supabase
                 .from('lista_compras')
                 .select('*')
@@ -409,22 +434,20 @@
             
             if (error) {
                 console.error('❌ Erro ao carregar:', error);
-                showToast('Erro ao carregar: ' + error.message, 'error');
+                showToast('Erro ao carregar lista: ' + error.message, 'error');
                 return;
             }
             
-            console.log(`✅ ${data?.length || 0} itens carregados do banco:`, data);
+            console.log(`✅ ${data?.length || 0} itens carregados`);
             allItems = data || [];
             renderizarLista();
         }
         
         window.adicionarItem = async function () {
-            const nome = itemInput.value.trim();
-            const preco = parseFloat(priceInput.value) || 0;
-            const categoria = categorySelect.value;
+            const item = itemInput.value.trim();
             
-            if (!nome) {
-                showToast('Digite o nome do item', 'error');
+            if (!item) {
+                showToast('Digite um item para adicionar', 'error');
                 return;
             }
             
@@ -433,39 +456,30 @@
                 return;
             }
             
-            const novoItem = {
-                item: nome,
-                preco: preco,
-                categoria: categoria,
-                quantidade: 1,
-                comprado: false,
-                adicionado_por: currentUser.id
-            };
-            
-            console.log('📝 Enviando para o Supabase:', novoItem);
+            console.log('📝 Adicionando item:', item);
             
             const { data, error } = await supabase
                 .from('lista_compras')
-                .insert([novoItem])
+                .insert({
+                    item: item,
+                    adicionado_por: currentUser.id
+                })
                 .select();
             
             if (error) {
-                console.error('❌ Erro ao inserir:', error);
-                showToast('Erro: ' + error.message, 'error');
+                console.error('❌ Erro ao adicionar:', error);
+                showToast('Erro ao adicionar: ' + error.message, 'error');
                 return;
             }
             
-            console.log('✅ Item inserido com sucesso:', data);
+            console.log('✅ Item adicionado:', data);
             itemInput.value = '';
-            priceInput.value = '';
-            showToast('Item adicionado!', 'success');
-            
-            // Recarregar a lista
+            showToast('Item adicionado com sucesso!', 'success');
             await carregarLista();
         };
         
         window.removerItem = async function (id) {
-            if (!confirm('Remover item?')) return;
+            if (!confirm('Tem certeza que deseja remover este item?')) return;
             
             console.log('🗑️ Removendo item:', id);
             
@@ -476,7 +490,7 @@
             
             if (error) {
                 console.error('❌ Erro ao remover:', error);
-                showToast('Erro ao remover', 'error');
+                showToast('Erro ao remover: ' + error.message, 'error');
                 return;
             }
             
@@ -485,30 +499,12 @@
             await carregarLista();
         };
         
-        window.toggleComprado = async function (id, atual) {
-            console.log('🔄 Alternando status do item:', id, 'atual:', atual);
-            
-            const { error } = await supabase
-                .from('lista_compras')
-                .update({ comprado: !atual })
-                .eq('id', id);
-            
-            if (error) {
-                console.error('❌ Erro ao atualizar:', error);
-                showToast('Erro ao atualizar', 'error');
-                return;
-            }
-            
-            console.log('✅ Status atualizado');
-            await carregarLista();
-        };
-        
+        // ============================================
+        // AUTENTICAÇÃO
+        // ============================================
         async function getUser() {
             const { data: { user } } = await supabase.auth.getUser();
-            console.log('🔐 Usuário atual:', user?.id);
-            
             if (!user) {
-                console.log('🚪 Usuário não logado, redirecionando...');
                 window.location.href = 'login.html';
                 return null;
             }
@@ -520,20 +516,24 @@
             window.location.href = 'login.html';
         };
         
+        // ============================================
+        // FILTROS
+        // ============================================
         searchInput?.addEventListener('input', (e) => {
             searchTerm = e.target.value;
             renderizarLista();
         });
         
         itemInput?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') adicionarItem();
-        });
-        priceInput?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') adicionarItem();
+            if (e.key === 'Enter') {
+                window.adicionarItem();
+            }
         });
         
+        // ============================================
+        // INICIAR APP
+        // ============================================
         async function init() {
-            console.log('🚀 Iniciando aplicação...');
             const user = await getUser();
             if (user) {
                 currentUser = user;
@@ -544,6 +544,8 @@
         }
         
         init();
+        
+        console.log('✅ App iniciado com sucesso!');
     </script>
 </body>
 </html>
